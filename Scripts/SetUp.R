@@ -5,9 +5,11 @@
 # load the required packages
 packages <- c(
   "here", # for the project's organization
-  "readr", "readxl", "dplyr", "tidyr", "tidyverse", "lubridate", "janitor", # for wrangling
-  "ggplot2", "tsibble", "feasts", "kableExtra" # for visualization
+  "readxl", "naniar","stringr", "janitor", # for wrangling
+  "fpp3", "tsibbledata", # for time series
+  "kableExtra", "skimr", "manipulate", "ggridges", "ggthemes", # for visualization
+  "broom", "forecast" ,"caret"# modeling
 )
 
-purrr::walk(packages, library, character.only = TRUE)
+purrr::walk(packages, library, character.only = TRUE) # load the packages
 
