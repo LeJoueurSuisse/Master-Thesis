@@ -86,12 +86,27 @@ general_df <- data_all %>% select(all_of(general_var)) %>%
          neg_secund = negative_secundary_control_energy_k_wh,
          pos_tertiary = positive_tertiary_control_energy_k_wh,
          neg_tertiary = negative_tertiary_control_energy_k_wh) %>%
-  mutate(test = ifelse("21:00:00" >= hour & hour > "07:00:00", 
+  #mutate(test = ifelse("19:00:00" >= hour & hour > "07:00:00", 
+  #                     "Day", "Night")) %>%
+  mutate(test = ifelse(hour > "07:00:00" & hour <= "19:00:00", 
                        "Day", "Night")) %>%
-  mutate(month2 = month(ymd(month), label = TRUE)) %>%
-  mutate(hour2 = hour(hms(hour))) %>%
+  #mutate(month2 = month(ymd(month), label = TRUE)) %>%
+  mutate(month = month(ymd(month), label = TRUE)) %>%
+  #mutate(hour2 = hour(hms(hour))) %>%
+  mutate(hour = hour(hms(hour))) %>%
   mutate(wday = wday(date, label = TRUE, week_start = 1)) %>%
-  mutate(year2 = year(date))
+  #mutate(wday = weekdays(date)) %>%
+  #mutate(year2 = year(date)) %>%
+  mutate(year = year(date)) %>%
+  mutate(hourly = format(as.POSIXlt(time), "%Y-%m-%d %H:00:00")) %>%
+  mutate(hourly = ymd_hms(hourly))%>%
+  relocate(c(hourly, year, month, date, wday, hour, test), .after = time)
+
+# A monthly version
+
+general_dfM <- general_df %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  as_tibble()
 
 # Exchange with borders Statistics
 
@@ -111,6 +126,54 @@ foreign_df <- data_all %>% select(all_of(foreign_var))
 
 # ==============================================================================
 
+## STL decomp
+
+## Daily data for consumption
+
+STL_dcmpC <- general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2018-01-01" ~ "2022-11-01") %>%
+  model(STL(Total_cons))
+
+# 1 year only
+STL_dcmpC_1year <- general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2019-12-31") %>%
+  model(STL(Total_cons))
+
+## Daily data for production
+
+STL_dcmpP <- general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2018-01-01" ~ "2022-11-01") %>%
+  model(STL(Total_cons))
+
+#1 year only
+STL_dcmpP_1year <- general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2019-12-31") %>%
+  model(STL(Total_cons))
+
+# Monthly data for consumption & production
+
+STL_dcmp_MC <- general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>%
+  model(STL(Total_cons))
+
+STL_dcmp_MP <- general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>%
+  model(STL(Total_cons))
+
+# ==============================================================================
+
 ## Clearing the environment
 
 # Data
@@ -122,7 +185,7 @@ for(i in 1:8){
       Data_to_remove <- append(Data_to_remove, paste0("OldData_", 2008 + i))
 }
 
-remove(list = Data_to_remove)
+remove(list = c(Data_to_remove, "data_all"))
 
 # Values
 
