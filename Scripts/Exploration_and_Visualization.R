@@ -1,6 +1,6 @@
 
 # ==============================================================================
-# Exploration and Visualization
+# Exploration and Visualization for general statistics
 # ==============================================================================
 
 source(file = here::here("Scripts/Cleaning_and_Wrangling.R"))
@@ -333,7 +333,7 @@ general_df %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
-  ggtitle("Total energy consumed in CH") + 
+  ggtitle("Positive secundary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date") #Check outliers 
 
 general_df %>%
@@ -341,7 +341,7 @@ general_df %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
-  ggtitle("Total energy consumed in CH") + 
+  ggtitle("Negative secundary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date") #Check outliers 
 
 general_df %>%
@@ -349,7 +349,7 @@ general_df %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
-  ggtitle("Total energy consumed in CH") + 
+  ggtitle("Positive tertiary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date") #Check outliers 
 
 general_df %>%
@@ -357,5 +357,5 @@ general_df %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
-  ggtitle("Total energy consumed in CH") + 
+  ggtitle("Negative tertiary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date") #Check outliers 
