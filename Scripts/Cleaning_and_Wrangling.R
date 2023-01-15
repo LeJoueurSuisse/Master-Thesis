@@ -75,7 +75,8 @@ data_all <- rbind(Data_2015, Data_2016, Data_2017, Data_2018, Data_2019,
 # Grouping related variables
 
 my_variables <- colnames(data_all) # all the variable
-general_var <- my_variables[c(1:11, 14:17)] # general statistics (prod, cons, flow)
+times_var <- c(my_variables[1:8]) # time variable only
+general_var <- my_variables[c(1:11, 14:17)] # general statistics 
 border_var <- my_variables[c(1:8, 18:28)] # exchange with borders statistics
 price_var <- my_variables[c(1:8, 29:32)] # price of control
 canton_var <- my_variables[c(1:8, 33:70)] # prod and cons per cantons
@@ -91,8 +92,8 @@ general_df <- data_all %>% select(all_of(general_var)) %>%
   rename(end_users_cons = total_energy_consumed_by_end_users_in_the_swiss_controlblock_k_wh,
          energy_prod = total_energy_production_swiss_controlblock_k_wh,
          energy_cons = total_energy_consumption_swiss_controlblock_k_wh,
-         pos_secund = positive_secundary_control_energy_k_wh,
-         neg_secund = negative_secundary_control_energy_k_wh,
+         pos_second = positive_secundary_control_energy_k_wh,
+         neg_second = negative_secundary_control_energy_k_wh,
          pos_tertiary = positive_tertiary_control_energy_k_wh,
          neg_tertiary = negative_tertiary_control_energy_k_wh)
 
@@ -102,20 +103,11 @@ general_dfM <- general_df %>%
   mutate(month = yearmonth(date), year = year(date)) %>%
   as_tibble()
 
-# Exchange with borders Statistics
-
-border_df <- data_all %>% select(all_of(border_var))
-
-# Price of controls
-
-price_df <- data_all %>% select(all_of(price_var))
+# ==============================================================================
 
 ### Statistics per canton
 
 canton_df <- data_all %>% select(all_of(canton_var))
-
-my_variables <- colnames(canton_df) # all the variable
-times_var <- c(my_variables[1:8])
 
 ## Dividing the data between production and consumption
 
@@ -124,37 +116,47 @@ times_var <- c(my_variables[1:8])
 canton_prod <- canton_df[, -45] %>% 
   select(all_of(times_var), starts_with("prod"))
 
-colnames(canton_prod) <- c(my_variables[1:8], "argovie", "fribourg", "glaris", "grisons",
+colnames(canton_prod) <- c(times_var, "argovie", "fribourg", "glaris", "grisons",
                             "lucerne", "neuchatel", "soleure", "saint_gall", "tessin",
                             "thurgovie", "valais", "appenzell", "bale", "berne_jura",
                             "schwytz_zoug", "obwald_nidwald_uri", "geneve_vaud", 
                             "schaffhouse_zurich")
 
 canton_long_prod <- canton_prod %>%
-  pivot_longer(-c(my_variables[1:8]), names_to = "Cantons", values_to = "production")
+  pivot_longer(-c(canton_var[1:8]), names_to = "Cantons", values_to = "production")
 
 # consumption
 
 canton_cons <- canton_df[, -46] %>%
   select(all_of(times_var), starts_with("cons"))
 
-colnames(canton_cons) <- c(my_variables[1:8], "argovie", "fribourg", "glaris", "grisons",
+colnames(canton_cons) <- c(times_var, "argovie", "fribourg", "glaris", "grisons",
                             "lucerne", "neuchatel", "soleure", "saint_gall", "tessin",
                             "thurgovie", "valais", "appenzell", "bale", "berne_jura",
                             "schwytz_zoug", "obwald_nidwald_uri", "geneve_vaud", 
                             "schaffhouse_zurich")
 
 canton_long_cons <- canton_cons %>%
-  pivot_longer(-c(my_variables[1:8]), names_to = "Cantons", values_to = "consumption")
+  pivot_longer(-c(canton_var[1:8]), names_to = "Cantons", values_to = "consumption")
 
 # combine production and consumption in a single tsibble
 
 canton_df_long <- canton_long_prod %>%
   mutate(consumption = canton_long_cons$consumption)
 
+# ==============================================================================
+
 # Statistics for foreign area controlled by SwissGrid
 
 foreign_df <- data_all %>% select(all_of(foreign_var))
+
+# Exchange with borders Statistics
+
+border_df <- data_all %>% select(all_of(border_var))
+
+# Price of controls
+
+price_df <- data_all %>% select(all_of(price_var))
 
 # ==============================================================================
 
