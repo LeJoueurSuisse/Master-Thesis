@@ -14,7 +14,19 @@ canton_df_long %>%
 
 canton_df_long %>%
   group_by(Cantons) %>% 
-  summarize(n = n()) 
+  summarize(n = n())
+
+# Best consumer
+canton_df_long %>% group_by(Cantons) %>% 
+  summarize(Total_cons = sum(consumption)) %>%
+  arrange(desc(Total_cons)) %>%
+  slice(1:10)
+
+# Best producer
+canton_df_long %>% group_by(Cantons) %>% 
+  summarize(Total_prod = sum(production)) %>%
+  arrange(desc(Total_prod)) %>%
+  slice(1:5)
 
 # ==============================================================================
 
@@ -62,6 +74,58 @@ canton_df_long %>%
 
 # ==============================================================================
 
+## Facet wrap by Cantons
+
+# Consumption
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(consumption)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons) +
+  ggtitle("Monthly consumption per canton since 2018") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# Production
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(production)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons) +
+  ggtitle("Monthly production per canton since 2018") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# Monthly consumption with free scale
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(consumption)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons, scales = "free") +
+  ggtitle("Monthly consumption per canton since 2018") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# Monthly production with free scale
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(production)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons, scales = "free") +
+  ggtitle("Monthly production per canton since 2018") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# ==============================================================================
+
 ## STL decomposition
 
 # Daily consumption for 2019
@@ -98,7 +162,8 @@ canton_df_long %>%
   as_tsibble(index = month, key = Cantons) %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   model(STL(total_prod))%>%
-  components() %>% autoplot()
+  components() %>% autoplot() +
+  facet_wrap(~Cantons)
 
 # ==============================================================================
 
@@ -115,44 +180,7 @@ canton_features %>%
   ggplot(aes(x = trend_strength, y = seasonal_strength_year, col = Cantons)) +
   geom_point(size = 2)
 
-
 # ==============================================================================
-
-# Monthly consumption
-canton_df_long %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(consumption)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  facet_wrap(~Cantons, scales = "free") +
-  ggtitle("Monthly consumption per canton since 2018") + 
-  ylab("Ammount in million of kWh") + xlab("Date")
-
-canton_df_long %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(consumption)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  facet_wrap(~Cantons) +
-  ggtitle("Monthly consumption per canton since 2018") + 
-  ylab("Ammount in million of kWh") + xlab("Date")
-
-canton_df_long %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(production)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  facet_wrap(~Cantons) +
-  ggtitle("Monthly production per canton since 2018") + 
-  ylab("Ammount in million of kWh") + xlab("Date")
-
-
 
 
 

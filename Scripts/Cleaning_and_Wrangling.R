@@ -10,11 +10,11 @@ data_files <- list.files(here::here("Data/SwissGrid"))
 
 # 2009 to 2014 Data
 
-for(i in 1:6){                            
-  assign(paste0("OldData_", 2008 + i), 
-         read_excel(paste0("Data/SwissGrid/", data_files[i]), 
-                    sheet = "Zeitreihen0h15"))
-}
+#for(i in 1:6){                            
+#  assign(paste0("OldData_", 2008 + i), 
+#         read_excel(paste0("Data/SwissGrid/", data_files[i]), 
+#                    sheet = "Zeitreihen0h15"))
+#}
 
 # 2015 to 2022 Data
 
@@ -163,7 +163,6 @@ price_df <- data_all %>% select(all_of(price_var))
 ## STL decomp
 
 ## Daily data for consumption
-
 STL_dcmpC <- general_df %>%
   group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
   as_tsibble() %>%

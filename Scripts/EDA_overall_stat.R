@@ -227,7 +227,6 @@ general_dfM %>%
   ylab("Total Sales") +
   ggtitle("Total production of energy per month")
 
-
 # Global effect of the month on consumption
 general_df %>% 
   group_by(date, month, year) %>% 
