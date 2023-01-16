@@ -17,16 +17,36 @@ canton_df_long %>%
   summarize(n = n())
 
 # Best consumer
-canton_df_long %>% group_by(Cantons) %>% 
+canton_df_long %>% 
+  filter(year > 2017) %>%
+  group_by(Cantons) %>% 
+  summarize(Total_cons = sum(consumption)/1000000) %>%
+  ggplot(aes(x = Total_cons, y = Cantons, fill = Cantons)) + 
+  geom_col(color = "black") + 
+  guides(fill = FALSE)
+
+top5_consumer <- canton_df_long %>% group_by(Cantons) %>% 
   summarize(Total_cons = sum(consumption)) %>%
   arrange(desc(Total_cons)) %>%
-  slice(1:10)
+  slice(1:5)
+
+top5_consumer <- top5_consumer$Cantons
 
 # Best producer
-canton_df_long %>% group_by(Cantons) %>% 
+canton_df_long %>% 
+  filter(year > 2017) %>%
+  group_by(Cantons) %>% 
+  summarize(Total_prod = sum(production)/1000000) %>%
+  ggplot(aes(x = Total_prod, y = Cantons, fill = Cantons)) + 
+  geom_col(color = "black") +
+  guides(fill = FALSE)
+
+top5_producer <- canton_df_long %>% group_by(Cantons) %>% 
   summarize(Total_prod = sum(production)) %>%
   arrange(desc(Total_prod)) %>%
   slice(1:5)
+
+top5_producer <- top5_producer$Cantons
 
 # ==============================================================================
 
