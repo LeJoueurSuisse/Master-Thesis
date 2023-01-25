@@ -228,3 +228,14 @@ remove(list = ls.str(mode = "character"))
 remove(list = ls.str(mode = "numeric"))
 
 # ==============================================================================
+
+## Data for mapping 
+
+gadmCHE0 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_0.shp")
+gadmCHE1 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp")
+gadmCHE2 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_2.shp")
+gadmCHE3 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_3.shp")
+
+
+Cantons_mapping <- gadmCHE1 %>%
+  separate(HASC_1, c('Pays', 'Canton'))

@@ -421,3 +421,42 @@ general_df %>%
 
 # ==============================================================================
 
+## Prices
+
+# Positive secondary
+price_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(average_positive_secondary_control_energy_prices_euro_m_wh)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() + 
+  ggtitle("Positive secondary control energy") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# Negative secondary
+price_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(average_negative_secondary_control_energy_prices_euro_m_wh)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() + 
+  ggtitle("Positive secondary control energy") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# Positive tertiary
+price_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(average_positive_tertiary_control_energy_prices_euro_m_wh)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() + 
+  ggtitle("Positive secondary control energy") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# Negative tertiary
+price_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(average_negative_tertiary_control_energy_prices_euro_m_wh)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() + 
+  ggtitle("Positive secondary control energy") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
+# ==============================================================================
