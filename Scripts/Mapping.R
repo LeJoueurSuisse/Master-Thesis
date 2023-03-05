@@ -16,9 +16,9 @@ gadmCHE1 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp") %>%
   mutate(test = c(1:10, 30:35, 30:35, 50:53))
 
 
-ggplot(Cantons_mapping) +
+ggplot(gadmCHE1) +
   geom_sf(aes(fill = test)) +
-  geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
+  geom_sf_text(aes(label = NAME_1), size = 3.3, color = "black") +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_blank(),
