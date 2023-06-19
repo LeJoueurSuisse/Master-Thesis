@@ -8,9 +8,8 @@ source(file = here::here("Scripts/Cleaning_and_Wrangling.R"))
 ## General Statistics exploration
 
 general_df %>%
-  head(10) %>% 
-  kable() %>% 
-  kable_styling()
+  select(c(1, 9:15)) %>%
+  kable_head()
 
 # ==============================================================================
 
@@ -35,7 +34,7 @@ general_df %>%
   filter_index("2019-01-06" ~ "2019-01-30") %>% 
   autoplot() + 
   ggtitle("Total energy produced in CH") + 
-  ylab("Ammount in million of kWh") + xlab("Date") 
+  ylab("Ammount in million of kWh") + xlab("Date")
 
 ## hourly data
 
@@ -48,6 +47,15 @@ general_df %>%
   ggtitle("Total energy consumed in CH") + 
   ylab("Ammount in million of kWh") + xlab("Date")
 
+# production
+general_df %>%
+  group_by(hourly) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>% 
+  filter_index("2019-01-06" ~ "2019-01-30") %>% 
+  autoplot() + 
+  ggtitle("Total energy produced in CH") + 
+  ylab("Ammount in million of kWh") + xlab("Date")
+
 # Global effect of the weekday on consumption
 general_df %>% 
   group_by(hour, wday) %>% 
@@ -57,15 +65,6 @@ general_df %>%
   labs(x = "Day of the week", y = "Hour of the day", fill = "Energy consumed [10m]") +
   scale_fill_distiller(palette = "Spectral") +
   theme_hc()
-
-# Production
-general_df %>%
-  group_by(hourly) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>% 
-  filter_index("2019-01-06" ~ "2019-01-30") %>% 
-  autoplot() + 
-  ggtitle("Total energy consumed by end users") + 
-  ylab("Ammount in million of kWh") + xlab("Date") #Check outliers
 
 # Global effect of the weekday on production
 general_df %>% 
@@ -113,7 +112,7 @@ general_df %>%
   filter_index("2018-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
   ggtitle("Total energy produced in Switzerland") + 
-  ylab("Ammount in million of kWh") + xlab("Date") #Check outliers 
+  ylab("Ammount in million of kWh") + xlab("Date")
 
 # Consumption by year
 general_df %>%
@@ -129,15 +128,16 @@ general_df %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   gg_season(y = Total_cons)
 
-# Global effect of the mopnth on consumption
+# Global effect of the month on consumption
 general_df %>%
-  group_by(wday, date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  group_by(wday, date) %>% 
+  summarize(Total_cons = sum(energy_cons)/1000000) %>%
   as_tsibble(index = date) %>%
   filter_index("2019-01-01" ~ "2019-12-31") %>%
   mutate(month = month(ymd(date), label = TRUE)) %>%
   ggplot(aes(month, wday, fill = Total_cons)) +
   geom_tile() +
-  labs(x = "Day of the week", y = "Month of the year", fill = "Energy consumed [1m]") +
+  labs(x = "Month of the year", y = "Day of the week", fill = "Energy consumed [1m]") +
   scale_fill_distiller(palette = "Spectral") +
   theme_hc()
 
@@ -147,7 +147,7 @@ general_df %>%
   summarise(Total_cons = sum(energy_prod)/1000000) %>%
   ggplot(aes(month, wday, fill = Total_cons)) +
   geom_tile() +
-  labs(x = "Day of the week", y = "Month of the year", fill = "Energy produced [1m]") +
+  labs(x = "Month of the yea", y = "Day of the week", fill = "Energy produced [1m]") +
   scale_fill_distiller(palette = "Spectral") +
   theme_hc() # produce less on weekend
 
@@ -211,7 +211,7 @@ general_dfM %>%
   xlab("Month") +
   scale_colour_discrete("Year") +
   ylab("Total Sales") +
-  ggtitle("Total production of energy per month")
+  ggtitle("Total consumption of energy per month")
 
 #Production
 general_dfM %>% 
@@ -229,11 +229,11 @@ general_dfM %>%
 
 # Global effect of the month on consumption
 general_df %>% 
-  group_by(date, month, year) %>% 
+  group_by(date, month, year) %>%
   summarise(Total_cons = sum(energy_cons)/1000000) %>%
   ggplot(aes(month, year, fill = Total_cons)) +
   geom_tile() +
-  labs(x = "Day of the week", y = "Month of the year", fill = "Energy consumed [1m]") +
+  labs(x = "Month of the year", y = "Year", fill = "Energy consumed [1m]") +
   scale_fill_distiller(palette = "Spectral") +
   theme_hc()
 
@@ -255,6 +255,7 @@ general_df %>%
 
 # 2018 and +
 components(STL_dcmpC) %>% autoplot()
+
 # 2019 only
 components(STL_dcmpC_1year) %>% autoplot()
 
@@ -291,8 +292,26 @@ general_df %>%
 # Consumption
 components(STL_dcmp_MC) %>% autoplot()
 
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>%
+  model(classical_decomposition(Total_cons, type =
+                                  "additive")) %>%
+  components() %>%
+  autoplot() + xlab("Year")
+
 # Production
 components(STL_dcmp_MP) %>% autoplot()
+
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>%
+  model(classical_decomposition(Total_cons, type =
+                                  "additive")) %>%
+  components() %>%
+  autoplot() + xlab("Year")
 
 # ==============================================================================
 
@@ -388,7 +407,8 @@ general_df %>%
   group_by(date) %>% summarize(Total_cons = sum(pos_second)/1000) %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() + 
+  autoplot() +
+  autolayer(components(STL_dcmp_PS), trend, color = 'red') +
   ggtitle("Positive secondary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
 
@@ -398,6 +418,7 @@ general_df %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
+  autolayer(components(STL_dcmp_NS), trend, color = 'red') +
   ggtitle("Negative secondary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
 
@@ -407,6 +428,7 @@ general_df %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
+  autolayer(components(STL_dcmp_PT), trend, color = 'red') +
   ggtitle("Positive tertiary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
 
@@ -416,6 +438,7 @@ general_df %>%
   as_tsibble() %>%
   filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
+  autolayer(components(STL_dcmp_NT), trend, color = 'red') +
   ggtitle("Negative tertiary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
 

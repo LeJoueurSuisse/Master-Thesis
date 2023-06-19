@@ -20,7 +20,7 @@ data_files <- list.files(here::here("Data/SwissGrid"))
 
 for(i in 7:length(data_files)){                            
   assign(paste0("Data_", 2008 + i), 
-         read_excel(paste0("Data/SwissGrid/", data_files[i]), 
+         read_excel(paste0("~/GitHub/Master-Thesis/Data/SwissGrid/", data_files[i]), 
                     sheet = "Zeitreihen0h15"))
 }
 
@@ -144,6 +144,43 @@ canton_long_cons <- canton_cons %>%
 canton_df_long <- canton_long_prod %>%
   mutate(consumption = canton_long_cons$consumption)
 
+# Gets the top 3 cantons for both cons and pro
+
+# Top consumer
+top3_consumer <- canton_df_long %>% 
+  group_by(Cantons) %>% 
+  summarize(Total_cons = sum(consumption)) %>%
+  arrange(desc(Total_cons)) %>%
+  slice(1:3)
+
+top3_consumer <- top3_consumer$Cantons
+
+# Top producer
+top3_producer <- canton_df_long %>% 
+  group_by(Cantons) %>% 
+  summarize(Total_prod = sum(production)) %>%
+  arrange(desc(Total_prod)) %>%
+  slice(1:3)
+
+top3_producer <- top3_producer$Cantons
+
+## Features analysis
+
+canton_features_C <- canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total_cons = sum(consumption)/1000000) %>% 
+  as_tsibble(index = month, key = Cantons) %>% 
+  features(total_cons, feat_stl)
+
+
+canton_features_P <- canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total_prod = sum(production)/1000000) %>% 
+  as_tsibble(index = month, key = Cantons) %>% 
+  features(total_prod, feat_stl)
+
 # ==============================================================================
 
 # Statistics for foreign area controlled by SwissGrid
@@ -205,6 +242,33 @@ STL_dcmp_MP <- general_dfM %>%
   filter_index(. ~ "2022-11-01") %>%
   model(STL(Total_cons))
 
+# Secondary data for consumption & production
+
+STL_dcmp_PS <- general_df %>%
+  group_by(date) %>% summarize(Total_pos = sum(pos_second)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  model(STL(Total_pos))
+
+STL_dcmp_NS <- general_df %>%
+  group_by(date) %>% summarize(Total_neg = sum(neg_second)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  model(STL(Total_neg))
+
+# Tertiary data for consumption & production
+STL_dcmp_PT <- general_df %>%
+  group_by(date) %>% summarize(Total_pos = sum(pos_tertiary)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  model(STL(Total_pos))
+
+STL_dcmp_NT <- general_df %>%
+  group_by(date) %>% summarize(Total_neg = sum(neg_tertiary)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  model(STL(Total_neg))
+
 # ==============================================================================
 
 ## Clearing the environment
@@ -216,7 +280,7 @@ Data_to_remove <- c("canton_df", "canton_long_cons", "canton_long_prod",
 
 for(i in 1:8){
       Data_to_remove <- append(Data_to_remove, paste0("Data_", 2014 + i))
-      Data_to_remove <- append(Data_to_remove, paste0("OldData_", 2008 + i))
+      # Data_to_remove <- append(Data_to_remove, paste0("OldData_", 2008 + i))
 }
 
 remove(list = c(Data_to_remove, "data_all"))
@@ -224,18 +288,23 @@ remove(list = c(Data_to_remove, "data_all"))
 # Values
 
 # List all the objects in the environment
-remove(list = ls.str(mode = "character"))
+remove(list = setdiff(ls.str(mode = "character"), c("top3_producer", "top3_consumer")))
 remove(list = ls.str(mode = "numeric"))
 
 # ==============================================================================
 
 ## Data for mapping 
 
-gadmCHE0 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_0.shp")
-gadmCHE1 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp")
-gadmCHE2 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_2.shp")
-gadmCHE3 <- st_read("Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_3.shp")
+#gadmCHE0 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_0.shp")
+#gadmCHE1 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp")
+#gadmCHE2 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_2.shp")
+#gadmCHE3 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_3.shp")
+
+#Cantons_mapping <- gadmCHE1 %>%
+#  separate(HASC_1, c('Pays', 'Canton'))
 
 
-Cantons_mapping <- gadmCHE1 %>%
-  separate(HASC_1, c('Pays', 'Canton'))
+gadmCHE1 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp") %>%
+  separate(HASC_1, c('Pays', 'Canton')) %>%
+  mutate(test = c(1:10, 30:35, 30:35, 50:53))
+
