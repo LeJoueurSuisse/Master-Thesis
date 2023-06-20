@@ -3,17 +3,17 @@ title: "Introduction"
 author: "Allan"
 date: '2023-06-14'
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+  word_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
     toc: yes
     toc_depth: 3
     number_sections: yes
     theme: paper
-  word_document:
-    toc: yes
-    toc_depth: '3'
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
 editor_options:
   markdown:
     wrap: 72
@@ -22,6 +22,10 @@ always_allow_html: yes
 
 ```{r, echo = FALSE, message = FALSE, include=FALSE}
 source(here::here("Scripts/SetUp.R"))
+```
+
+```{r, include=FALSE}
+source(file = here::here("Scripts/Cleaning_and_Wrangling.R"))
 ```
 
 # Exectutive Summary
@@ -252,11 +256,12 @@ Every DataSet had been transformed into a tsibble, a new data structure that hel
 
 Here is quick overlook of our dataset :
 
-| Dataset         | No. observations |                                                     |                 |
+| Dataset          | No. observations |                                                     | Name of the DS  |
 |--------------|--------------|-------------------------------|--------------|
-| Initial dataset | 2,173,083        | Combined '*sales*' & '*previous sales*'             | sales_all       |
-| Recent dataset  | 1,269,004        | Only sales **after 01-01-2008**                     | sales_all_2008  |
-| Final dataset   | 123,156          | Sales after 2008 & **last sale** **\> 4 years ago** | sales_all_4year |
+| Initial dataset  | 277'536          | Combined all SwissGris's files from 2015            | General_df      |
+| Monthly data     | 277'536          | Monthly version of General_DF                       | General_dfM     |
+| Cantons'Data     | 4'995'648        | Combined Data for Cantons from 2015                 | Canton_df_long  |
+| Swiss map's data | 123,156          | Contain data to map Switzerland                     | gadmCHE1        |
 
 
 A new tidy data structure to
@@ -267,13 +272,340 @@ of temporal data
 
 ## Quick Visualization
 
+The Data we have :
+
 ```{r}
 general_df %>%
   select(c(1, 9:15)) %>%
   kable_head()
 ```
 
+Daily Consumption in Million
+
+```{r}
+general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2018-01-01" ~ "2022-11-01") %>% 
+  autoplot() +
+  labs(title = "Total energy consumed in Switzerland",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "")
+```
+
+-> Strong seasonlity, no obvious trend
+-> seems to have diffent level of seasonility but hard to get due to the scope
+
+
+Dayly Production
+```{r}
+general_df %>%
+  group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2018-01-01" ~ "2022-11-01") %>% 
+  autoplot() +
+  labs(title = "Total energy produced in Switzerland",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "")
+```
+
+-> also Strong seasonlity, no obvious trend but more messy
+-> seems to have diffent level of seasonility but hard to get due to the scope
+
+
+
+Zoom in to see the monthly seasonality
+
+ Monthly
+```{r}
+# Consumption
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>% 
+  autoplot() + 
+  labs(title = "Total energy consumed by Switzerland",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "") 
+```
+Strong seasonality, no trend, peaks in Winter, lowest in sommer
+
+```{r}
+# Production
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>% 
+  autoplot() + 
+  labs(title = "Total energy produced by Switzerland",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "") 
+```
+opposite of consumption, Strong seasonality, no trend, peaks in Summer, lowest in winter
+
 ## Seasonality
+
+
+```{r}
+# Consumption
+general_dfM %>%
+  group_by(month) %>%
+  summarise(Total = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2016-01-01" ~ "2022-11-01") %>%
+  gg_subseries(Total) +
+  ylab("Total sales") + 
+  xlab("Month") +
+  labs(title = "Seasonal subseries plot: Energy consumption",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "") 
+```
+Better view that confirmed what we previous said for consumption
+
+```{r}
+# Production
+general_dfM %>%
+  group_by(month) %>%
+  summarise(Total = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2016-01-01" ~ "2022-11-01") %>%
+  gg_subseries(Total) +
+  ylab("Total sales") + 
+  xlab("Month") +
+  labs(title = "Seasonal subseries plot: Energy production",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "") 
+```
+  
+Better view that confirmed what we previous said for prodcution
+
+Zoom in to see the weekly seasonality
+
+```{r}
+# Consumption
+general_df %>%
+  group_by(hourly) %>% 
+  summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>% 
+  filter_index("2019-01-06" ~ "2019-01-30") %>% 
+  autoplot() + 
+  labs(title = "Total hourly energy consumed in Switzerland",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "")
+```
+
+We can see here both weelky and daily seasonlaty : 
+With peaks during days (morning and end of afternoon) and during week with higher volume on weekday (no significant difference among days themselves)
+
+```{r}
+# Global effect of the weekday on consumption
+general_df %>% 
+  group_by(hour, wday) %>% 
+  summarise(Total_cons = sum(energy_cons)/10000000) %>%
+  ggplot(aes(wday, hour, fill = Total_cons)) +
+  geom_tile() +
+  scale_fill_distiller(palette = "Spectral") +
+  theme_hc() +
+  labs(title = "Global effect of the weekday on consumption",
+       subtitle = "Energy consumed (in 10m of kwh)",
+       y = "", x = "", fill = "")
+```
+
+Trend is generalized through the whole period, peaks around noon
+
+
+```{r}
+# Production
+general_df %>%
+  group_by(hourly) %>% 
+  summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>% 
+  filter_index("2019-01-06" ~ "2019-01-30") %>% 
+  autoplot() +
+  labs(title = "Total houlry energy produced in Switzerland",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "")
+```
+
+same conclusion as consumption
+
+```{r}
+# Global effect of the weekday on production
+general_df %>% 
+  group_by(hour, wday) %>% 
+  summarise(Total_cons = sum(energy_prod)/10000000) %>%
+  ggplot(aes(wday, hour, fill = Total_cons)) +
+  geom_tile() +
+  scale_fill_distiller(palette = "Spectral") +
+  theme_hc() +
+  labs(title = "Global effect of the weekday on production",
+       subtitle = "Energy consumed (in 10m of kwh)",
+       y = "", x = "", fill = "")
+```
+
+Trend is generalized through the whole period, peaks around 9am and 7pm, almost 0 prod btw 0 and 5 am -> noise and poeple aint working
+
+## STL Decomp
+
+We can now build the stl decomp with additive paramater due to no change over time in the seasonlity :
+
+We reduce the scope to a year the have a better a view of the data, we have shown that seasonality was constant over the year. also show us the weekly seasonality
+
+```{r}
+# 2019 only with additive specification
+general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2019-12-31") %>%
+  model(classical_decomposition(Total_cons, type =
+                                  "additive")) %>%
+  components() %>%
+  autoplot() + 
+  labs(title = "Additive STL decomposition",
+       subtitle = "consumption = trend + season_year + random (in million of kWh)",
+       y = "", x = "")
+```
+
+
+
+```{r}
+#2019 only with additive specification
+general_df %>%
+  group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2019-12-31") %>%
+  model(classical_decomposition(Total_prod, type =
+                                  "additive")) %>%
+  components() %>%
+  autoplot() + 
+  labs(title = "Additive STL decomposition",
+       subtitle = "production = trend + season_year + random (in million of kWh)",
+       y = "", x = "")
+```
+
+Same for production
+
+
+```{r}
+# Consumption
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>%
+  model(classical_decomposition(Total_cons, 
+                                type = "additive")) %>%
+  components() %>%
+  autoplot() + 
+  labs(title = "Additive STL decomposition",
+       subtitle = "production = trend + season_year + random (in million of kWh)",
+       y = "", x = "")
+```
+
+Monthly seasonality for cons
+
+```{r}
+# Production
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>%
+  model(classical_decomposition(Total_cons, type =
+                                  "additive")) %>%
+  components() %>%
+  autoplot() + 
+  labs(title = "Additive STL decomposition",
+       subtitle = "consumption = trend + season_year + random (in million of kWh)",
+       y = "", x = "")
+```
+
+Monthly seasonality for prod
+
+
+## Residuals
+
+Let's have a look at the residuals :
+
+```{r}
+# Monthly consumption
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_cons)) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>% 
+  ACF(Total_cons) %>% 
+  autoplot() +
+  labs(title = "Consumption's residuals")
+```
+for cons
+
+```{r}
+# Monthly production
+general_dfM %>%
+  group_by(month) %>% summarize(Total_cons = sum(energy_prod)) %>%
+  as_tsibble() %>%
+  filter_index(. ~ "2022-11-01") %>% 
+  ACF(Total_cons) %>% 
+  autoplot() +
+  labs(title = "Production's residuals")
+```
+
+for prod
+
+## Second and Tertiary control
+
+Positive and Negative Secondary control with trend
+
+```{r}
+# Positive secondary
+general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(pos_second)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() +
+  autolayer(components(STL_dcmp_PS), trend, color = 'red') + 
+  labs(title = "Positive Secondary control energy",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+
+# Negative secondary
+general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(neg_second)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() + 
+  autolayer(components(STL_dcmp_NS), trend, color = 'red') +
+  labs(title = "Negative Secondary control energy",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+```
+
+
+Positive and Negative Tertiary control with trend
+
+```{r}
+# Tertiary data for consumption & production
+# Positive tertiary
+general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(pos_tertiary)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() + 
+  autolayer(components(STL_dcmp_PT), trend, color = 'red') + 
+  labs(title = "Positive tertiary control energy",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+
+# Negative tertiary
+general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(neg_tertiary)/1000) %>%
+  as_tsibble() %>%
+  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  autoplot() + 
+  autolayer(components(STL_dcmp_NT), trend, color = 'red') +
+  labs(title = "Negative tertiary control energy",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+```
+
 
 # Different level of aggregation
 ## Overall
@@ -284,8 +616,249 @@ general_df %>%
 
 ## Canton
 
+Let's do the same for Cantons :
+-> Where is the electricity consumed and where does it come from ?
+-> what drives it ? density, mapping, policy, mapp of barrage/hydrolyique central, plant and so on
+
+What data do we have :
+
+All the different cantons where set as variable (horizontal), in order to perform the anaylsis we needed to transform our Data-set in a vertical shape. 
+
+Here is what the final version look like (we only show 1 variable for the Time)
+
+```{r, out.width = "80%"}
+canton_df_long %>%
+  select(c(1, 9:11)) %>%
+  kable_head()
+```
+
+
+-> We have, for each 15-minute period, the consumption and production of each Cantons.
+As said in introduction, some Cantons have been grouped together. You can see the breakdown here:
+
+```{r}
+unique(canton_df_long$Cantons)
+```
+
+24 Cantons (do not differentiate half-canton) spread over 18 values. 
+-> For further analysis, we will split the value to get the 24 cantons. Method and results will be presented in an other section. 
+
+```{r, out.width = "100%"}
+# Best consumer
+canton_df_long %>% 
+  filter(year > 2017) %>%
+  group_by(Cantons) %>% 
+  summarize(Total_cons = sum(consumption)/1000000) %>%
+  ggplot(aes(x = Total_cons, y = Cantons, fill = Cantons)) + 
+  geom_col(color = "black") + 
+  guides(fill = FALSE) + 
+  labs(title = "Total consumption per canton since 2018",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+
+# Best producer
+canton_df_long %>% 
+  filter(year > 2017) %>%
+  group_by(Cantons) %>% 
+  summarize(Total_prod = sum(production)/1000000) %>%
+  ggplot(aes(x = Total_prod, y = Cantons, fill = Cantons)) + 
+  geom_col(color = "black") +
+  guides(fill = FALSE) + 
+  labs(title = "Total production per canton since 2018",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+```
+Many difference here :
+Higher standard deviation for production
+Consumption and Production seems independent -> not driven by the same variable
+
+Let's see the monthly seasonality and trends over time for the top 3 of each category :
+
+```{r, out.width = "100%"}
+# Monthly consumption top 3
+canton_df_long %>% 
+  filter(Cantons %in% top3_consumer) %>%
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(consumption)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  labs(title = "Monthly consumption per canton since 2018",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+
+# Monthly production top 3
+canton_df_long %>% 
+  filter(Cantons %in% top3_producer) %>%
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(production)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() +
+  labs(title = "Monthly production per canton since 2018",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+```
+
+STL decomp for top 3 prod and top 3 cons
+
+```{r, out.width = "100%"}
+# Monthly consumption
+canton_df_long %>% 
+  filter(Cantons %in% top3_consumer) %>%
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total_cons = sum(consumption)/1000000) %>% 
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  model(STL(total_cons))%>%
+  components() %>% autoplot() + 
+  guides(
+    colour = guide_legend(title = "Cantons")
+  ) +
+  scale_color_manual(labels = c("berne_jura", "geneve_vaud", "schaff_zurich"), 
+                     values = c("#F8766D", "#00BA38", "#619CFF")) +
+  labs(title = "STL decomposition",
+       subtitle = "consumption = trend + season_year + reminder (in million of kWh)",
+       y = "", x = "")
+
+
+# Monthly production
+canton_df_long %>% 
+  filter(Cantons %in% top3_producer) %>%
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total_prod = sum(production)/1000000) %>% 
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  model(STL(total_prod))%>%
+  components() %>% autoplot() + 
+  guides(
+    colour = guide_legend(title = "Cantons")
+  ) +
+  scale_color_manual(labels = c("argovie", "soleure", "valais"), 
+                     values = c("#F8766D", "#00BA38", "#619CFF")) +
+  labs(title = "STL decomposition",
+       subtitle = "production = trend + season_year + reminder (in million of kWh)",
+       y = "", x = "")
+
+```
+
+
+
+Facet wrap per Cantons with and without free scale :
+
+```{r, out.width = "100%"}
+# Monthly consumption with free scale
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(consumption)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  mutate(xlabel = "") %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons, scales = "free") +
+  guides(colour="none") +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "Monthly consumption per canton since 2018",
+       subtitle = "Ammount in million of kWh with free scale",
+       y = "", x = "")
+```
+
+```{r, out.width = "100%"}
+# Consumption
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(consumption)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons) +
+  guides(colour="none") +
+  ggtitle("Monthly consumption per canton since 2018") + 
+  ylab("Ammount in million of kWh") + xlab("Date") +
+  labs(title = "Monthly consumption per canton since 2018",
+       y = "Ammount in million of kWh", x = "") +
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+```{r, out.width = "100%"}
+# Monthly prodcution with free scale
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(production)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons, scales = "free") +
+  guides(colour="none") +
+  labs(title = "Monthly production per canton since 2018",
+       subtitle = "Ammount in million of kWh with free scale",
+       y = "", x = "") +
+  theme(axis.text.x = element_blank())
+```
+
+```{r, out.width = "100%"}
+# Production
+canton_df_long %>% 
+  mutate(month = yearmonth(date), year = year(date)) %>%
+  group_by(month, Cantons) %>%
+  summarize(total = sum(production)/1000000) %>%
+  as_tsibble(index = month, key = Cantons) %>%
+  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  autoplot() + 
+  facet_wrap(~Cantons) +
+  guides(colour="none") +
+  labs(title = "Monthly production per canton since 2018",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "") +
+  theme(axis.text.x = element_text(angle=80, hjust=1))
+```
+
+
+Features analysis to check the strength of the seasonality/trend
+
+```{r}
+## Features analysis
+canton_features_C %>%
+  ggplot(aes(x = trend_strength, y = seasonal_strength_year, col = Cantons)) +
+  geom_point(size = 2) +
+  labs(title = "Features analysis for consumption",
+       y = "seasonality", x = "trend")+
+  guides(col = guide_legend(nrow = 9))
+```
+
+test
+
+```{r}
+canton_features_P %>%
+  ggplot(aes(x = trend_strength, y = seasonal_strength_year, col = Cantons)) +
+  geom_point(size = 2) +
+  labs(title = "Features analysis for produciton",
+       y = "seasonality", x = "trend") +
+  guides(col = guide_legend(nrow = 9))
+```
+
 ## Mapping
 
+```{r, out.width = "100%"}
+ggplot(gadmCHE1) +
+  geom_sf(aes(fill = test)) +
+  geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        plot.background = element_rect(fill = "white"),
+        axis.title = element_blank())
+```
 
 # Conclusion and possible extension
 

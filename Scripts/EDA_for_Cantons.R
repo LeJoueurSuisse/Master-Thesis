@@ -145,8 +145,12 @@ canton_df_long %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   autoplot() + 
   facet_wrap(~Cantons) +
+  guides(colour="none") +
   ggtitle("Monthly consumption per canton since 2018") + 
-  ylab("Ammount in million of kWh") + xlab("Date")
+  ylab("Ammount in million of kWh") + xlab("Date") +
+  labs(title = "Monthly consumption per canton since 2018",
+       y = "Ammount in million of kWh", x = "") +
+  theme(axis.text.x = element_text(angle=50, hjust=1))
 
 # Production
 canton_df_long %>% 
@@ -157,8 +161,10 @@ canton_df_long %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   autoplot() + 
   facet_wrap(~Cantons) +
-  ggtitle("Monthly production per canton since 2018") + 
-  ylab("Ammount in million of kWh") + xlab("Date")
+  guides(colour="none") +
+  labs(title = "Monthly production per canton since 2018",
+       y = "Ammount in million of kWh", x = "") +
+  theme(axis.text.x = element_text(angle=50, hjust=1))
 
 # Monthly consumption with free scale
 canton_df_long %>% 
@@ -169,8 +175,11 @@ canton_df_long %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   autoplot() + 
   facet_wrap(~Cantons, scales = "free") +
-  ggtitle("Monthly consumption per canton since 2018 free scale") + 
-  ylab("Ammount in million of kWh") + xlab("Date")
+  guides(colour="none") +
+  labs(title = "Monthly consumption per canton since 2018",
+       subtitle = " free scale",
+       y = "Ammount in million of kWh", x = "") +
+  theme(axis.text.x = element_text(angle=50, hjust=1))
 
 # Monthly production with free scale
 canton_df_long %>% 
@@ -181,8 +190,11 @@ canton_df_long %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   autoplot() + 
   facet_wrap(~Cantons, scales = "free") +
-  ggtitle("Monthly production per canton since 2018 free scale") + 
-  ylab("Ammount in million of kWh") + xlab("Date")
+  guides(colour="none") +
+  labs(title = "Monthly production per canton since 2018",
+       subtitle = " free scale",
+       y = "Ammount in million of kWh", x = "") +
+  theme(axis.text.x = element_blank())
 
 # ==============================================================================
 
@@ -228,7 +240,14 @@ canton_df_long %>%
   as_tsibble(index = month, key = Cantons) %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   model(STL(total_prod))%>%
-  components() %>% autoplot()
+  components() %>% autoplot() + 
+  guides(
+    colour = guide_legend(title = "Cantons")
+  ) +
+  scale_color_manual(labels = c("argovie", "soleure", "valais"), 
+                     values = c("#F8766D", "#00BA38", "#619CFF"))
+
+
 
 # ==============================================================================
 

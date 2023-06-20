@@ -1,7 +1,13 @@
-#############################################
-## The following loads the needed packages ##
-#############################################
+---
+title: "test"
+author: "Allan"
+date: '2023-06-20'
+output:
+  pdf_document: default
+  html_document: default
+---
 
+```{r, echo = FALSE, message = FALSE, include=FALSE}
 # load the required packages
 packages <- c(
   "here", "knitr", # for the project's organization
@@ -16,20 +22,6 @@ purrr::walk(packages, library, character.only = TRUE) # load the packages
 
 Sys.setenv(PATH = paste(Sys.getenv("PATH"), "C:/Rtools43/usr/bin", sep=";")) # setup Rtools43
 
-######################################################
-## The following sets a few option for nice reports ##
-######################################################
-
-# general options
-options(
-  digits = 3,
-  str = strOptions(strict.width = "cut"),
-  width = 69,
-  tibble.width = 69,
-  cli.unicode = FALSE,
-  scipen = 999
-)
-
 # ggplot options
 theme_set(theme_light())
 
@@ -40,7 +32,7 @@ opts_chunk$set(
   # cache = TRUE,
   fig.retina = 0.8, # figures are either vectors or 300 dpi diagrams
   dpi = 300,
-  out.width = "80%",
+  out.width = "70%",
   fig.align = "center",
   fig.width = 6,
   fig.asp = 0.618,
@@ -63,3 +55,27 @@ kable_head <- function(a_tsibble,...){
   a_tsibble %>% 
     head(5) %>% kable_maker(...)
 }
+```
+
+
+```{r, echo = FALSE, message = FALSE, include=FALSE}
+gadmCHE1 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp") %>%
+  separate(HASC_1, c('Pays', 'Canton')) %>%
+  mutate(test = c(1:10, 30:35, 30:35, 50:53))
+```
+
+```{r, out.width = "100%"}
+ggplot(gadmCHE1) +
+  geom_sf(aes(fill = test)) +
+  geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        plot.background = element_rect(fill = "white"),
+        axis.title = element_blank())
+```
+
+

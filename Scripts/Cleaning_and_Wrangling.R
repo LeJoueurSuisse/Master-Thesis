@@ -119,8 +119,8 @@ canton_prod <- canton_df[, -45] %>%
 colnames(canton_prod) <- c(times_var, "argovie", "fribourg", "glaris", "grisons",
                             "lucerne", "neuchatel", "soleure", "saint_gall", "tessin",
                             "thurgovie", "valais", "appenzell", "bale", "berne_jura",
-                            "schwytz_zoug", "obwald_nidwald_uri", "geneve_vaud", 
-                            "schaffhouse_zurich")
+                            "schwytz_zoug", "obw_nidw_uri", "geneve_vaud", 
+                            "schaff_zurich")
 
 canton_long_prod <- canton_prod %>%
   pivot_longer(-c(canton_var[1:8]), names_to = "Cantons", values_to = "production")
@@ -133,8 +133,8 @@ canton_cons <- canton_df[, -46] %>%
 colnames(canton_cons) <- c(times_var, "argovie", "fribourg", "glaris", "grisons",
                             "lucerne", "neuchatel", "soleure", "saint_gall", "tessin",
                             "thurgovie", "valais", "appenzell", "bale", "berne_jura",
-                            "schwytz_zoug", "obwald_nidwald_uri", "geneve_vaud", 
-                            "schaffhouse_zurich")
+                            "schwytz_zoug", "obw_nidw_uri", "geneve_vaud", 
+                            "schaff_zurich")
 
 canton_long_cons <- canton_cons %>%
   pivot_longer(-c(canton_var[1:8]), names_to = "Cantons", values_to = "consumption")
