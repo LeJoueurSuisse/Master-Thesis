@@ -3,13 +3,13 @@ title: "Introduction"
 author: "Allan"
 date: '2023-06-14'
 output:
-  pdf_document:
+  bookdown::pdf_document2:
     toc: yes
     toc_depth: '3'
-  word_document:
+  bookdown::word_document2:
     toc: yes
     toc_depth: '3'
-  html_document:
+  bookdown:html_document2:
     toc: yes
     toc_depth: 3
     number_sections: yes
@@ -18,83 +18,101 @@ editor_options:
   markdown:
     wrap: 72
 always_allow_html: yes
+link-citations: yes
+linkcolor: blue
+subparagraph: yes
+citecolor: blue
+urlcolor: blue
+header-includes:
+  - \counterwithin{figure}{section}
 ---
+
 
 ```{r, echo = FALSE, message = FALSE, include=FALSE}
 source(here::here("Scripts/SetUp.R"))
-```
-
-```{r, include=FALSE}
 source(file = here::here("Scripts/Cleaning_and_Wrangling.R"))
 ```
 
 # Exectutive Summary
 
 **Approach and Purpose**
+
 Master thesis, internship oriented
 Different subject
 Actual and related to my country
 
 
 **Analysis and Data Insights**
+
 Sissgrid
-comprend ou est produite et consommée l'energie
+comprendre ou est produite et consommée l'energie
 Comment le réseau marche et ses complexité.
 Production and consumption all over the country
 Different level of aggregation
 Seasonity
 
 **Recommendation and Suggestions**
-Forecast and riks
+
+Forecast and risk
 
 # Introduction
 
 ## Electricity
-L'electricty, au coeur des débats.
 
-"Une pénurie d'énergie l'hiver prochain: tel est le scénario que nous devons éviter par tous les moyens. Une telle situation serait dévastatrice pour l'économie. Dans le dossier «Sur le front de l'énergie», economiesuisse commente l'actualité et évalue les nouveaux développements sous l'angle économique." selon [l'economiesuisse](https://www.economiesuisse.ch/fr/articles/energieticker-f)
+Electricity, its price, consumption and production are at the heart of current debates. Whether it's environmental issues linked to the climate crisis and over-consumption, the economic challenges posed by rising prices around the world, or political debates such as the blacklisting of Russia, a major producer of natural gas for Switzerland, following the war in Ukraine, electricity is a major source of concern in Europe today. Over and above these aspects relating to Europe in general, Switzerland could be facing a real electricity shortage problem, given its dependence on imports. This is the point made by *l'economiesuisse* in [this article](https://www.economiesuisse.ch/fr/articles/energieticker-f), which states that : 
+
+*"Une pénurie d'énergie l'hiver prochain: tel est le scénario que nous devons éviter par tous les moyens. Une telle situation serait dévastatrice pour l'économie. Dans le dossier «Sur le front de l'énergie», economiesuisse commente l'actualité et évalue les nouveaux développements sous l'angle économique."* 
  
-Changement des mentalités
+The situation in Switzerland is complex and unique. Situated at the center of Europe, it can easily take advantage of imports and exports with its neighbours. What is more, Switzerland is a country with a lot of nature, lakes and mountainous regions, so it can use its topology to its advantage. Despite these advantages, and despite the fact that Switzerland still produces more electricity than it consumes, it cannot do without the help of its neighbours for its electricity production, particularly given the seasonal nature of this resource and the difficulty of storing it. Indeed, while Switzerland manages to be self-sufficient during the summer period (May to October), which is characterised by high production and lower consumption, the picture is different in winter: with consumption up by around 25% compared with the summer, coupled with a drop in local production due to lower river flows in winter, Switzerland has plenty to worry about. In fact, RST rightly points this out in its [article](https://www.rts.ch/info/economie/13304056-penurie-delectricite-cet-hiver-les-enjeux-en-cinq-questions.html) on the shortage that could affect Switzerland during winter.
 
-Guerre Ukraine et dépendance à l'étranger
-La situation est complexe. De manière générale, la Suisse produit davantage d’électricité qu'elle n’en consomme. Pourtant, il est impossible de se passer des importations venues des pays voisins. Cette situation est due aux fluctuations saisonnières dans la production et la consommation d'électricité, et du fait qu'il est toujours très difficile de la stocker. [ici](https://www.rts.ch/info/suisse/13187401-simonetta-sommaruga-la-suisse-a-trop-mise-sur-limportation-delectricite.html)
+Beyond the purely economic aspect, the ecological component of electricity consumption and production is coming back more and more: fossil fuels to be banned, a desire to get out of nuclear power and the will to invest massively in green, renewable energies have invaded Switzerland. However, the will to do the right thing is not enough: we need to find the right compromise between the ecological transition and the needs of the population. Whether we like it or not, Swiss electricity needs will always take precedence over environmental issues.
 
-Climat et vert = transition écologique et sortie du nucléaire
-
-QUEL EST LE MODE DE PRODUCTION LE MOINS CHER?
-Les technologies à faibles émissions telles que l’éolien, l’hydraulique, le solaire et le nucléaire présentent généralement le meilleur rapport coût/bénéfice pour développer la production d’électricité. La question de savoir quelle technologie permet d’accroître la sécurité d’approvisionnement est extrêmement complexe et doit être examinée au cas par cas. Le monde politique devrait se concentrer sur la création de conditions-cadre favorables et sur la garantie d’un bon rapport coût-efficacité, et non sur la promotion de technologies spécifiques. Pour en savoir plus, nous vous proposons de lire ce blog.
+It's the latter that we're going to focus on in this paper: **electricity in Switzerland, where is it consumed or produced, and why? What are the main factors governing the grid?** To answer this question, we will be using data provided by Swissgrid, the company that manages all electricity transmission in Switzerland. 
 
 ## Swiss Grid
-**Production**
-L'entreprise est créée en janvier 2005 par les grandes entreprises d’interconnexion suisses. L’infrastructure doit parfaitement fonctionner, il convient de gérer en permanence les flux d’électricité et de collaborer étroitement avec les partenaires afin que le réseau de transport soit stable et sûr. Swissgrid se charge non seulement de transporter l’énergie électrique, mais également d’assurer un approvisionnement sûr en électricité grâce à ses prestations de services système.
 
-**Exploitation du réseau**
-Swissgrid ne produit pas d’électricité, mais transporte l’électricité produite par les centrales électriques vers les centres de consommation via le réseau de transport. Les exploitants de centrales aident Swissgrid à garantir la stabilité du réseau en fournissant de l’énergie de réglage. Celle-ci représente une réserve à laquelle Swissgrid recourt en cas de déséquilibre entre la production et la consommation. Si la consommation d’électricité augmente, Swissgrid leur demande d’injecter davantage d’énergie dans le réseau. Si cette dernière diminue, moins d’énergie sera injectée.
+As previously stated, our main task will be to analyze the data provided by Swissgrib in order to better understand what drives the network. Once done, we'll try to interpret these results in order to build a prediction model for the same data at different time scales. Before we can use their data, it is important to understand who Swissgrid is and what role it plays. Here are some of the main components that make up the company:
 
-**Développement du marché**
-Swissgrid n’investit pas uniquement dans l’exploitation et la modernisation du réseau de transport afin de garantir la sécurité du système, mais également dans le développement du marché. En rendant plus efficaces les appels d’offres pour l’acquisition de réserves de réglage en Suisse et à l’étranger, Swissgrid peut faire appel à plusieurs fournisseurs et réduire ainsi ses coûts d’acquisition. En outre, Swissgrid développe des solutions de produits innovantes et des nouveaux mécanismes de prix afin de permettre à certains fournisseurs, comme des centrales hydroélectriques, de mieux commercialiser leur grande flexibilité et de pouvoir utiliser de nouvelles technologies telles que des batteries.
+**Generation**
 
-**Maintenance et entretien**
-Swissgrid inspecte et entretient les pylônes, les lignes, les sous-stations ainsi que les postes de couplage et les remet en état, le cas échéant, afin de pouvoir exploiter les installations en toute sécurité. Les responsables d’installation, qui sont répartis sur sept sites, se chargent de cette tâche.
+Despite its essential role in the transmission of electricity, it is important to emphasise that Swissgrid does not produce any electricity. Its sole role is to transport electricity between power plants and consumption areas via its network. Its mission, in addition to supplying energy where it is needed, is to ensure the stability of the grid: the quantity injected into the grid must therefore be re-evaluated according to demand at all times.
 
+**Grid operation**
+
+For the grid to function properly, it is essential that production and consumption are always in balance: Swissgrid must therefore ensure at all times that the energy consumed and produced are equal so that it can be transported safely. This is where their forecasting model comes into play and will be used to prevent any congestion or overloads. This information is generally transmitted directly to the power stations, which will increase or decrease power according to the desired volume.
+
+
+**Market development**
+
+Swissgrid is not only involved in the development and modernisation of its transmission system: it also ensures the development of the market.In fact it is responsible for minimising the costs associated with procurement, by varying suppliers abroad, for example. It is also Swissgrid that will make it possible, by means of ever more innovative infrastructures, to offer Swiss power stations new possibilities for transmitting the electricity they produce more easily.
+
+**Maintenance and repairs**
+
+Among its many tasks, one of the most essential remains the maintenance and upkeep of its infrastructure: Swissgrid must ensure that its pylons, lines, substations and so on are in good working order so that electricity flows safely. Divided into seven sites, they will be responsible for any repairs required.
 
 **Infrastructure**
+
 Swissgrid est responsable de la planification, du remplacement et de l’extension de toute l’infrastructure du réseau de transport. C’est une tâche ardue, étant donné qu’il existe déjà des congestions à l’heure actuelle, que de nouvelles centrales électriques sont raccordées au réseau et que la dynamique sur les marchés de l’électricité ne cesse de croître. Il convient donc de développer le réseau de transport, ce qui n’implique pas nécessairement la construction de nouvelles lignes, mais plutôt la modernisation ciblée aussi bien que le démantèlement de certaines parties du réseau.
 
-**Interconnexion**
-La Suisse fait partie intégrante du réseau interconnecté européen. Elle est tributaire de cette interconnexion, notamment afin d’éliminer des congestions en hiver, par exemple. La collaboration internationale permet également de compenser des défaillances de centrales électriques ou la surproduction. Inversement, la Suisse, qui est un pays de transit et accumule une grande quantité d’énergie grâce à ses centrales de pompage-turbinage, joue un rôle important au sein du réseau interconnecté européen.
+**Networking**
 
-**Consommation**
-Aucun consommateur n’est directement raccordé au réseau de transport, à l’exception des Chemins de fer fédéraux. Les consommateurs jouent toutefois un rôle important en ce qui concerne la stabilité du réseau. Si un déséquilibre menace de se produire, Swissgrid demande aux entrepôts frigorifiques ou aux usines d’incinération des ordures ménagères de réduire leur consommation d’énergie, par exemple.
+As Switzerland is at the heart of Europe, it is an integral part of its interconnected network. This collaboration between countries enables Switzerland and Europe to avoid any congestion or network failures. Ideally located, Switzerland acts as a transit country, storing a large quantity of electricity that will pass through the interconnected network.
 
-**Postes de couplage**
+**Consumption**
+
+Although consumers play a central role in network stability, they are not directly connected to the network. In the event of imbalance, Swissgrid will, for example, ask cold stores or incineration plants to modify their consumption in order to restore the desired voltage level. The only exception is the Swiss Federal Railways (SBB), which are directly connected to the transmission grid.
+
+**Switching substations**
+
 Les postes de couplage placés dans les sous-stations constituent des nœuds entre les lignes. Dans certaines installations, l’énergie est transformée et transmise à différents niveaux de réseau. En outre, les centres de conduite du réseau de Swissgrid déconnectent et raccordent des lignes dans les postes de couplage au moyen de manœuvres de couplage et dirigent ainsi les flux d’électricité.
 
 **Niveaux de réseau**
+
 Afin que les consommateurs finaux puissent utiliser l’énergie produite par les centrales électriques, la tension est réduite à 400 et 230 volts par le biais de sept niveaux de réseau. Font partie de ces niveaux les niveaux très haute tension, haute tension, moyenne tension et basse tension ainsi que trois niveaux de transformation reliant ces dernières.
 
-**Réseau de transport**
-Le réseau de transport suisse comporte 6700 kilomètres de lignes, 12'000 pylônes, 125 sous-stations avec 146 postes de couplage ainsi que 41 liaisons avec l’étranger. Il se compose de lignes à 380 kilovolt et 220 kilovolt. Alors que les lignes à 380 kilovolt sont majoritairement utilisées pour l’importation et l’exportation d’électricité, les grandes centrales électriques suisses injectent principalement leur énergie sur le réseau 220 kilovolt. Des tensions de l’ordre du kilovolt sont nécessaires sur le réseau de transport afin de pouvoir transporter l’énergie sur de longues distances avec le moins de pertes possible.
+**Transmission grid**
+
+Il se compose de lignes à 380 kilovolt et 220 kilovolt. Alors que les lignes à 380 kilovolt sont majoritairement utilisées pour l’importation et l’exportation d’électricité, les grandes centrales électriques suisses injectent principalement leur énergie sur le réseau 220 kilovolt. Des tensions de l’ordre du kilovolt sont nécessaires sur le réseau de transport afin de pouvoir transporter l’énergie sur de longues distances avec le moins de pertes possible.
 
 ## The Network
 Il n'est pas visible, mais il est pourtant toujours présent: le courant. Nous l'utilisons naturellement et souvent de manière inconsciente. Le matin lorsque nous allumons la lumière, mettons la machine à café en marche ou quand nous écoutons la radio.
@@ -109,19 +127,19 @@ Afin que l’équilibre du réseau puisse être assuré à tout moment, il est i
 
 Le résaux en quelques chiffres :
 
-Tension de 380 kilovolts et 220 kilovolts
+Voltage of 380 and 220 kilovolts
 
-250 000 kilomètres (6x le tour du globe, l'ensemble du résaux électrique)
+250'000 kilometres long (6x around the world, the entire electrical network)
 
-6700 kilomètres (longueur des lignes du résaux de transport)
+6'700 kilometres long (length of transmission network lines only)
 
-12 000 pylônes
+12'000 pylons
 
-147 postes de couplage
+147 substations
 
-41 lignes frontalières
+41 cross-border lines
 
-2,5 milliards de francs suisses pour les investissements prévus
+2.5 billion Swiss francs of planned investment
 
 ## Law, limits and regulations
 
@@ -151,10 +169,8 @@ Les 6 étapes en questions :
 Préparation
 Lors de la phase préliminaire, Swissgrid élabore différents corridors de lignes câblées souterraines et de lignes aériennes pour la zone dans laquelle la ligne doit passer, et ce pour chaque projet de réseau. Swissgrid et les cantons concernés par le projet concluent un accord de coordination, qui garantit que les préoccupations des cantons sont prises en compte dès le début de la planification. Les variantes élaborées et la demande d’intégration du projet au plan sectoriel de la Confédération constituent la base pour le début de la procédure d’autorisation.
 
-
 Plan sectoriel des lignes de transport d’électricité
 Le PSE est l’instrument de planification et de coordination principal de la Confédération pour l’extension et la construction de nouvelles lignes de transport. La procédure à deux étapes distingue la zone de planification et le corridor d’une nouvelle ligne. Un groupe d’accompagnement mis en place par l’OFEN, composé de représentants de la Confédération, des cantons, des organisations de défense de l'environnement et de Swissgrid, discute des variantes proposées et émet une recommandation. La décision est conditionnée par le Modèle d’évaluation pour lignes de transport de la Confédération. Il tient compte des aspects techniques, de l’aménagement du territoire, de l’environnement et de la rentabilité. Les parties concernées peuvent prendre position dans le cadre d’une consultation publique. Le Conseil fédéral définit la zone de planification, le corridor et la technologie (ligne câblée souterraine ou aérienne) de la future ligne.
-
 
 Projet de construction
 Lors de cette phase, Swissgrid élabore un projet de construction concret dans le respect du corridor de planification défini par la Confédération. Le tracé précis de la ligne, les délais et les coûts sont définis, ou des négociations concernant les droits de passage ont lieu. Swissgrid implique une commission consultative pour tenir compte des demandes de la population et d’autres parties prenantes dans la planification du projet. A la fin de cette troisième phase, Swissgrid dépose une demande d’approbation des plans pour le projet de réseau concerné auprès des autorités compétentes.
@@ -162,15 +178,11 @@ Lors de cette phase, Swissgrid élabore un projet de construction concret dans l
 Procédure d’approbation des plans
 À la fin de l’étude de projet, Swissgrid dépose la demande de permis de construire auprès de l’Inspection fédérale des installations à courant fort (ESTI). Elle comporte le dossier d’approbation des plans et un rapport d’impact sur l’environnement. Le projet est ensuite mis à l’enquête publique. Les participants et les personnes concernées peuvent désormais faire opposition auprès de l’ESTI. Si l’ESTI ne parvient pas à régler les différends, l’Office fédéral de l’énergie poursuit les négociations. A la fin de cette phase, les autorités accordent le permis de construire à Swissgrid ou édictent des exigences supplémentaires qui doivent être prises en compte dans la planification du projet.
 
-
 Procédures juridiques
 Lorsque le permis de construire a été accordé pour le projet de réseau, cette décision peut faire l’objet d’un recours par les autorités, les associations ou les parties directement concernées. Le Tribunal administratif fédéral et le Tribunal fédéral décident alors si les décisions de l’administration fédérale sont légales et si le droit a été correctement appliqué dans le cadre de recours des parties concernées. Si les tribunaux donnent le feu vert, les travaux de construction peuvent commencer. Si le recours est accepté, le projet retourne à la phase d’approbation des plans (phase 4), ou il faut recommencer la procédure de plan sectoriel (phase 2). Ces longues procédures juridiques retardent considérablement les projets de réseau.
 
-
 Construction
 Les travaux de construction peuvent commencer lorsque le permis de construire exécutoire a été accordé, les appels d’offres ont été réalisés, les offres comparées et les lots attribués. Les dernières servitudes sont négociées et les contrats correspondants sont conclus. Le projet de réseau prend fin lors de la mise en service de la nouvelle ligne, ou après le démantèlement de lignes existantes devenues inutiles.
-
-
 
 Actuellement, il faut compter 15 ans entre le début du projet et la mise en service de la ligne en question. Cependant, des oppositions et des décisions juridiques prises à un stade tardif entraînent fréquemment un retard important des projets, qui peuvent prendre jusqu’à une trentaine d’année.
 
@@ -272,7 +284,8 @@ of temporal data
 
 ## Quick Visualization
 
-The Data we have :
+Now that we have better view of the network and where the data come from, let's dive int and see exactly what kind of data we will use.
+You can see below the first 10 rows of the general_df data containing all the general information at the country level :
 
 ```{r}
 general_df %>%
@@ -280,7 +293,16 @@ general_df %>%
   kable_head()
 ```
 
-Daily Consumption in Million
+In the following exploration data analysis, we will only take the `energy_cons` and `energy_prod` as total of consumption and production. A important component when working with times series is the missing value. Indeed, many packages used in R can not deal NA. It is also the case for the `tsible` package which we will use throughout this paper. For further information on this new tidy data structure, one can refer to this [article](https://arxiv.org/pdf/1901.10257.pdf) on the subject.
+
+After a quick check, we see that we have a total of missing value of : 
+
+```{r, echo = TRUE}
+sum(is.na(general_df))
+```
+We now know that no data is missing and that we have an observation for every 15 minutes from January 1, 2015 to the end of 2022. In the subsequent analysis, we will also transform our data into hourly (`hourly`), daily (`date`) and monthly (`month`) observations to obtain different insight. 
+
+We can now have a first look on the Daily Consumption :
 
 ```{r}
 general_df %>%
@@ -293,11 +315,10 @@ general_df %>%
        y = "", x = "")
 ```
 
--> Strong seasonlity, no obvious trend
--> seems to have diffent level of seasonility but hard to get due to the scope
+We can already see a strong yearly seasonality effect : for each year, we see peaks at the end/begging of the year (winter season) with big decrease during summer. We can also observe numerous variations over shorter periods, indicating possible seasonality on several levels. Giving the nature of the electricity, this results makes perfect sense : we can expect variation during day and night, weekday and weekend, winter and summer. We will have to work with different time period to understand each of these seasonal effects.  
 
+Let's now have a look on the Daily Production to see if we get similar results :
 
-Dayly Production
 ```{r}
 general_df %>%
   group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
@@ -309,14 +330,17 @@ general_df %>%
        y = "", x = "")
 ```
 
--> also Strong seasonlity, no obvious trend but more messy
--> seems to have diffent level of seasonility but hard to get due to the scope
+Exactly as for consummation, we can see a strong seasonality over time, also operating on different time period. One difference to note is the possible downward trend after mid-2019. They yearly seasonality seems also less constant over the year. Clearly, if we can affirm correlation between consumption and production, we already see they behave differently. We will try to understand and explain where the difference come from. 
 
+## Different levels of seasonality
 
+One of the conclusions we were able to draw based on the previous graphs was the presence of different seasonality in the data. To understand the patterns, we will "zoom in" to see what is happening on shorter time period. (starting with a long period and then gradually reducing it)
 
-Zoom in to see the monthly seasonality
+### Seasonality of the month over the year
 
- Monthly
+Our analysis starts with data grouped by month.
+Here is the graph monthly consumption :
+
 ```{r}
 # Consumption
 general_dfM %>%
@@ -328,7 +352,16 @@ general_dfM %>%
        subtitle = "Ammount in million of kWh",
        y = "", x = "") 
 ```
-Strong seasonality, no trend, peaks in Winter, lowest in sommer
+
+This clearly confirms what we have said previously :
+
+- The levels of consumption does not vary over time.
+
+- Significant difference between summer and winter, with a peak for consumption in December/January and the lowest in July/August. 
+
+- The covid had almost no impact on consumption (2020 is slightly lower than other years, but we can not see any significant difference).
+
+- 
 
 ```{r}
 # Production
@@ -342,9 +375,6 @@ general_dfM %>%
        y = "", x = "") 
 ```
 opposite of consumption, Strong seasonality, no trend, peaks in Summer, lowest in winter
-
-## Seasonality
-
 
 ```{r}
 # Consumption
@@ -377,7 +407,9 @@ general_dfM %>%
        y = "", x = "") 
 ```
   
-Better view that confirmed what we previous said for prodcution
+Better view that confirmed what we previous said for production
+
+### Seasonality of the day over the week
 
 Zoom in to see the weekly seasonality
 
@@ -397,6 +429,25 @@ general_df %>%
 We can see here both weelky and daily seasonlaty : 
 With peaks during days (morning and end of afternoon) and during week with higher volume on weekday (no significant difference among days themselves)
 
+
+```{r}
+# Production
+general_df %>%
+  group_by(hourly) %>% 
+  summarize(Total_cons = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>% 
+  filter_index("2019-01-06" ~ "2019-01-30") %>% 
+  autoplot() +
+  labs(title = "Total houlry energy produced in Switzerland",
+       subtitle = "Ammount in million of kWh",
+       y = "", x = "")
+```
+
+same conclusion as consumption
+
+
+### Seasonality of the hour over the day
+
 ```{r}
 # Global effect of the weekday on consumption
 general_df %>% 
@@ -414,20 +465,7 @@ general_df %>%
 Trend is generalized through the whole period, peaks around noon
 
 
-```{r}
-# Production
-general_df %>%
-  group_by(hourly) %>% 
-  summarize(Total_cons = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>% 
-  filter_index("2019-01-06" ~ "2019-01-30") %>% 
-  autoplot() +
-  labs(title = "Total houlry energy produced in Switzerland",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "")
-```
 
-same conclusion as consumption
 
 ```{r}
 # Global effect of the weekday on production
@@ -628,10 +666,15 @@ Here is what the final version look like (we only show 1 variable for the Time)
 
 ```{r, out.width = "80%"}
 canton_df_long %>%
-  select(c(1, 9:11)) %>%
+  select(c(1:2, 4:5, 9:11)) %>%
   kable_head()
 ```
 
+With a total of missing value of : 
+
+```{r, echo = TRUE}
+sum(is.na(canton_df_long))
+```
 
 -> We have, for each 15-minute period, the consumption and production of each Cantons.
 As said in introduction, some Cantons have been grouped together. You can see the breakdown here:
@@ -864,10 +907,12 @@ ggplot(gadmCHE1) +
 
 - Would have been nice to assess the price evolution/prediction.
 
-# References
+# References and Appendix
 
 - https://arxiv.org/pdf/1901.10257.pdf
 - https://www.swissgrid.ch/fr/home.html
 - https://gadm.org/
 - https://www.admin.ch/gov/fr/accueil/documentation/communiques.msg-id-90221.html
 - https://www.eda.admin.ch/aboutswitzerland/fr/home/wirtschaft/energie/energie---fakten-und-zahlen.html
+- https://www.rts.ch/info/economie/13304056-penurie-delectricite-cet-hiver-les-enjeux-en-cinq-questions.html
+- https://www.economiesuisse.ch/fr/articles/energieticker-f
