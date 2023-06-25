@@ -391,8 +391,6 @@ This clearly confirms what we have said previously :
 - Significant difference between summer and winter, with a peak for consumption in December/January and the lowest in July/August. 
 - The covid had almost no impact on consumption (2020 is slightly lower than other years, but we can not see any significant difference).
 
-- 
-
 ```{r}
 # Production
 general_dfM %>%
@@ -432,7 +430,7 @@ general_dfM %>%
        y = "", x = "") 
 ```
 
-The constience of the drop and peaks 
+This graph allows us to better compare the differences between the months for each year. The consistency of dips and peaks between summer and winter is clearer than ever. We can also note that the average consumption value (blue line on the graph) shows us a generally low level over a longer period than we might have thought: we can see a drop from April to September, contrary to our first analysis which suggested only the months of July and August. As for the differences between the years themselves, the variance is not very large, so we can say that overall consumption has changed little since 2016. Finally, we note a significant drop between March and June 2020, most likely linked to Covid, which we were unable to see clearly in the previous graphs.
 
 ```{r}
 # Production
@@ -449,11 +447,15 @@ general_dfM %>%
        y = "", x = "") 
 ```
   
-Better view that confirmed what we previous said for production
+The first thing we notice is the very high variance within months among each year. Indeed, we can see many big drops and peaks for several periods, especially for February 2017 and for the end of 2019 in general. Clearly, the year has a significant impact on production, indicating that it depends on more than just population density or labor.
+
+This high variance can also lead to misinterpretation of the graph: one might think that the average value of production (blue lines) does not vary significantly from one month to the next, compared with consumption. This is mainly due to the higher scale of the y-axis, caused by high volatility. The range of production (4,500 to 6,500) is even higher than that of consumption (4,600 to 6,400), also showing the strong importance of seasons. 
 
 #### Seasonality of the day over the week
 
-Zoom in to see the weekly seasonality
+Now that we have a better understanding of the monthly seasonality, let's zoom in on weekly seasonality. To do so, we will take the hourly data in a shorter time period. 
+
+You can see here the chart of the consumption per hour for the month of January 2019 (2019-01-06 ~ 2019-01-30, to be exact)
 
 ```{r}
 # Consumption
@@ -468,9 +470,15 @@ general_df %>%
        y = "", x = "")
 ```
 
-We can see here both weelky and daily seasonlaty : 
-With peaks during days (morning and end of afternoon) and during week with higher volume on weekday (no significant difference among days themselves)
+This graph shows us both weekly and daily seasonality : 
 
+We have peaks during the day (in the morning and a second peak in the late afternoon) and dips during the night, but also during the week, with higher volumes on weekdays with less than half for the weekend. There is no significant difference between the days of the week themselves. This can easily be explained but the weekly and daily agenda of most people : the peaks happens when poeple are awake and are working. 
+
+An interesting comparison is the small difference between weekend days and weeknights: the total amount consumed is almost the same, with some nights even exceeding weekend consumption. This suggests that the majority of consumption comes from companies and large institutes, and not from private individuals. Indeed, these two times of the week are marked by the absence of work.
+
+It's important to note that we only have data for a specific month over a 6-year period : so while this gives us a general idea of consumption behavior throughout days and weeks, and we can expect it to be constant over the whole period, we can not yet be sure that this pattern is generalizable to every period.
+
+As usual, let's now displays the same chart but this time for the production :
 
 ```{r}
 # Production
@@ -485,10 +493,15 @@ general_df %>%
        y = "", x = "")
 ```
 
-same conclusion as consumption
+It gives us some very important indications. First of all, the production range is higher, which means that we produce too much during the day and not enough at night. This lack of electricity at night could be a choice, given that its price is very low and that importing electricity could be cheaper than producing it during a period of low activity.
 
+In contrast to consumption, we have similar production on every night of the week (around 5 millions). Even lower than during the weekdays, the weekend is always higher than nights: the fact that production is low at weekends highlights human dependency. Indeed, if factories were 100% autonomous, we shouldn't see a drop in production at weekends. However, it remains to be seen whether this drop is due to a reduction in manpower or simply a choice on the part of the factories, since demand is much lower at weekends.
+
+Generally speaking, we can see that production for this period is in line with consumption.
 
 #### Seasonality of the hour over the day
+
+Our final zoom will focus on hourly/daily seasonality. As usual, we'll display the consumption graph first, before the production graph. Instead of a conventional graph, given the short period between observations (every hour), we have decided to use a heat map this time. This has enabled us to use all the data at our disposal, while giving us a clear model output. This will thus enable us to confirm the models studied over the whole period. 
 
 ```{r}
 # Global effect of the weekday on consumption
@@ -504,10 +517,9 @@ general_df %>%
        y = "", x = "", fill = "")
 ```
 
-Trend is generalized through the whole period, peaks around noon
+We can conclude that the trend is generalized over the whole period, with peaks around midday and a gradual decrease as the day progresses. Minimum consumption can also be generalized between nights and weekends. Electricity consumption in Switzerland is clearly in line with human activity. 
 
-
-
+Here is the second map, this time for production:
 
 ```{r}
 # Global effect of the weekday on production
@@ -523,7 +535,11 @@ general_df %>%
        y = "", x = "", fill = "")
 ```
 
-Trend is generalized through the whole period, peaks around 9am and 7pm, almost 0 prod btw 0 and 5 am -> noise and poeple aint working
+
+The production pattern differs from the previous one: unlike an increase that would occur progressively, there are clear peaks and drops during the day, with a maximum around 7 p.m. (with a value 18% higher than maximum consumption). 
+
+We can also confirm the absence of night-time production, with overall values more than 20% lower.
+
 
 ### STL Decomp and Residuals
 
