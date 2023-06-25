@@ -311,7 +311,9 @@ of temporal data
 
 # EDA
 
-## Quick Visualization
+## Overall consumption and production for the country
+
+### Quick visualisation
 
 Now that we have better view of the network and where the data come from, let's dive int and see exactly what kind of data we will use.
 You can see below the first 10 rows of the general_df data containing all the general information at the country level :
@@ -344,7 +346,7 @@ general_df %>%
        y = "", x = "")
 ```
 
-We can already see a strong yearly seasonality effect : for each year, we see peaks at the end/begging of the year (winter season) with big decrease during summer. We can also observe numerous variations over shorter periods, indicating possible seasonality on several levels. Giving the nature of the electricity, this results makes perfect sense : we can expect variation during day and night, weekday and weekend, winter and summer. We will have to work with different time period to understand each of these seasonal effects.  
+We can already see a strong yearly seasonality effect : for each year, we see peaks at the end/begging of the year (winter season) with big decrease during summer. We can also observe numerous variations over shorter periods, indicating possible seasonality on several levels. Giving the nature of the electricity, this results makes perfect sense : we can expect variation during day and night, weekday and weekend, winter and summer. We will have to work with different time period to understand each of these seasonal effects. Finally, the chart shows high volatility with several peaks each year. Considering them as outliers would not make sense since they occur very often, we will instead try to find out if we can explain a pattern of increase/decrease in consumption on the total from the data at hand.
 
 Let's now have a look on the Daily Production to see if we get similar results :
 
@@ -359,13 +361,13 @@ general_df %>%
        y = "", x = "")
 ```
 
-Exactly as for consummation, we can see a strong seasonality over time, also operating on different time period. One difference to note is the possible downward trend after mid-2019. They yearly seasonality seems also less constant over the year. Clearly, if we can affirm correlation between consumption and production, we already see they behave differently. We will try to understand and explain where the difference come from. 
+Exactly as for consummation, we can see a strong seasonality over time, also operating on different time period. One difference to note is the possible downward trend after mid-2019. They yearly seasonality pattern seems also less consistent over the years. Clearly, if we can affirm correlation between consumption and production, we already see they behave differently. We will try to understand and explain where the difference come from. Finally, we see the same high volatility with several peaks each year we had for consumption.
 
-## Different levels of seasonality
+### Different levels of seasonality
 
 One of the conclusions we were able to draw based on the previous graphs was the presence of different seasonality in the data. To understand the patterns, we will "zoom in" to see what is happening on shorter time period. (starting with a long period and then gradually reducing it)
 
-### Seasonality of the month over the year
+#### Seasonality of the month over the year
 
 Our analysis starts with data grouped by month.
 Here is the graph monthly consumption :
@@ -402,7 +404,18 @@ general_dfM %>%
        subtitle = "Ammount in million of kWh",
        y = "", x = "") 
 ```
-opposite of consumption, Strong seasonality, no trend, peaks in Summer, lowest in winter
+
+What we can extract from the chart :
+
+- We can see  more clearly the difference with consumption : we do not have the same regularity with seasonality. We can confirm peaks and drops with the season but with less regularity. 
+
+- If the general level of production is quite the same between the beginning and the end of the time perdiod, we see a higher variance among the year.
+
+- For the covid period (year 2020 in Switzerland) : we see a redudction in the seasonilty, with significantly smaller peaks and falls throughout this year, with the old pattern appearing to return right after 2020.
+
+- Finally, as mentioned in the previous section, there might be a general decrease in production after the highest point in 2019.
+
+Here is an other view of the same data, grouped by month over the years :
 
 ```{r}
 # Consumption
@@ -418,7 +431,8 @@ general_dfM %>%
        subtitle = "Ammount in million of kWh",
        y = "", x = "") 
 ```
-Better view that confirmed what we previous said for consumption
+
+The constience of the drop and peaks 
 
 ```{r}
 # Production
@@ -437,7 +451,7 @@ general_dfM %>%
   
 Better view that confirmed what we previous said for production
 
-### Seasonality of the day over the week
+#### Seasonality of the day over the week
 
 Zoom in to see the weekly seasonality
 
@@ -474,7 +488,7 @@ general_df %>%
 same conclusion as consumption
 
 
-### Seasonality of the hour over the day
+#### Seasonality of the hour over the day
 
 ```{r}
 # Global effect of the weekday on consumption
@@ -511,7 +525,7 @@ general_df %>%
 
 Trend is generalized through the whole period, peaks around 9am and 7pm, almost 0 prod btw 0 and 5 am -> noise and poeple aint working
 
-## STL Decomp
+### STL Decomp and Residuals
 
 We can now build the stl decomp with additive paramater due to no change over time in the seasonlity :
 
@@ -587,7 +601,7 @@ general_dfM %>%
 Monthly seasonality for prod
 
 
-## Residuals
+Residuals
 
 Let's have a look at the residuals :
 
@@ -616,9 +630,15 @@ general_dfM %>%
 
 for prod
 
+### Main insight from the overall Data
+
+- Results from consumption
+
+- Results from production
+
 ## Second and Tertiary control
 
-Positive and Negative Secondary control with trend
+### Positive and Negative Secondary control with trend
 
 ```{r}
 # Positive secondary
@@ -645,7 +665,7 @@ general_df %>%
 ```
 
 
-Positive and Negative Tertiary control with trend
+### Positive and Negative Tertiary control with trend
 
 ```{r}
 # Tertiary data for consumption & production
@@ -671,10 +691,6 @@ general_df %>%
        subtitle = "Ammount in million of kWh)",
        y = "", x = "")
 ```
-
-
-# Different level of aggregation
-## Overall
 
 ## Border
 
@@ -930,6 +946,8 @@ ggplot(gadmCHE1) +
         plot.background = element_rect(fill = "white"),
         axis.title = element_blank())
 ```
+
+# Forecasting 
 
 # Conclusion and possible extension
 
