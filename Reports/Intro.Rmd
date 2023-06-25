@@ -127,19 +127,19 @@ Afin que l’équilibre du réseau puisse être assuré à tout moment, il est i
 
 Le résaux en quelques chiffres :
 
-Voltage of 380 and 220 kilovolts
+- Voltage of 380 and 220 kilovolts
 
-250'000 kilometres long (6x around the world, the entire electrical network)
+- 250'000 kilometres long (6x around the world, the entire electrical network)
 
-6'700 kilometres long (length of transmission network lines only)
+- 6'700 kilometres long (length of transmission network lines only)
 
-12'000 pylons
+- 12'000 pylons
 
-147 substations
+- 147 substations
 
-41 cross-border lines
+- 41 cross-border lines
 
-2.5 billion Swiss francs of planned investment
+- 2.5 billion Swiss francs of planned investment
 
 ## Law, limits and regulations
 
@@ -191,21 +191,30 @@ La modernisation de l’infrastructure de réseau est essentielle à la réussit
 ## Overview of the network
 
 **Main source of production**
+
 L’électricité consommée en Suisse en 2021 provenait à 80% des énergies renouvelables selon [la confédération](https://www.admin.ch/gov/fr/accueil/documentation/communiques.msg-id-90221.html) (production + importation)
 
 Concernant la production uniquement : 
+
 - central hydraulique (61,5%) 682 centrales hydrauliques
+
 - centrales nucléaire (28,9%)
+
 - La part des nouvelles énergies renouvelables (énergie solaire, éolienne, biomasse et petite hydraulique, 7.7%)
+
 - agents énergétiques fossiles (1.9%)
+
 - 29.7% production vs 70.3% importation
 
 L'électricité produite en Suisse est issue à 61,5% de la force hydraulique, à 28,9% de l'énergie nucléaire, à 1,9% des énergies fossiles et à 7,7% environ de nouvelles énergies renouvelables (mix de production suisse 2021. Voir à ce propos: statistique de l'électricité sous le lien ci-après). Mais la Suisse ne consomme pas que de l'électricité d'origine indigène. Il existe un commerce actif avec l'étranger dans le cadre duquel l'électricité est importée et exportée physiquement, indépendamment du négoce des garanties d'origine entre les États. De ce fait, le mix de production suisse ne correspond pas à la composition moyenne de l'électricité livrée (mix des fournisseurs suisses).
 
 Au niveau des mesures prises en charges pour les confédération :
+
 - diminuer de 43% la consommation d'énergie par habitants d'ici 2035 par rapport à 2000
+
 - dévolopper au maximum les énergies renouvelables
- -abandon progressive du nucléaire.
+
+- abandon progressive du nucléaire.
 
 **trend and seasonality**
 
@@ -234,19 +243,33 @@ Peut être intéressant de faire pareil.
 ## Overview of the data
 
 First, we have data from Swissgrid regarding the energy network :
+
 - Date : A file per year since 2009
+
 - Time : Timestamp of 15min or 1hour (only overall for 1h)
+
 - Total cons for end user only : are not included : grid losses, energy consumed for power plant’s own requirements or to drive the pumps in pumped storage hydro power plant.
+
 - Total prod/cons for Switzerland : everything consumed/fed in the network
+
 - Secundary control : positive and negative energy within 15min
+
 - Tertiary control : positive and negative energy after the first 15min
+
 - Vertical load Swiss transmission grid : will not be used
+
 - Net outflow of the Swiss transmission grid : will not be used
+
 - Grid feed-in Swiss transmission grid : will not be used
+
 - Control energy prices : average price in CHF for the last 15min of control energy (rounded to 2 decimals) for second and tertiary control
+
 - Cross border exchange : energy exchanged with bordered country (Austria, Germany, France, Italy)
+
 - Import/export/transit : Transit is not included in the cross border exchange
+
 - Cantons : Details of prod/cons per cantons (starts after 2015) grouped in 19 cantons
+
 - Foreign territories : prod and cons for regions within the control zone of Switzerland but do not belong to its territory
 
 We have a total of 65 variables with a total of 487872 observations.
@@ -254,14 +277,20 @@ We have a total of 65 variables with a total of 487872 observations.
 Second, we got data from [gadm](https://gadm.org/) providing maps and spatial data for many countries on 4 different levels. In our project, we will use the data for Switzerland on a Canton level. 
 
 ## Data limitations
+
 As said, we only have data available for each cantons since 2015. Also, due to the density of each cantons, certain areas have been grouped together, meaning we do not have the detail for every cantons. (26 cantons grouped into 19 zones) 
 
 ## Data cleaning and pre-processing
 Due to the importance of the number of variables, we have decided to create sub-dataset for every type of Data :
+
 - Overall
+
 - Cantons
+
 - Borders
+
 - Foreign
+
 - Price
 
 Every DataSet had been transformed into a tsibble, a new data structure that help and support with temporal data. One should look at [this paper](https://arxiv.org/pdf/1901.10257.pdf) for further references. We used the timestamp of 15min to get a better understanding of the data and help us building stronger models and forecast. 
@@ -358,7 +387,6 @@ This clearly confirms what we have said previously :
 - The levels of consumption does not vary over time.
 
 - Significant difference between summer and winter, with a peak for consumption in December/January and the lowest in July/August. 
-
 - The covid had almost no impact on consumption (2020 is slightly lower than other years, but we can not see any significant difference).
 
 - 

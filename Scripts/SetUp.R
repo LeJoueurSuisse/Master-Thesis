@@ -9,7 +9,7 @@ packages <- c(
   "fpp3", "tsibbledata", # for time series
   "kableExtra", "skimr", "manipulate", "ggridges", "ggthemes", # for visualization
   "Rcpp", "sf", # for mapping
-  "broom", "forecast" ,"caret"# modeling
+  "broom", "forecast", "caret" # modeling
 )
 
 purrr::walk(packages, library, character.only = TRUE) # load the packages
