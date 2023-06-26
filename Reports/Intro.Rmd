@@ -295,6 +295,8 @@ Due to the importance of the number of variables, we have decided to create sub-
 
 Every DataSet had been transformed into a tsibble, a new data structure that help and support with temporal data. One should look at [this paper](https://arxiv.org/pdf/1901.10257.pdf) for further references. We used the timestamp of 15min to get a better understanding of the data and help us building stronger models and forecast. 
 
+All the different cantons where set as variable (horizontal), in order to perform the anaylsis we needed to transform our Data-set in a vertical shape. 
+
 Here is quick overlook of our dataset :
 
 | Dataset          | No. observations |                                                     | Name of the DS  |
@@ -503,6 +505,8 @@ Generally speaking, we can see that production for this period is in line with c
 
 Our final zoom will focus on hourly/daily seasonality. As usual, we'll display the consumption graph first, before the production graph. Instead of a conventional graph, given the short period between observations (every hour), we have decided to use a heat map this time. This has enabled us to use all the data at our disposal, while giving us a clear model output. This will thus enable us to confirm the models studied over the whole period. 
 
+You can see below the first heat map, containing the data for consumption. 
+
 ```{r}
 # Global effect of the weekday on consumption
 general_df %>% 
@@ -535,85 +539,41 @@ general_df %>%
        y = "", x = "", fill = "")
 ```
 
-
 The production pattern differs from the previous one: unlike an increase that would occur progressively, there are clear peaks and drops during the day, with a maximum around 7 p.m. (with a value 18% higher than maximum consumption). 
 
 We can also confirm the absence of night-time production, with overall values more than 20% lower.
 
+### STL Decomp
 
-### STL Decomp and Residuals
+Now that we know exactly how our data works, we can go a step further and try to find the exact origin of these pattern. To do so, we will use the “Seasonal and Trend decomposition using Loess” (STL), one of the best smoothing methods. It allows us to divide the data into trend, seasonality and residuals, and analyze them separately.
 
+Before doing it, we have to chose the right model for the decomposition (additive vs multiplicative). Since the overall level of data, seasonality included, does not change magnitudes from one year to the next, we have decided to chose the additive model.
 
-Now that we have a better understanding of our data, we can go further and try to find the exact origin of these pattern. We will first analyze the STL decomposition on total sales, and then differentiate it for each department. As said before, we want to find out which specific event can be applied to each department : they are probably not all significant and may differ from on department to another.
-You can see here the component of the STL on total sales (you can find the other in the appendix)
-We find from the yearly seasonality : 
+We also have reduce the scope to five years to get a better output. We have shown that seasonality is constant throughout the years, so we will not miss any important insight. 
 
-
-We can now build the stl decomp with additive paramater due to no change over time in the seasonlity :
-
-We reduce the scope to four years the have a better a view of the data, we have shown that seasonality was constant over the year.
+Here is what the decomposition looks like for the consumption :
 
 ```{r}
 # Consumption
-components(STL_dcmpC) %>% autoplot()
+components(STL_dcmpC) %>% autoplot() + 
+  labs(title = "Additive STL decomposition for consumption",
+       subtitle = "consumption = trend + season_year + season_week + remainder (in million of kWh)",
+       y = "", x = "")
 ```
 
 
+
+We can now move on to the decomposition of production :
 
 ```{r}
 # Production
-components(STL_dcmpP) %>% autoplot()
+components(STL_dcmpP) %>% autoplot() + 
+  labs(title = "Additive STL decomposition for production",
+       subtitle = "production = trend + season_year + season_week + remainder (in million of kWh)",
+       y = "", x = "")
 ```
 
 Same for production
-
-Residuals
-
-Let's have a look at the residuals :
-
-```{r}
-# Monthly consumption
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_cons)) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
-  ACF(Total_cons) %>% 
-  autoplot() +
-  labs(title = "Consumption's residuals")
-
-# Daily consumption
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2018-01-01" ~ "2022-11-01") %>% 
-  ACF(Total_cons) %>% 
-  autoplot() +
-  labs(title = "Consumption's residuals")
-```
-
-for cons
-
-```{r}
-# Monthly production
-general_dfM %>%
-  group_by(month) %>% summarize(Total_prod = sum(energy_prod)) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
-  ACF(Total_prod) %>% 
-  autoplot() +
-  labs(title = "Production's residuals")
-
-# Daily consumption
-general_df %>%
-  group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2018-01-01" ~ "2022-11-01") %>% 
-  ACF(Total_prod) %>% 
-  autoplot() +
-  labs(title = "Consumption's residuals")
-```
-
-for prod
 
 ### Main insight from the overall Data
 
@@ -621,7 +581,24 @@ for prod
 
 - Results from production
 
-## Second and Tertiary control
+## Secondary and Tertiary control
+
+Control energy is used to guarantee the grid stability in Switzerland or even in Europe. It is used to remedy network issue when *Actual electricity consumption may deviate from forecasts, or there may be an unforeseen power plant or consumer failure* for example. It can therefore be considered as a risk, since it is only used in the event of a problem. Il s’agit d’énergie que les centrales électriques mettent en réserve pour Swissgrid et qui peut être utilisée si nécessaire. Les centrales électriques peuvent augmenter ou diminuer leur puissance à court terme, compensant ainsi l’énergie électrique manquante ou excédentaire.
+
+
+*While secondary control reserve is automatically activated and used continuously, tertiary control reserve is activated manually in the ¼ h time resolution of schedules to support or even substitute secondary control reserve.*
+
+*A positive control area balance signifies an energy balance deficit in the control area (deficient cover). A negative control area balance represents an energy balance surplus in the control area (excess cover).*
+
+*Positive values represent an activation of positive secondary control power (increasing production or decreasing load).*
+
+Swissgrid demande aux centrales électriques de mettre cette puissance de réglage en réserve afin qu’elle soit disponible à tout moment. Swissgrid achète ces trois produits de réglage de la fréquence sur des marchés de la puissance de réglage mis en place précisément à cette fin. La puissance nécessaire fait l’objet d’appels d’offres sur des plateformes Internet. Les centrales électriques y proposent leur offre à un certain prix. Si l’une d’entre elles reçoit l’adjudication, elle est tenue de pouvoir fournir la puissance proposée sur-le-champ pendant une période donnée. Swissgrid l’indemnise pour ce service. Les centrales électriques reçoivent une autre indemnisation s’il faut effectivement utiliser de l’énergie de réglage secondaire et tertiaire.
+
+Indeed, since electricity can not be stored directly in the grid, we constantly need to add as much as we withdraw : consumption and production must always be at the equilibrium to have a stable grid. The value agreed for the entire European interconnected network is 50 Hertz. So it is Swissgrid's job to make sure it always has the right power in its grid. 
+
+via un processus en trois étapes: la première étape consiste à activer l’énergie de réglage primaire. En cas de fluctuations de fréquence, les turbines des centrales électriques dans toute l'Europe réagissent en augmentant ou diminuant leur puissance. Au bout de quelques minutes, le réglage primaire est remplacé par le réglage secondaire. Ce dernier est réalisé par les centrales électriques suisses auxquelles Swissgrid envoie un signal automatique. Au bout d’un quart d’heure, les opérateurs utilisent manuellement l’énergie de réglage tertiaire. Ils donnent à certaines centrales électriques de Suisse ou de l’étranger l’instruction d’injecter plus ou moins d’énergie dans le réseau.
+
+Les gestionnaires de réseau de transport européens procèdent en trois étapes lors de l’utilisation d’énergie de réglage: quelques secondes après un événement, comme la défaillance inattendue d’une centrale électrique, ce sont tout d'abord les réserves de réglage primaires qui sont utilisées. Les réserves de réglage secondaires leur succèdent en l'espace de quelques minutes et rétablissent la fréquence de 50 Hertz. Si le déséquilibre dure plus de quinze minutes, les centres de conduite du réseau peuvent activer manuellement les réserves de réglage tertiaires.
 
 ### Positive and Negative Secondary control with trend
 
@@ -683,15 +660,15 @@ general_df %>%
 
 ## Canton
 
-Let's do the same for Cantons :
--> Where is the electricity consumed and where does it come from ?
--> what drives it ? density, mapping, policy, mapp of barrage/hydrolyique central, plant and so on
+### Quick visualisation
 
-What data do we have :
+Now that we have seen how consumption and production behave for the country as a whole, we can move on to the cantonal level. The idea is to understand exactly where electricity production and consumption stand: are they similar for each canton, or do they depend on a number of factors? If so, are they the same for each category? Does Switzerland depend on just a few cantons for its electricity supply? 
 
-All the different cantons where set as variable (horizontal), in order to perform the anaylsis we needed to transform our Data-set in a vertical shape. 
+These are just some of the questions we'll try to answer in this section.
 
-Here is what the final version look like (we only show 1 variable for the Time)
+To do so, we will use the `Canton_df_long` dataset, which contains all the necessary information at the cantonal level.
+
+Here is what the final version looks like :
 
 ```{r, out.width = "80%"}
 canton_df_long %>%
@@ -699,53 +676,84 @@ canton_df_long %>%
   kable_head()
 ```
 
-With a total of missing value of : 
+We can see that we have now for every time, the production and consumption for each canton.
+
+A quick check of the total of missing value gives us : 
 
 ```{r, echo = TRUE}
 sum(is.na(canton_df_long))
 ```
 
--> We have, for each 15-minute period, the consumption and production of each Cantons.
-As said in introduction, some Cantons have been grouped together. You can see the breakdown here:
+As said in introduction, some cantons have been grouped together. You can see the breakdown here:
 
 ```{r}
 unique(canton_df_long$Cantons)
 ```
 
-24 Cantons (do not differentiate half-canton) spread over 18 values. 
--> For further analysis, we will split the value to get the 24 cantons. Method and results will be presented in an other section. 
+In all, we have 24 cantons (they do not differentiate between half-cantons) spread over 18 values. For further analysis, we will split the value to get the 24 cantons. Methods and results will be presented in an other section. 
+
+Regarding the time period, as we have done previously, we will only represent data since 2018 to get a better view of on graphs.
+
+Since we have so many cantons, showing them all on one chart would make it incomprehensible. So we'll try to see whether certain cantons are major contributors to consumption or production, and then focus our analysis on them. 
+
+You can find below the total consumption per area since 2015 :
 
 ```{r, out.width = "100%"}
 # Best consumer
 canton_df_long %>% 
-  filter(year > 2017) %>%
   group_by(Cantons) %>% 
   summarize(Total_cons = sum(consumption)/1000000) %>%
   ggplot(aes(x = Total_cons, y = Cantons, fill = Cantons)) + 
   geom_col(color = "black") + 
   guides(fill = FALSE) + 
-  labs(title = "Total consumption per canton since 2018",
+  labs(title = "Total consumption per canton since 2015",
        subtitle = "Ammount in million of kWh)",
        y = "", x = "")
 
 # Best producer
 canton_df_long %>% 
-  filter(year > 2017) %>%
   group_by(Cantons) %>% 
   summarize(Total_prod = sum(production)/1000000) %>%
   ggplot(aes(x = Total_prod, y = Cantons, fill = Cantons)) + 
   geom_col(color = "black") +
   guides(fill = FALSE) + 
-  labs(title = "Total production per canton since 2018",
+  labs(title = "Total production per canton since 2015",
        subtitle = "Ammount in million of kWh)",
        y = "", x = "")
 ```
 
-Many difference here :
-Higher standard deviation for production
-Consumption and Production seems independent -> not driven by the same variable
+Clearly, some cantons are responsible for most of our data. 
 
-Let's see the monthly seasonality and trends over time for the top 3 of each category :
+For the consumption, we have :
+
+- Schaffouse and Zuirch, responsible of 73460 MkWH of the total consumption ()
+
+- Berne and the Jura, accumulating a total of 63551 MkWH ()
+
+- Geneve and Vaud, with a global consumption of 61111 MkWH ()
+
+- Together, they are responsible of 41% of the total consumption
+
+While for production, we see :
+
+- Argovie, responsible of 103194 MkWH of the total prodcution ()
+
+- The Valais, accumulating a total of 82975 MkWH ()
+
+- Soleure, with a global production of 68353 MkWH ()
+
+- Together, they are responsible of 54% of the totel consumption
+
+
+In general, there is greater variance in production, with some cantons producing a great deal and others producing almost no electricity at all. 
+
+Consumption and production appear to be independent: large consumers are not necessarily large producers, so it could be said that they are not driven by the same variable.
+
+### Analyse of the top 3
+
+For the next few charts, we will focus on the top 3 in each category.
+
+Let's start by ploting the monthly time series for the top 3 consumers :
 
 ```{r, out.width = "100%"}
 # Monthly consumption top 3
@@ -760,7 +768,19 @@ canton_df_long %>%
   labs(title = "Monthly consumption per canton since 2018",
        subtitle = "Ammount in million of kWh)",
        y = "", x = "")
+```
 
+The only noticeable difference among the cantons seems to be the level. Everything else seems to be commune : the general trend is constant and we have peaks and dips at the same period of the time. If we compare it to the density we have :
+
+- x for Berne and the Jura
+
+- y for Geneve and Vaud
+
+- z for Schaffouse and Zurich
+
+The difference in levels can be explained by the total population of the regions. 
+
+```{r, out.width = "100%"}
 # Monthly production top 3
 canton_df_long %>% 
   filter(Cantons %in% top3_producer) %>%
@@ -774,6 +794,10 @@ canton_df_long %>%
        subtitle = "Ammount in million of kWh)",
        y = "", x = "")
 ```
+
+As we suggested earlier, production is not determined by total population. This is clearly confirmed by the graph above. Moreover, seasonality seems to be completely different for each canton, with staggered peaks and dips (exactly the opposite for Argovie and Valais). Finally, while Argovie and Valais show generally low production with peaks, Soleure seems to have generally high production with only dips, happening once a year. 
+
+The production pattern really does differ from canton to canton, and we will look at it in more detail later in this section. 
 
 STL decomp for top 3 prod and top 3 cons
 
@@ -819,7 +843,7 @@ canton_df_long %>%
 
 ```
 
-
+### Facet wrap by Canton
 
 Facet wrap per Cantons with and without free scale :
 
@@ -893,6 +917,7 @@ canton_df_long %>%
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
 
+### Features analysis
 
 Features analysis to check the strength of the seasonality/trend
 
