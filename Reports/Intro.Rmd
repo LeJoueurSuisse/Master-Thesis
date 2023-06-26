@@ -543,79 +543,29 @@ We can also confirm the absence of night-time production, with overall values mo
 
 ### STL Decomp and Residuals
 
+
+Now that we have a better understanding of our data, we can go further and try to find the exact origin of these pattern. We will first analyze the STL decomposition on total sales, and then differentiate it for each department. As said before, we want to find out which specific event can be applied to each department : they are probably not all significant and may differ from on department to another.
+You can see here the component of the STL on total sales (you can find the other in the appendix)
+We find from the yearly seasonality : 
+
+
 We can now build the stl decomp with additive paramater due to no change over time in the seasonlity :
 
-We reduce the scope to a year the have a better a view of the data, we have shown that seasonality was constant over the year. also show us the weekly seasonality
-
-```{r}
-# 2019 only with additive specification
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2019-12-31") %>%
-  model(classical_decomposition(Total_cons, type =
-                                  "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "consumption = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
-```
-
-
-
-```{r}
-#2019 only with additive specification
-general_df %>%
-  group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2019-12-31") %>%
-  model(classical_decomposition(Total_prod, type =
-                                  "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "production = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
-```
-
-Same for production
-
+We reduce the scope to four years the have a better a view of the data, we have shown that seasonality was constant over the year.
 
 ```{r}
 # Consumption
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>%
-  model(classical_decomposition(Total_cons, 
-                                type = "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "production = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
+components(STL_dcmpC) %>% autoplot()
 ```
 
-Monthly seasonality for cons
+
 
 ```{r}
 # Production
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>%
-  model(classical_decomposition(Total_cons, type =
-                                  "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "consumption = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
+components(STL_dcmpP) %>% autoplot()
 ```
 
-Monthly seasonality for prod
-
+Same for production
 
 Residuals
 
@@ -630,18 +580,37 @@ general_dfM %>%
   ACF(Total_cons) %>% 
   autoplot() +
   labs(title = "Consumption's residuals")
+
+# Daily consumption
+general_df %>%
+  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2018-01-01" ~ "2022-11-01") %>% 
+  ACF(Total_cons) %>% 
+  autoplot() +
+  labs(title = "Consumption's residuals")
 ```
+
 for cons
 
 ```{r}
 # Monthly production
 general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_prod)) %>%
+  group_by(month) %>% summarize(Total_prod = sum(energy_prod)) %>%
   as_tsibble() %>%
   filter_index(. ~ "2022-11-01") %>% 
-  ACF(Total_cons) %>% 
+  ACF(Total_prod) %>% 
   autoplot() +
   labs(title = "Production's residuals")
+
+# Daily consumption
+general_df %>%
+  group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2018-01-01" ~ "2022-11-01") %>% 
+  ACF(Total_prod) %>% 
+  autoplot() +
+  labs(title = "Consumption's residuals")
 ```
 
 for prod
@@ -771,6 +740,7 @@ canton_df_long %>%
        subtitle = "Ammount in million of kWh)",
        y = "", x = "")
 ```
+
 Many difference here :
 Higher standard deviation for production
 Consumption and Production seems independent -> not driven by the same variable
