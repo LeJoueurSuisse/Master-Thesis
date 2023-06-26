@@ -549,7 +549,7 @@ Now that we know exactly how our data works, we can go a step further and try to
 
 Before doing it, we have to chose the right model for the decomposition (additive vs multiplicative). Since the overall level of data, seasonality included, does not change magnitudes from one year to the next, we have decided to chose the additive model.
 
-We also have reduce the scope to five years to get a better output. We have shown that seasonality is constant throughout the years, so we will not miss any important insight. 
+We also have reduce the scope to five years (2018 to 2022) to get a better output. We have shown that seasonality is constant throughout the years, so we will not miss any important insight. 
 
 Here is what the decomposition looks like for the consumption :
 
@@ -770,7 +770,7 @@ canton_df_long %>%
        y = "", x = "")
 ```
 
-The only noticeable difference among the cantons seems to be the level. Everything else seems to be commune : the general trend is constant and we have peaks and dips at the same period of the time. If we compare it to the density we have :
+The only noticeable difference among the cantons seems to be the level. Everything else looks the same : the general trend is constant and we have peaks and dips at the same period of the time. If we compare it to the density we have :
 
 - x for Berne and the Jura
 
@@ -799,7 +799,9 @@ As we suggested earlier, production is not determined by total population. This 
 
 The production pattern really does differ from canton to canton, and we will look at it in more detail later in this section. 
 
-STL decomp for top 3 prod and top 3 cons
+To confirm these similarities/differences, we ran the STL decomposition for the 3 main electricity producers and consumers. Once again, we opted for an additive model.
+
+Top 3 consumers STL decomposition :
 
 ```{r, out.width = "100%"}
 # Monthly consumption
@@ -818,10 +820,16 @@ canton_df_long %>%
   scale_color_manual(labels = c("berne_jura", "geneve_vaud", "schaff_zurich"), 
                      values = c("#F8766D", "#00BA38", "#619CFF")) +
   labs(title = "STL decomposition",
-       subtitle = "consumption = trend + season_year + reminder (in million of kWh)",
+       subtitle = "consumption = trend + season_year + remaFinder (in million of kWh)",
        y = "", x = "")
+```
 
+The STL decomposition looks exactly as we expected :
+the trends are almost parallel between the cantons, with similar oscillation shapes for the seasonality and almost superposed remainders. Once again, the main difference lies in the level of the trend, but not its direction.
 
+For the second STL, you can see below the corresponding output :
+
+```{r, out.width = "100%"}
 # Monthly production
 canton_df_long %>% 
   filter(Cantons %in% top3_producer) %>%
@@ -838,14 +846,24 @@ canton_df_long %>%
   scale_color_manual(labels = c("argovie", "soleure", "valais"), 
                      values = c("#F8766D", "#00BA38", "#619CFF")) +
   labs(title = "STL decomposition",
-       subtitle = "production = trend + season_year + reminder (in million of kWh)",
+       subtitle = "production = trend + season_year + remainder (in million of kWh)",
        y = "", x = "")
 
 ```
 
+The STL decomposition reinforces dissimilarity between cantons :
+
+- While Soleure and Argovie have a flat trend, Valais seems to become positive at the end.
+
+- If Valais production seems to peak in summer, the other two cantons have their lows at the same time.
+
+- With the exception of a higher volatility in Argovie's remainder, we can not draw any conclusions.
+
 ### Facet wrap by Canton
 
-Facet wrap per Cantons with and without free scale :
+Let's now look at each canton separately.
+
+Facet wrap per Cantons with and without free scale.
 
 ```{r, out.width = "100%"}
 # Monthly consumption with free scale
@@ -876,8 +894,6 @@ canton_df_long %>%
   autoplot() + 
   facet_wrap(~Cantons) +
   guides(colour="none") +
-  ggtitle("Monthly consumption per canton since 2018") + 
-  ylab("Ammount in million of kWh") + xlab("Date") +
   labs(title = "Monthly consumption per canton since 2018",
        y = "Ammount in million of kWh", x = "") +
   theme(axis.text.x = element_text(angle=80, hjust=1))
@@ -916,6 +932,14 @@ canton_df_long %>%
        y = "", x = "") +
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
+
+Format de production pour Soleure et argovie provient des centrales nucléaire [ici](https://www.kernenergie.ch/fr/les-centrales-nucleaires-suisses-_content---1--1068.html)
+
+valais, grisons, berne/jura -> hydrolique 
+
+[ici](https://fr.wikipedia.org/wiki/Hydro%C3%A9lectricit%C3%A9_en_Suisse)
+[ici](https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#:~:text=Environ%2063%20%25%20de%20la%20production,quantit%C3%A9s%20consid%C3%A9rables%20d'%C3%A9nergie%20hydro%C3%A9lectrique.)
+
 
 ### Features analysis
 
@@ -973,3 +997,10 @@ ggplot(gadmCHE1) +
 - https://www.eda.admin.ch/aboutswitzerland/fr/home/wirtschaft/energie/energie---fakten-und-zahlen.html
 - https://www.rts.ch/info/economie/13304056-penurie-delectricite-cet-hiver-les-enjeux-en-cinq-questions.html
 - https://www.economiesuisse.ch/fr/articles/energieticker-f
+- https://www.kernenergie.ch/fr/les-centrales-nucleaires-suisses-_content---1--1068.html
+- https://fr.wikipedia.org/wiki/Hydro%C3%A9lectricit%C3%A9_en_Suisse
+- https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#:~:text=Environ%2063%20%25%20de%20la%20production,quantit%C3%A9s%20consid%C3%A9rables%20d'%C3%A9nergie%20hydro%C3%A9lectrique.
+
+
+
+
