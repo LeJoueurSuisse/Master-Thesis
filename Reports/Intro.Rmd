@@ -363,7 +363,7 @@ general_df %>%
        y = "", x = "")
 ```
 
-Exactly as for consummation, we can see a strong seasonality over time, also operating on different time period. One difference to note is the possible downward trend after mid-2019. They yearly seasonality pattern seems also less consistent over the years. Clearly, if we can affirm correlation between consumption and production, we already see they behave differently. We will try to understand and explain where the difference come from. Finally, we see the same high volatility with several peaks each year we had for consumption.
+Exactly as for consumption, we can see a strong seasonality over time, also operating on different time period. One difference to note is the possible downward trend after mid-2019. They yearly seasonality pattern seems also less consistent over the years. Clearly, if we can affirm correlation between consumption and production, we already see they behave differently. We will try to understand and explain where the difference come from. Finally, we see the same high volatility with several peaks each year we had for consumption.
 
 ### Different levels of seasonality
 
@@ -561,9 +561,11 @@ components(STL_dcmpC) %>% autoplot() +
        y = "", x = "")
 ```
 
+Although the second is not very visible on the chart, STL has highlighted the annual and weekly seasonality as expected.
 
+For the rest, the trend appears to be a cycle, with the shape of an oscillation. Looking at the monthly data, there were peaks in December and January. While this is true for the month as a whole, we see a sharp drop around Christmas and New Year, as well as in August. This is due to the fact that many people leave the country on vacation, causing daily consumption to drop significantly. 
 
-We can now move on to the decomposition of production :
+Moving on to the decomposition of production, we get :
 
 ```{r}
 # Production
@@ -573,13 +575,43 @@ components(STL_dcmpP) %>% autoplot() +
        y = "", x = "")
 ```
 
-Same for production
+Decomposition has proved very useful for production: whereas it was more difficult to extract patterns from previous graphs, the seasonality is obvious and regular once isolated. 
+
+Production is highest in summer, when the weather is fine and the rivers have their maximum flow, and lowest in winter, with a sharp drop-off around the end-of-year holiday periods, when the power plants are less active and their staff are on vacation. Production may also have adjusted to a lower consumption forecast for the same period. 
+
+Finally, as in the first decomposition, the weekly seasonality, although illegible on the graph, is clearly there.  
 
 ### Main insight from the overall Data
 
-- Results from consumption
+*Similarities*
 
-- Results from production
+- 3 levels of seasonality : daily, weekly and yearly.
+
+- Low impact of the Covid on both variable.
+
+- They are correlated to the weather, but for opposites reasons.
+
+- When possible, production tries to match consumption 
+
+*Results from consumption*
+
+- Very regular data between years.
+
+- Low in summer, high in Winter, with falls during high vacation periods.
+
+- High volatility during winter, caused by winters of varying severity and low one during summer.
+
+- Depends mainly on the weather: people use little electricity when it is warm and sunny, and much more when they need heating or light.
+
+*Results from production*
+
+- No clear pattern among years when we looked at the total energy produced.
+
+- High in summer, low in Winter, with higher peaks and dips.
+
+- Higher volatility among the year, since it depends more heavily on meteorological conditions, which vary from year to year. 
+
+- Depends mainly on the weather: due to the nature of the production in Switzerland (hydroelectric and solar more specifically), it can produce more electricity during periods of high heat and rainfall, with higher river levels, than in winter, when it relies mainly on nuclear power plants.
 
 ## Secondary and Tertiary control
 
@@ -625,7 +657,6 @@ general_df %>%
        subtitle = "Ammount in million of kWh)",
        y = "", x = "")
 ```
-
 
 ### Positive and Negative Tertiary control with trend
 
@@ -772,11 +803,11 @@ canton_df_long %>%
 
 The only noticeable difference among the cantons seems to be the level. Everything else looks the same : the general trend is constant and we have peaks and dips at the same period of the time. If we compare it to the density we have :
 
-- x for Berne and the Jura
+- *x for Berne and the Jura*
 
-- y for Geneve and Vaud
+- *y for Geneve and Vaud*
 
-- z for Schaffouse and Zurich
+- *z for Schaffouse and Zurich*
 
 The difference in levels can be explained by the total population of the regions. 
 
@@ -861,7 +892,13 @@ The STL decomposition reinforces dissimilarity between cantons :
 
 ### Facet wrap by Canton
 
-Let's now look at each canton separately.
+Let's now look at each canton separately. We want to see whether we can find similarities in the data for both production and consumption, and whether we can group them by macroeconomic variable.
+
+In other words: do we have specific patterns for each canton, some of them, or common to all? 
+
+To do this, we analyzed each canton side by side in two different graphs: with and without a free scale.
+
+The first will allow us to compare seasonality and the specific pattern, while the second will show us the total difference, in terms of overall consumption/production.  
 
 Facet wrap per Cantons with and without free scale.
 
@@ -898,6 +935,22 @@ canton_df_long %>%
        y = "Ammount in million of kWh", x = "") +
   theme(axis.text.x = element_text(angle=80, hjust=1))
 ```
+
+
+
+soleure [ici](https://enaw.ch/fr/protection-du-climat-et-performance-energetique-dans-le-canton-de-soleure/)
+
+glaris [ici](https://www.rts.ch/info/regions/autres-cantons/12430459-la-plus-grande-centrale-solaire-alpine-est-en-construction-a-glaris.html)
+
+glaris [ici](https://www.swissinfo.ch/fre/economie/linthal-2015_la-centrale-%C3%A9lectrique-la-plus-spectaculaire-et-la-plus-risqu%C3%A9e-de-suisse/42428090)
+
+valais [ici](https://www.watson.ch/fr/suisse/%C3%A9lectricit%C3%A9/213331089-voici-les-communes-suisses-qui-consomment-le-plus-d-electricite)
+
+valais [ski](https://www.bilan.ch/economie/les-10-chiffres-du-tourisme-hivernal)
+
+-> gros peak l'hiver lié au ski, surout poste covid.
+
+Conclusion : niveau global et légère tendance liée à la population, changement "soudain" lié à à d'autre facteur comme tourisme, activité industriel ou politique d'économie. 
 
 ```{r, out.width = "100%"}
 # Monthly prodcution with free scale
@@ -939,7 +992,6 @@ valais, grisons, berne/jura -> hydrolique
 
 [ici](https://fr.wikipedia.org/wiki/Hydro%C3%A9lectricit%C3%A9_en_Suisse)
 [ici](https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#:~:text=Environ%2063%20%25%20de%20la%20production,quantit%C3%A9s%20consid%C3%A9rables%20d'%C3%A9nergie%20hydro%C3%A9lectrique.)
-
 
 ### Features analysis
 
