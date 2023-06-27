@@ -271,16 +271,86 @@ STL_dcmp_NT <- general_df %>%
 
 # ==============================================================================
 
+## Data for mapping 
+
+#gadmCHE0 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_0.shp")
+#gadmCHE1 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp")
+#gadmCHE2 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_2.shp")
+#gadmCHE3 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_3.shp")
+
+#Cantons_mapping <- gadmCHE1 %>%
+#  separate(HASC_1, c('Pays', 'Canton'))
+
+# map of swzitzerland
+gadmCHE1 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp") %>%
+  separate(HASC_1, c('Pays', 'Canton')) %>%
+  arrange(Canton)
+
+# population and size of canton
+Swiss <- read_excel("~/GitHub/Master-Thesis/Data/Switzerland/OFSP/Swiss_data.xlsx")
+
+gadmCHE1_cons <- canton_df_long %>% 
+  group_by(Cantons) %>% 
+  summarize(Total_cons = sum(consumption)/1000000) %>%
+  mutate(Cantons = ifelse(Cantons == "appenzell", "appenzExt_appenzInt", Cantons)) %>%
+  mutate(Cantons = ifelse(Cantons == "saint_gall", "saint gall", Cantons)) %>%
+  mutate(Cantons = ifelse(Cantons == "bale", "baleCamp_baleVille", Cantons)) %>%
+  separate_rows(Cantons, sep = "_") %>%
+  arrange(Cantons) %>%
+  mutate(Short = Swiss$Short) %>%
+  arrange(Short)
+  
+
+gadmCHE1_prod <- canton_df_long %>% 
+  group_by(Cantons) %>% 
+  summarize(Total_prod = sum(production)/1000000) %>%
+  mutate(Cantons = ifelse(Cantons == "appenzell", "appenzExt_appenzInt", Cantons)) %>%
+  mutate(Cantons = ifelse(Cantons == "saint_gall", "saint gall", Cantons)) %>%
+  mutate(Cantons = ifelse(Cantons == "bale", "baleCamp_baleVille", Cantons)) %>%
+  separate_rows(Cantons, sep = "_") %>%
+  arrange(Cantons) %>%
+  mutate(Short = Swiss$Short) %>%
+  arrange(Short)
+
+Swiss <- Swiss %>%
+  arrange(Short)  
+
+Swiss_data <- gadmCHE1 %>%
+  mutate(Consumption = gadmCHE1_cons$Total_cons,
+         Production = gadmCHE1_prod$Total_prod,
+         Population = Swiss$Pop,
+         Size = Swiss$Size)
+
+# we have to ajust data for grouped area 
+# consumption will be based on population and production on the size of the canton
+
+cons_corr <- c(1, 0.23, 0.77, 0.93, 0.6, 0.4, 1, 0.38, 1, 1, 0.07, 1, 1, 0.37, 0.32, 1, 0.05, 1, 0.56, 1, 1, 0.31, 0.62, 1, 0.44, 0.95)
+
+prod_corr <- c(1, 0.42, 0.58, 0.88, 0.93, 0.07, 1, 0.08, 1, 1, 0.12, 1, 1, 0.15, 0.27, 1, 0.15, 1, 0.79, 1, 1, 0.58, 0.92, 1, 0.21, 0.85)
+
+
+Swiss_data <- Swiss_data %>%
+  mutate(correction_con = cons_corr,
+         correction_pro = prod_corr) %>%
+  mutate(final_cons = Consumption*correction_con,
+         final_prod = Production*correction_pro)
+
+# we have to ajust data for grouped area 
+# consumption will be based on population and production on the size of the canton
+
+# ==============================================================================
+
 ## Clearing the environment
 
 # Data
 
 Data_to_remove <- c("canton_df", "canton_long_cons", "canton_long_prod", 
-                    "canton_cons", "canton_prod")
+                    "canton_cons", "canton_prod", "gadmCHE1", "Swiss", 
+                    "gadmCHE1_cons", "gadmCHE1_prod")
 
 for(i in 1:8){
-      Data_to_remove <- append(Data_to_remove, paste0("Data_", 2014 + i))
-      # Data_to_remove <- append(Data_to_remove, paste0("OldData_", 2008 + i))
+  Data_to_remove <- append(Data_to_remove, paste0("Data_", 2014 + i))
+  # Data_to_remove <- append(Data_to_remove, paste0("OldData_", 2008 + i))
 }
 
 remove(list = c(Data_to_remove, "data_all"))
@@ -292,19 +362,4 @@ remove(list = setdiff(ls.str(mode = "character"), c("top3_producer", "top3_consu
 remove(list = ls.str(mode = "numeric"))
 
 # ==============================================================================
-
-## Data for mapping 
-
-#gadmCHE0 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_0.shp")
-#gadmCHE1 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp")
-#gadmCHE2 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_2.shp")
-#gadmCHE3 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_3.shp")
-
-#Cantons_mapping <- gadmCHE1 %>%
-#  separate(HASC_1, c('Pays', 'Canton'))
-
-
-gadmCHE1 <- st_read("~/GitHub/Master-Thesis/Data/Switzerland/gadm36_CHE_shp/gadm36_CHE_1.shp") %>%
-  separate(HASC_1, c('Pays', 'Canton')) %>%
-  mutate(test = c(1:10, 30:35, 30:35, 50:53))
 

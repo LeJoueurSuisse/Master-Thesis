@@ -455,7 +455,7 @@ This high variance can also lead to misinterpretation of the graph: one might th
 
 #### Seasonality of the day over the week
 
-Now that we have a better understanding of the monthly seasonality, let's zoom in on weekly seasonality. To do so, we will take the hourly data in a shorter time period. 
+Now that we have a better understanding of the monthly seasonality, let's zoom in on weekly seasonality. To do so, we will take the hourly data in a shorter time period.
 
 You can see here the chart of the consumption per hour for the month of January 2019 (2019-01-06 ~ 2019-01-30, to be exact)
 
@@ -803,11 +803,11 @@ canton_df_long %>%
 
 The only noticeable difference among the cantons seems to be the level. Everything else looks the same : the general trend is constant and we have peaks and dips at the same period of the time. If we compare it to the density we have :
 
-- *x for Berne and the Jura*
+- **x for Berne and the Jura**
 
-- *y for Geneve and Vaud*
+- **y for Geneve and Vaud**
 
-- *z for Schaffouse and Zurich*
+- **z for Schaffouse and Zurich**
 
 The difference in levels can be explained by the total population of the regions. 
 
@@ -934,19 +934,18 @@ canton_df_long %>%
   labs(title = "Monthly consumption per canton since 2018",
        y = "Ammount in million of kWh", x = "") +
   theme(axis.text.x = element_text(angle=80, hjust=1))
+
+#soleure [ici](https://enaw.ch/fr/protection-du-climat-et-performance-energetique-dans-le-canton-de-soleure/)
+
+#glaris [ici](https://www.rts.ch/info/regions/autres-cantons/12430459-la-plus-grande-centrale-solaire-alpine-est-en-construction-a-glaris.html)
+
+#glaris [ici](https://www.swissinfo.ch/fre/economie/linthal-2015_la-centrale-%C3%A9lectrique-la-plus-spectaculaire-et-la-plus-risqu%C3%A9e-de-suisse/42428090)
+
+#valais [ici](https://www.watson.ch/fr/suisse/%C3%A9lectricit%C3%A9/213331089-voici-les-communes-suisses-qui-consomment-le-plus-d-electricite)
+
+#valais [ski](https://www.bilan.ch/economie/les-10-chiffres-du-tourisme-hivernal)
 ```
 
-
-
-soleure [ici](https://enaw.ch/fr/protection-du-climat-et-performance-energetique-dans-le-canton-de-soleure/)
-
-glaris [ici](https://www.rts.ch/info/regions/autres-cantons/12430459-la-plus-grande-centrale-solaire-alpine-est-en-construction-a-glaris.html)
-
-glaris [ici](https://www.swissinfo.ch/fre/economie/linthal-2015_la-centrale-%C3%A9lectrique-la-plus-spectaculaire-et-la-plus-risqu%C3%A9e-de-suisse/42428090)
-
-valais [ici](https://www.watson.ch/fr/suisse/%C3%A9lectricit%C3%A9/213331089-voici-les-communes-suisses-qui-consomment-le-plus-d-electricite)
-
-valais [ski](https://www.bilan.ch/economie/les-10-chiffres-du-tourisme-hivernal)
 
 -> gros peak l'hiver lié au ski, surout poste covid.
 
@@ -984,14 +983,16 @@ canton_df_long %>%
        subtitle = "Ammount in million of kWh",
        y = "", x = "") +
   theme(axis.text.x = element_text(angle=80, hjust=1))
+
+#Format de production pour Soleure et argovie provient des centrales nucléaire [ici](https://www.kernenergie.ch/fr/les-centrales-nucleaires-suisses-_content---1--1068.html)
+
+#valais, grisons, berne/jura -> hydrolique 
+
+#[ici](https://fr.wikipedia.org/wiki/Hydro%C3%A9lectricit%C3%A9_en_Suisse)
+#[ici](https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#:~:text=Environ%2063%20%25%20de%20la%20production,quantit%C3%A9s%20consid%C3%A9rables%20d'%C3%A9nergie%20hydro%C3%A9lectrique.)
+
 ```
 
-Format de production pour Soleure et argovie provient des centrales nucléaire [ici](https://www.kernenergie.ch/fr/les-centrales-nucleaires-suisses-_content---1--1068.html)
-
-valais, grisons, berne/jura -> hydrolique 
-
-[ici](https://fr.wikipedia.org/wiki/Hydro%C3%A9lectricit%C3%A9_en_Suisse)
-[ici](https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#:~:text=Environ%2063%20%25%20de%20la%20production,quantit%C3%A9s%20consid%C3%A9rables%20d'%C3%A9nergie%20hydro%C3%A9lectrique.)
 
 ### Features analysis
 
@@ -1021,8 +1022,33 @@ canton_features_P %>%
 ## Mapping
 
 ```{r, out.width = "100%"}
-ggplot(gadmCHE1) +
-  geom_sf(aes(fill = test)) +
+ggplot(Swiss_data) +
+  geom_sf(aes(fill = final_cons)) +
+  geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        plot.background = element_rect(fill = "white"),
+        axis.title = element_blank())
+
+ggplot(Swiss_data) +
+  geom_sf(aes(fill = Population)) +
+  geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        plot.background = element_rect(fill = "white"),
+        axis.title = element_blank())
+
+
+ggplot(Swiss_data) +
+  geom_sf(aes(fill = final_prod)) +
   geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
