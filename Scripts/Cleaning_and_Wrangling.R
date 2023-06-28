@@ -316,24 +316,28 @@ Swiss <- Swiss %>%
   arrange(Short)  
 
 Swiss_data <- gadmCHE1 %>%
-  mutate(Consumption = gadmCHE1_cons$Total_cons,
-         Production = gadmCHE1_prod$Total_prod,
+  mutate(Total_cons = gadmCHE1_cons$Total_cons,
+         Total_prod = gadmCHE1_prod$Total_prod,
          Population = Swiss$Pop,
          Size = Swiss$Size)
 
 # we have to ajust data for grouped area 
 # consumption will be based on population and production on the size of the canton
 
-cons_corr <- c(1, 0.23, 0.77, 0.93, 0.6, 0.4, 1, 0.38, 1, 1, 0.07, 1, 1, 0.37, 0.32, 1, 0.05, 1, 0.56, 1, 1, 0.31, 0.62, 1, 0.44, 0.95)
+cons_corr <- c(1, 0.23, 0.77, 0.93, 0.6, 0.4, 1, 0.38, 1, 1, 
+               0.07, 1, 1, 0.37, 0.32, 1, 0.05, 1, 0.56, 1, 1,
+               0.31, 0.62, 1, 0.44, 0.95)
 
-prod_corr <- c(1, 0.42, 0.58, 0.88, 0.93, 0.07, 1, 0.08, 1, 1, 0.12, 1, 1, 0.15, 0.27, 1, 0.15, 1, 0.79, 1, 1, 0.58, 0.92, 1, 0.21, 0.85)
+prod_corr <- c(1, 0.42, 0.58, 0.88, 0.93, 0.07, 1, 0.08, 1, 1, 
+               0.12, 1, 1, 0.15, 0.27, 1, 0.15, 1, 0.79, 1, 1, 
+               0.58, 0.92, 1, 0.21, 0.85)
 
 
 Swiss_data <- Swiss_data %>%
   mutate(correction_con = cons_corr,
          correction_pro = prod_corr) %>%
-  mutate(final_cons = Consumption*correction_con,
-         final_prod = Production*correction_pro)
+  mutate(Consumption = Total_cons*correction_con,
+         Production = Total_prod*correction_pro)
 
 # we have to ajust data for grouped area 
 # consumption will be based on population and production on the size of the canton

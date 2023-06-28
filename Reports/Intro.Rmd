@@ -125,6 +125,25 @@ En cas de fluctuations imprévues, les opérateurs des centres de conduite du r�
 Sur le réseau interconnecté européen, l’équilibrage entre production et consommation s’effectue via un processus en trois étapes: la première étape consiste à activer l’énergie de réglage primaire. En cas de fluctuations de fréquence, les turbines des centrales électriques dans toute l'Europe réagissent en augmentant ou diminuant leur puissance. Au bout de quelques minutes (5min environ), le réglage primaire est remplacé par le réglage secondaire. Ce dernier est réalisé par les centrales électriques suisses auxquelles Swissgrid envoie un signal automatique. Au bout d’un quart d’heure, les opérateurs utilisent manuellement l’énergie de réglage tertiaire. Ils donnent à certaines centrales électriques de Suisse ou de l’étranger l’instruction d’injecter plus ou moins d’énergie dans le réseau.
 Afin que l’équilibre du réseau puisse être assuré à tout moment, il est indispensable de procéder à une planification minutieuse avec les centrales électriques et les négociants d’électricité. Swissgrid est chargée de maintenir constamment le réseau de transport suisse à l’équilibre. C’est pourquoi les centrales électriques et les négociants d’électricité sont également tenus de toujours injecter dans le réseau, c’est-à-dire produire ou acheter, la même quantité d’énergie que celle qu’ils vendent.
 
+
+**Power is an invisible but omnipresent element in our lives. We use it instinctively and often without thinking, whether it's turning on the light in the morning, starting the coffee machine or listening to the radio.**
+
+**Ensuring the efficient transformation of electricity and maintaining a constant balance between energy production and consumption are real challenges. That's where Swissgrid comes in. They ensure that the same amount of electricity is supplied at all times as is used at any given moment. Energy consumption must always be balanced by production. Swissgrid works 24 hours a day, 7 days a week to achieve this.**
+
+**Maintaining a constant balance between energy production and consumption is essential to the smooth operation of the transmission system. This balance enables the power grid to operate safely and reliably, maintaining a constant frequency of 50 Hertz.**
+
+**However, the Swiss transmission network can experience fluctuations and unforeseen loads. In such cases, operators must intervene to restore the balance by injecting more energy where needed, in order to bring the grid frequency back to its target value of 50 Hertz.**
+
+**As electricity cannot be stored on the transmission network, it is crucial that current injection and extraction are always equal. In other words, energy production and consumption must always be in balance. This balance guarantees grid security and stability, as well as the constant frequency of 50 Hertz. It should be noted that this frequency is also maintained throughout the European interconnected grid, in collaboration with the other transmission system operators.**
+
+**In Switzerland, electricity is available 24 hours a day, 365 days a year. However, this is not self-evident, especially in winter, when electricity producers face particular challenges. The need for energy increases with snowfall, icy conditions and extreme cold. Unfortunately, electricity production in Switzerland cannot fully cover these additional needs, making the country dependent on electricity imports in winter.**
+
+**When unforeseen fluctuations occur, the operators of the grid control centers use control energy. This is a reserve of energy that power plants make available to Swissgrid, and which can be used when needed. Power plants can increase or reduce their output at short notice, thus compensating for power imbalances.**
+
+**On the European interconnected grid, balancing energy production and consumption is a three-stage process. Firstly, primary control energy is activated in the event of frequency fluctuations. Turbines in power plants throughout Europe react by adjusting their output. After a few minutes, this phase is replaced by secondary control, which is managed by Swiss power plants in response to an automatic signal from Swissgrid. Finally, after a quarter of an hour, operators use tertiary control energy manually. They give instructions to certain power plants in Switzerland or abroad to inject more or less energy into the grid.**
+
+**To keep the grid in balance at all times, careful planning with power plants and electricity traders is essential. Swissgrid is responsible for keeping the Swiss transmission grid in constant balance. This is why power plants and electricity traders are obliged to inject the same amount of energy into the grid as they sell, thus ensuring this balance.**
+
 Le résaux en quelques chiffres :
 
 - Voltage of 380 and 220 kilovolts
@@ -615,22 +634,28 @@ Finally, as in the first decomposition, the weekly seasonality, although illegib
 
 ## Secondary and Tertiary control
 
-Control energy is used to guarantee the grid stability in Switzerland or even in Europe. It is used to remedy network issue when *Actual electricity consumption may deviate from forecasts, or there may be an unforeseen power plant or consumer failure* for example. It can therefore be considered as a risk, since it is only used in the event of a problem. Il s’agit d’énergie que les centrales électriques mettent en réserve pour Swissgrid et qui peut être utilisée si nécessaire. Les centrales électriques peuvent augmenter ou diminuer leur puissance à court terme, compensant ainsi l’énergie électrique manquante ou excédentaire.
+Control energy is used to guarantee the grid stability in Switzerland or even in Europe. It is used to remedy network issue when **Actual electricity consumption may deviate from forecasts, or there may be an unforeseen power plant or consumer failure** for example. It can therefore be considered as a risk, since it is only used in the event of a problem. Il s’agit d’énergie que les centrales électriques mettent en réserve pour Swissgrid et qui peut être utilisée si nécessaire. Les centrales électriques peuvent augmenter ou diminuer leur puissance à court terme, compensant ainsi l’énergie électrique manquante ou excédentaire.
 
 
-*While secondary control reserve is automatically activated and used continuously, tertiary control reserve is activated manually in the ¼ h time resolution of schedules to support or even substitute secondary control reserve.*
+**While secondary control reserve is automatically activated and used continuously, tertiary control reserve is activated manually in the ¼ h time resolution of schedules to support or even substitute secondary control reserve.**
 
-*A positive control area balance signifies an energy balance deficit in the control area (deficient cover). A negative control area balance represents an energy balance surplus in the control area (excess cover).*
+**A positive control area balance signifies an energy balance deficit in the control area (deficient cover). A negative control area balance represents an energy balance surplus in the control area (excess cover).**
 
-*Positive values represent an activation of positive secondary control power (increasing production or decreasing load).*
+**Positive values represent an activation of positive secondary control power (increasing production or decreasing load).**
 
 Swissgrid demande aux centrales électriques de mettre cette puissance de réglage en réserve afin qu’elle soit disponible à tout moment. Swissgrid achète ces trois produits de réglage de la fréquence sur des marchés de la puissance de réglage mis en place précisément à cette fin. La puissance nécessaire fait l’objet d’appels d’offres sur des plateformes Internet. Les centrales électriques y proposent leur offre à un certain prix. Si l’une d’entre elles reçoit l’adjudication, elle est tenue de pouvoir fournir la puissance proposée sur-le-champ pendant une période donnée. Swissgrid l’indemnise pour ce service. Les centrales électriques reçoivent une autre indemnisation s’il faut effectivement utiliser de l’énergie de réglage secondaire et tertiaire.
 
+**Swissgrid requires power plants to reserve a certain amount of control power capacity so that it is available at all times. Swissgrid purchases this control power capacity on specific markets created for this purpose. The amount of power required is put out to tender on online platforms, where power plants bid at a specified price. If a power plant wins the tender, it is obliged to supply the requested control power immediately and for a specified period. Swissgrid pays the power plant for this service. Power plants also receive additional compensation if secondary and tertiary control power is actually used.**
+
 Indeed, since electricity can not be stored directly in the grid, we constantly need to add as much as we withdraw : consumption and production must always be at the equilibrium to have a stable grid. The value agreed for the entire European interconnected network is 50 Hertz. So it is Swissgrid's job to make sure it always has the right power in its grid. 
 
-via un processus en trois étapes: la première étape consiste à activer l’énergie de réglage primaire. En cas de fluctuations de fréquence, les turbines des centrales électriques dans toute l'Europe réagissent en augmentant ou diminuant leur puissance. Au bout de quelques minutes, le réglage primaire est remplacé par le réglage secondaire. Ce dernier est réalisé par les centrales électriques suisses auxquelles Swissgrid envoie un signal automatique. Au bout d’un quart d’heure, les opérateurs utilisent manuellement l’énergie de réglage tertiaire. Ils donnent à certaines centrales électriques de Suisse ou de l’étranger l’instruction d’injecter plus ou moins d’énergie dans le réseau.
+Elle le fait via un processus en trois étapes: la première étape consiste à activer l’énergie de réglage primaire. En cas de fluctuations de fréquence, les turbines des centrales électriques dans toute l'Europe réagissent en augmentant ou diminuant leur puissance. Au bout de quelques minutes, le réglage primaire est remplacé par le réglage secondaire. Ce dernier est réalisé par les centrales électriques suisses auxquelles Swissgrid envoie un signal automatique. Au bout d’un quart d’heure, les opérateurs utilisent manuellement l’énergie de réglage tertiaire. Ils donnent à certaines centrales électriques de Suisse ou de l’étranger l’instruction d’injecter plus ou moins d’énergie dans le réseau.
 
 Les gestionnaires de réseau de transport européens procèdent en trois étapes lors de l’utilisation d’énergie de réglage: quelques secondes après un événement, comme la défaillance inattendue d’une centrale électrique, ce sont tout d'abord les réserves de réglage primaires qui sont utilisées. Les réserves de réglage secondaires leur succèdent en l'espace de quelques minutes et rétablissent la fréquence de 50 Hertz. Si le déséquilibre dure plus de quinze minutes, les centres de conduite du réseau peuvent activer manuellement les réserves de réglage tertiaires.
+
+**This frequency control process takes place in three stages. Firstly, when there are frequency fluctuations, the turbines in power plants throughout Europe react by increasing or decreasing their output, which corresponds to primary control. After a few minutes, primary control is replaced by secondary control, which is performed by Swiss power plants in response to an automatic signal from Swissgrid. After a quarter of an hour, grid operators manually use tertiary control energy, instructing certain power plants in Switzerland or abroad to inject more or less energy into the grid.**
+
+**European transmission system operators also follow a three-step process when using control energy. A few seconds after an event such as an unexpected power plant failure, primary control reserves are used first. Secondary control reserves kick in a few minutes later, restoring the frequency to 50 Hertz. If the imbalance persists for more than fifteen minutes, network operators can manually activate tertiary control reserves.**
 
 ### Positive and Negative Secondary control with trend
 
@@ -801,15 +826,15 @@ canton_df_long %>%
        y = "", x = "")
 ```
 
-The only noticeable difference among the cantons seems to be the level. Everything else looks the same : the general trend is constant and we have peaks and dips at the same period of the time. If we compare it to the density we have :
+The only noticeable difference among the cantons seems to be the level. Everything else looks the same : the general trend is flat and we have peaks and dips at the same period of the time. If we relate it to the total population of the canton,  we obtain (data available for 2021) :
 
-- **x for Berne and the Jura**
+- 1'121'271 for Berne and the Jura
 
-- **y for Geneve and Vaud**
+- 1'332'416 for Geneve and Vaud
 
-- **z for Schaffouse and Zurich**
+- 1'648'657 for Schaffouse and Zurich
 
-The difference in levels can be explained by the total population of the regions. 
+The difference in levels can be explained by the total population of the regions.
 
 ```{r, out.width = "100%"}
 # Monthly production top 3
@@ -943,13 +968,29 @@ canton_df_long %>%
 
 #valais [ici](https://www.watson.ch/fr/suisse/%C3%A9lectricit%C3%A9/213331089-voici-les-communes-suisses-qui-consomment-le-plus-d-electricite)
 
-#valais [ski](https://www.bilan.ch/economie/les-10-chiffres-du-tourisme-hivernal)
+#valais [ski](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://vanat.ch/RM-CH-palmares-JS2022-R-F-Laurent%20Vanat.pdf)
 ```
 
+The first graph show the regular seasonality between cantons. Switzerland aims to reduce its electricity consumption, in line with its environmental policy. We can see that several cantons have already adopted this trend, and seem to have lower consumption at the end of the period than at the beginning.  
 
--> gros peak l'hiver lié au ski, surout poste covid.
+However, 3 cantons seem to behave in a very specific way, and need to be examined in greater detail: Glaris, Soleure and the Valais.
 
-Conclusion : niveau global et légère tendance liée à la population, changement "soudain" lié à à d'autre facteur comme tourisme, activité industriel ou politique d'économie. 
+Upon further investigation, our research revealed that :
+
+- Glaris : Clearly, with consumption doubling since 2018, it cannot be explained by demographic expansion alone. Operational since 2021, Glarus has begun construction of the largest power plant in the Alps.  
+
+Located at an altitude of 2,500 metres on the Muttsee dam, it will be able to generate up to 2.2 megawatts of power.
+
+The construction and use of the power plant, in addition to generating significant consumption, also enables the canton to be more independent and to expand some of its activities. The production graphs should also show a significant increase in output.
+
+- Soleure : The sharp and rapid fall in consumption in the canton seems unnatural and impossible to explain. It may be a direct error in the data, and therefore not representative of reality. 
+
+However, one possible explanation may lie in the company's desire to improve its energy efficiency in the interests of climate protection. Many companies have already achieved this, and according to *L'agence de l'énergie*, *"Leurs résultats sont remarquables."*
+
+- The Valais : The Valais owns some of Switzerland's largest and most popular ski resorts. Swiss ski resorts have also seen an increase in visitor numbers following the Covid, which has restricted Switzerland much less than the rest of Europe.  
+
+Rather than an upward trend, we can see higher consumption peaks in the post-2020 winters. Increased ski tourism and a renewed enthusiasm for the "Magic Pass", a pass that gives free access to numerous resorts throughout Switzerland, have boosted activity in the Valais during the winter season. With 34% of total volume, the Valais was the canton with the highest ski activity in 2021.
+
 
 ```{r, out.width = "100%"}
 # Monthly prodcution with free scale
