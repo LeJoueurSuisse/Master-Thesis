@@ -3,10 +3,10 @@ title: "Introduction"
 author: "Allan"
 date: '2023-06-14'
 output:
-  bookdown::word_document2:
+  bookdown::pdf_document2:
     toc: yes
     toc_depth: '3'
-  bookdown::pdf_document2:
+  bookdown::word_document2:
     toc: yes
     toc_depth: '3'
   bookdown:html_document2:
@@ -209,16 +209,11 @@ All these procedures enormously slow down the expansion of the network, which ge
 
 As a result of these slowdowns, Swissgrid is unable to keep pace with the development of green energies and frequently has to ask power stations to reduce their output. It is therefore imperative that Swissgrid is able to accelerate the expansion of its grid.
 
-## My questions
+## Our goals
 
-Les risques, se qui régulent le marché, qui sont les principaux consomateurs et producteurs. 
-**L’exploitation du réseau de transport est planifiée à long terme. Plus d’un an à l’avance, les opérateurs établissent déjà un premier pronostic sur la situation de réseau attendue dans le centre de conduite du réseau d’Aarau à l’aide d’un modèle de réseau. La planification tient compte des révisions et des réparations des centrales électriques ou des lignes, par exemple. Ainsi, les mises hors service d’éléments du réseau ont des répercussions sur les capacités de transport.**
-Faire un modèle de prévision. 
+The main aim of this work is to understand what regulates the Swiss electricity market and how it behaves. Topics covered will include: electricity consumption and production, its distribution within the country and its trade with neighboring countries. We will also take a brief look at the risk to grid stability regulated by control energy.
 
-**La planification de l’exploitation du réseau est affinée en continu: la situation de réseau attendue est régulièrement recalculée, à savoir un an, un mois, une semaine, deux jours et un jour avant l’exploitation en temps réel.**
-
-Peut être intéressant de faire pareil. 
-
+In addition, Swissgrid needs to make its forecasts well in advance, so as to be well prepared for any eventuality. The first forecasts are made at one year, then at one month and one week before being recalculated one last time at 2 and 1 day before operation. You will also find a section where we will try to make predictions about consumption and production using several models, and then assess their accuracy.
 
 # Preliminary Data Anylsis
 ## Overview of the data
@@ -682,8 +677,6 @@ This increase, combined with the previous graphs, indicates that the duration of
 
 Although it would be very interesting to find out the exact causes of this sudden increase and develop more about control energies, we will not do it in this paper, which focuses more on general network trends and behavior. 
 
-## Border
-
 ## Canton
 
 ### Quick visualisation
@@ -864,7 +857,7 @@ canton_df_long %>%
   summarize(total_prod = sum(production)/1000000) %>% 
   as_tsibble(index = month, key = Cantons) %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  model(STL(total_prod))%>%
+  model(STL(total_prod)) %>%
   components() %>% autoplot() + 
   guides(
     colour = guide_legend(title = "Cantons")
@@ -1000,23 +993,99 @@ canton_df_long %>%
 
 ```
 
-- much higher variance among cantons, with few producing (5 cantons) almost all the electricity.
+- much higher variance among cantons, with few (5 cantons) producing almost all the electricity.
 
 - 2 types of seasonality : argovie and soleure with high values and yearls dips, Berne, grisons and Valais with classic seasonality, prdocing more during summer than winter.
 
 - First group : use nuclera power plants
-how it work ->
+how it works ->
 
 - Second group : alpine cantons, use mainly hydrolique power.
--> how it work
+-> how it works
 
+## Border
 
+Now that we have seen everything that is going on internally in Switzerland, let's take a quick look at its borders trade.
 
-## Maps
+Given its central geographical position in Europe, Switzerland plays an important role in the European electricity network. As already stated, Switzerland is not self-sufficient and depends on its neighbours for its electricity consumption, especially during the winter season, where it can not produce enough electricity on its own. However, having insufficient production does not mean, that Switzerland does not export electricity: we have shown that it also often finds itself in excess and must therefore find a way of freeing itself from this surplus. One simple and effective way of doing this is to redistribute it to neighbouring countries.
 
+Having already analysed the seasonality of electricity consumption and production at length, we will now focus solely on global levels to see where electricity is exchanged. 
+
+To do this, we have followed the same transformation procedure as we did for the cantons, which aimed to transform our variables into observations (horizontal to vertical shape), and then dividing our data into two groups: 
+
+- the `imp_exp_long` df containing  all data aggregated for Switzerland concerning imports, exports and transit.
+
+- the `border_long` df, with imports and exports broken down by the corresponding country (Italy, Austria, Germany and France).
+
+We will start our analysis with the aggregated data before delving into each country separately.
 
 
 ```{r, out.width = "100%"}
+imp_exp_long %>%
+  group_by(year, Type) %>%
+  summarize(total = sum(Amount)/1000000) %>%
+  as_tsibble(index = year, key = Type) %>%
+  ggplot(aes(x = as.factor(year), y = total, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(vars(Type), ncol = 3) +
+  labs(title = "Total of yearly exchange with border countries since 2015",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "") +
+  theme(axis.text.x = element_text(angle=80, hjust=1),
+        legend.position = "none")
+```
+
+Transit represents electricity that passes through Switzerland but is never consumed there. It could, for example, represent an exchange between Germany and Italy which, for geographical reasons, is obliged to pass through Switzerland. This graph shows that transit energy accounts for a significant proportion of the network, i.e. around 30% of the data shown above. This graph shows that transit energy accounts for a significant proportion of the network, i.e. around 30% of the data shown above. Contrary to what one might think, this quantity is not negligible and represents a real activity for Swissgrid. The data for Swiss imports and exports are similar, with overall levels close together and a slightly downward trend. As Switzerland's objective is to reduce its emissions in the med-term horizon, the data clearly shows that it is heading in the right direction. 
+
+To sum up, Switzerland depends on both imports and exports of electricity to meet its energy needs. Imports are used to compensate for production shortfalls, while exports are made when production exceeds domestic demand.
+
+We will now look at the distribution of these exchanges with the various Swiss countries. Please note that transit will not be taken into account.
+
+Here are the data available since 2015:  
+
+```{r, out.width = "100%"}
+border_long %>%
+  group_by(year, Type) %>%
+  summarize(total = sum(Amount)/1000000) %>%
+  as_tsibble(index = year, key = Type) %>%
+  ggplot(aes(x = as.factor(year), y = total, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~Type, ncol = 3) +
+  guides(colour= "none") +
+  labs(title = "Yearly exchange with border per countries since 2015",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "") +
+  theme(axis.text.x = element_text(angle=80, hjust=1),
+        legend.position = "none")
+```
+We can see straight away that trade differs greatly from one country to another:
+
+- Most of our electricity comes from Germany and very little, if any, from Italy.
+
+- Electricity is mainly exported to Italy, with very low volumes to the other three countries, especially for Austria. 
+
+- For Italy and Germany in particular, trade is strongly negatively correlated. 
+
+- The general trend appears to be neither downward nor upward.
+
+## Maps
+
+To complete our chapter on visualization, we imported Swiss topographic data from the gamdech website. By integrating consumption and production data supplied by Swissgrid, we'll be able to show geographically how electricity is used. 
+As previously stated, the Swissgrid data is not broken down into cantons and regions (18 zones instead of 26 cantons).  In order to merge the data, we'll need to separate the data for each region into its corresponding canton. 
+
+Thanks to the analysis carried out in points 4.1 (overall) and 4.3 (canton), we have decided to split the data as follows:
+
+- for consumption, it will be divided proportionally between the cantons of the same region according to their resident population (2021 data.
+
+- production data will be distributed according to the surface area of the canton. 
+
+These data come respectively from "l'Office fédéral de la statsiqtique" and "L'aménagement linguistique dans le monde."
+
+The idea of these maps is to visually show the geographical distribution of consumption and production to see if we can correlate it with population density and the topography of the cantons. 
+
+Here are the first maps, showing the distribution of population and electricity consumption: 
+
+```{r, out.width = "80%"}
 ggplot(Swiss_data) +
   geom_sf(aes(fill = Consumption)) +
   geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
@@ -1040,8 +1109,15 @@ ggplot(Swiss_data) +
         panel.background = element_rect(fill = "white"),
         plot.background = element_rect(fill = "white"),
         axis.title = element_blank())
+```
 
+The two maps could hardly be more similar: the correlation seems almost perfect.  With the exception of Berne, where the difference remains very small, we can see that population is an excellent indicator of a canton's total electricity consumption. 
 
+While population seems to be the right indicator for consumption, we have shown that it is unreliable for production. Indeed, given the way electricity is produced in Switzerland, we prefer to compare it with the country's topography. Switzerland is divided into 3 regions: the Alps, the Plateau and the Jura. We should therefore see higher production in the mountainous areas, with a level close to 0 in the flat regions of the country. 
+
+You can find below the map of swiss's production :
+
+```{r, out.width = "80%"}
 ggplot(Swiss_data) +
   geom_sf(aes(fill = Production)) +
   geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
@@ -1055,11 +1131,19 @@ ggplot(Swiss_data) +
         axis.title = element_blank())
 ```
 
+We said that we should expect high production from the jurassic part and the Apls, with lower value for the Swiss plateau.
+
+Let's anaylse them separalty : 
+
+- The Alps look exactly as we expected, with Valais, Grisons and Tessin (although slightly below the other two) having higher value compared to the rest of the country.
+
+- With the exception of Berne, the plateau produces very little electricity. This difference is due to the way in which the data has been separated: geographically distributed, too much production has been attributed to Berne compared with the Jura, where the production centers are actually located. The same conclusion can be drawn for Vaud, where part of the data has been attributed to Geneva, which produces almost no electricity. 
+
+- Finally, we can see that 2 regions produce a great ammount of electricity in an area with few mountains: Soleure and Argovie. This time, it is not due to a distribution error, but to the fact that these two cantons have a high level of nuclear activity, which is independent of their topography. 
+
 # Forecasting 
 
 # Conclusion and possible extension
-
-- Would have been nice to assess the price evolution/prediction.
 
 # References and Appendix
 

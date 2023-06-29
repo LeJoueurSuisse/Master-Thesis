@@ -189,7 +189,26 @@ foreign_df <- data_all %>% select(all_of(foreign_var))
 
 # Exchange with borders Statistics
 
-border_df <- data_all %>% select(all_of(border_var))
+border_df <- data_all %>% select(all_of(border_var)) %>%
+  rename(Ch_At = cross_border_exchange_ch_at_k_wh,
+         At_Ch = cross_border_exchange_at_ch_k_wh,
+         Ch_Ge = cross_border_exchange_ch_de_k_wh,
+         Ge_Ch = cross_border_exchange_de_ch_k_wh,
+         Ch_Fr = cross_border_exchange_ch_fr_k_wh,
+         Fr_Ch = cross_border_exchange_fr_ch_k_wh,
+         Ch_It = cross_border_exchange_ch_it_k_wh,
+         It_Ch = cross_border_exchange_it_ch_k_wh) %>%
+  select(c(1, 3, 9:19))
+
+
+border_long <- border_df %>%
+  select(c(1:10)) %>%
+  pivot_longer(c(3:10), names_to = "Type", values_to = "Amount")
+
+imp_exp_long <- border_df %>%
+  select(c(1:2, 11:13)) %>%
+  pivot_longer(c(3:5), names_to = "Type", values_to = "Amount")
+
 
 # Price of controls
 
