@@ -406,21 +406,48 @@ general_dfM %>%
 general_df %>%
   group_by(date) %>% summarize(Total_cons = sum(pos_second)/1000) %>%
   as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  #filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() +
   autolayer(components(STL_dcmp_PS), trend, color = 'red') +
   ggtitle("Positive secondary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
 
+components(STL_dcmp_PS) %>%
+  autoplot()
+
+general_df %>%
+  group_by(year) %>% 
+  summarize(Total_cons = sum(pos_second)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black", fill = "#619CFF") + 
+  guides(fill = FALSE) + 
+  labs(title = "Total consumption per canton since 2015",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+
+canton_df_long %>% 
+  group_by(Cantons) %>% 
+  summarize(Total_cons = sum(consumption)/1000000) 
+
 # Negative secondary
 general_df %>%
   group_by(date) %>% summarize(Total_cons = sum(neg_second)/1000) %>%
   as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
+  #filter_index("2019-01-01" ~ "2022-11-01") %>% 
   autoplot() + 
   autolayer(components(STL_dcmp_NS), trend, color = 'red') +
   ggtitle("Negative secondary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
+
+general_df %>%
+  group_by(year) %>% 
+  summarize(Total_cons = sum(neg_second)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black") + 
+  guides(fill = FALSE) + 
+  labs(title = "Total consumption per canton since 2015",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
 
 # Positive tertiary
 general_df %>%
@@ -432,6 +459,16 @@ general_df %>%
   ggtitle("Positive tertiary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
 
+general_df %>%
+  group_by(year) %>% 
+  summarize(Total_cons = sum(pos_tertiary)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black") + 
+  guides(fill = FALSE) + 
+  labs(title = "Total consumption per canton since 2015",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
+
 # Negative tertiary
 general_df %>%
   group_by(date) %>% summarize(Total_cons = sum(neg_tertiary)/1000) %>%
@@ -441,6 +478,16 @@ general_df %>%
   autolayer(components(STL_dcmp_NT), trend, color = 'red') +
   ggtitle("Negative tertiary control energy") + 
   ylab("Ammount in million of kWh") + xlab("Date")
+
+general_df %>%
+  group_by(year) %>% 
+  summarize(Total_cons = sum(neg_tertiary)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black") + 
+  guides(fill = FALSE) + 
+  labs(title = "Total consumption per canton since 2015",
+       subtitle = "Ammount in million of kWh)",
+       y = "", x = "")
 
 # ==============================================================================
 

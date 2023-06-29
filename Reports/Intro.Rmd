@@ -3,10 +3,10 @@ title: "Introduction"
 author: "Allan"
 date: '2023-06-14'
 output:
-  bookdown::pdf_document2:
+  bookdown::word_document2:
     toc: yes
     toc_depth: '3'
-  bookdown::word_document2:
+  bookdown::pdf_document2:
     toc: yes
     toc_depth: '3'
   bookdown:html_document2:
@@ -67,11 +67,11 @@ The situation in Switzerland is complex and unique. Situated at the center of Eu
 
 Beyond the purely economic aspect, the ecological component of electricity consumption and production is coming back more and more: fossil fuels to be banned, a desire to get out of nuclear power and the will to invest massively in green, renewable energies have invaded Switzerland. However, the will to do the right thing is not enough: we need to find the right compromise between the ecological transition and the needs of the population. Whether we like it or not, Swiss electricity needs will always take precedence over environmental issues.
 
-It's the latter that we're going to focus on in this paper: **electricity in Switzerland, where is it consumed or produced, and why? What are the main factors governing the grid?** To answer this question, we will be using data provided by Swissgrid, the company that manages all electricity transmission in Switzerland. 
+It is the latter that we are going to focus on in this paper: **electricity in Switzerland, where is it consumed or produced, and how? What are the main factors governing the grid?** To answer this question, we will be using data provided by Swissgrid, the company that manages all electricity transmission in Switzerland. 
 
 ## Swiss Grid
 
-As previously stated, our main task will be to analyze the data provided by Swissgrib in order to better understand what drives the network. Once done, we'll try to interpret these results in order to build a prediction model for the same data at different time scales. Before we can use their data, it is important to understand who Swissgrid is and what role it plays. Here are some of the main components that make up the company:
+As previously stated, our main task will be to analyze the data provided by Swissgrib in order to better understand what drives the network. Once done, we will try to interpret these results in order to build a prediction model for the same data at different time scales. Before we can use their data, it is important to understand who Swissgrid is and what role it plays. Here are some of the main components that make up the company:
 
 **Generation**
 
@@ -80,7 +80,6 @@ Despite its essential role in the transmission of electricity, it is important t
 **Grid operation**
 
 For the grid to function properly, it is essential that production and consumption are always in balance: Swissgrid must therefore ensure at all times that the energy consumed and produced are equal so that it can be transported safely. This is where their forecasting model comes into play and will be used to prevent any congestion or overloads. This information is generally transmitted directly to the power stations, which will increase or decrease power according to the desired volume.
-
 
 **Market development**
 
@@ -116,23 +115,15 @@ The grid is made up of power lines operating at 380 kilovolts or 220 kilovolts. 
 
 ## The Network
 
-**Power is an invisible but omnipresent element in our lives. We use it instinctively and often without thinking, whether it's turning on the light in the morning, starting the coffee machine or listening to the radio.**
+Power is an invisible but omnipresent element in our lives. We use it instinctively and often without thinking, whether it is turning on the light in the morning, starting the coffee machine or listening to the radio.
 
-**Ensuring the efficient transformation of electricity and maintaining a constant balance between energy production and consumption are real challenges. That's where Swissgrid comes in. They ensure that the same amount of electricity is supplied at all times as is used at any given moment. Energy consumption must always be balanced by production. Swissgrid works 24 hours a day, 7 days a week to achieve this.**
+In Switzerland, electricity is available 24 hours a day, 365 days a year. But that does not go without saying, especially in winter, when electricity producers face particular challenges. The need for energy increases with snowfall, icy conditions and extreme cold. Unfortunately, electricity production in Switzerland cannot fully cover these additional needs, making the country dependent on electricity imports in winter.
 
-**Maintaining a constant balance between energy production and consumption is essential to the smooth operation of the transmission system. This balance enables the power grid to operate safely and reliably, maintaining a constant frequency of 50 Hertz.**
+As electricity cannot be stored on the transmission network, it is crucial that current injection and extraction are always equal. But ensuring the efficient transformation of electricity and maintaining a constant balance between energy production and consumption are real challenges. That is where Swissgrid comes in. They ensure that the same amount of electricity is supplied at all times as is used at any given moment, as well as the constant frequency of 50 Hertz. Swissgrid works 24 hours a day, 7 days a week to achieve this. To keep the grid in balance at all times, careful planning with power plants and electricity traders is essential. 
 
-**However, the Swiss transmission network can experience fluctuations and unforeseen loads. In such cases, operators must intervene to restore the balance by injecting more energy where needed, in order to bring the grid frequency back to its target value of 50 Hertz.**
+However, the Swiss transmission network can experience fluctuations and unforeseen loads. In such cases, operators must intervene to restore the balance by injecting more energy where needed, in order to bring the grid frequency back to its target value of 50 Hertz. It should be noted that this frequency is also maintained throughout the European interconnected grid, in collaboration with the other transmission system operators. When unforeseen fluctuations occur, the operators of the grid control centers use control energy. This is a reserve of energy that power plants make available to Swissgrid, and which can be used when needed. Power plants can increase or reduce their output at short notice, thus compensating for power imbalances. 
 
-**As electricity cannot be stored on the transmission network, it is crucial that current injection and extraction are always equal. In other words, energy production and consumption must always be in balance. This balance guarantees grid security and stability, as well as the constant frequency of 50 Hertz. It should be noted that this frequency is also maintained throughout the European interconnected grid, in collaboration with the other transmission system operators.**
-
-**In Switzerland, electricity is available 24 hours a day, 365 days a year. However, this is not self-evident, especially in winter, when electricity producers face particular challenges. The need for energy increases with snowfall, icy conditions and extreme cold. Unfortunately, electricity production in Switzerland cannot fully cover these additional needs, making the country dependent on electricity imports in winter.**
-
-**When unforeseen fluctuations occur, the operators of the grid control centers use control energy. This is a reserve of energy that power plants make available to Swissgrid, and which can be used when needed. Power plants can increase or reduce their output at short notice, thus compensating for power imbalances.**
-
-**On the European interconnected grid, balancing energy production and consumption is a three-stage process. Firstly, primary control energy is activated in the event of frequency fluctuations. Turbines in power plants throughout Europe react by adjusting their output. After a few minutes, this phase is replaced by secondary control, which is managed by Swiss power plants in response to an automatic signal from Swissgrid. Finally, after a quarter of an hour, operators use tertiary control energy manually. They give instructions to certain power plants in Switzerland or abroad to inject more or less energy into the grid.**
-
-**To keep the grid in balance at all times, careful planning with power plants and electricity traders is essential. Swissgrid is responsible for keeping the Swiss transmission grid in constant balance. This is why power plants and electricity traders are obliged to inject the same amount of energy into the grid as they sell, thus ensuring this balance.**
+On the European interconnected grid, balancing energy production and consumption is a process in 3 steps. First comes the primary control energy. It is activated in the event of frequency fluctuations. Turbines in power plants throughout Europe react by adjusting their output. After a few minutes, this phase is replaced by secondary control, which is managed by Swiss power plants in response to an automatic signal from Swissgrid. Finally, after a quarter of an hour, operators use tertiary control energy manually. They give instructions to certain power plants in Switzerland or abroad to inject more or less energy into the grid. For more details on energy control, see the section devoted to it later in this paper.
 
 The network in figures :
 
@@ -150,95 +141,76 @@ The network in figures :
 
 - 2.5 billion Swiss francs of planned investment
 
+Now that we have a better understanding of how the grid works, here are some figures on the production and origin of electricity in Switzerland : 
+
+In 2021, 80% of the final electricity consumed in Switzerland was coming from renewable sources, accordind to [the confederation](https://www.admin.ch/gov/fr/accueil/documentation/communiques.msg-id-90221.html) (production + importation)
+
+Regarding the swiss production only : 
+
+- central hydraulics contributes to 61,5% of the production, coming from 682 different centrals
+
+- nuclear power plants (28,9%)
+
+- new renewable energies (solar, wind, biomass and small hydro power, 7.7%)
+
+- fossil fuels (1.9%)
+
+- 29.7% in production against 70.3% in importation
+
+The difference lies mainly in imports/exports, as Switzerland is not autonomous in its energy spending.
+
+As far as the confederation's objectives are concerned, it wishes to : 
+
+- reduce energy consumption per inhabitant by 43% by 2035 compared with 2000
+
+- develop renewable energies as far as possible
+
+- phase out nuclear power.
+
 ## Law, limits and regulations
 
-**Champs électromagnétiques**
-Quand on parle de lignes électriques ou d’appareils électriques, le sujet des rayonnements électromagnétiques et de leurs risques potentiels revient souvent. Ces rayonnements sont à proprement parler des champs électriques et magnétiques. Des valeurs limites nous protègent des effets négatifs pour la santé. Les valeurs limites en Suisse font partie des plus strictes au monde.
+**Electromagnetic field**
 
-La valeur limite d’immissions de 100 microteslas pour les champs magnétiques protège en particulier des atteintes à la santé scientifiquement reconnues. Elle s’applique partout où des personnes pourraient séjourner. La Loi suisse sur la protection de l’environnement exige en outre de protéger également la population des risques pour la santé aujourd’hui non avérés mais envisageables. C’est à cela que sert la valeur limite de l’installation de 1 microtesla. Elle s'applique partout où des personnes séjournent durablement, par exemple dans les salons ou les chambres, les écoles ou les aires de jeux. C’est une des valeurs limites les plus strictes en Europe. Les deux valeurs limites s’appliquent pour la charge maximale d’une ligne.
+Whether we are talking about high-voltage lines or electrical equipment, potential risks of electromagnetic radiation is often raised. Electromagnetic radiation takes the form of electric and magnetic fields. To protect our health, limit values have been set. Swiss standards on electromagnetic radiation are among the most stringent in the world.
 
-**Bruit**
+The immission limit value of 100 microteslas for magnetic fields is aimed specifically at preventing scientifically recognised harmful effects on health. It applies wherever people are likely to be. Under the Swiss Environmental Protection Act, it is also necessary to protect the population against health risks that are not yet proven but could be envisaged. This is precisely the role of the installation limit value of 1 microtesla. It applies to all places where people stay for a long time, such as living rooms, bedrooms, schools and playgrounds. Again, this limitation of 1 microtesla is one of the strictest in Europe. Both limit values are based on the maximum load of a power line.
 
-Des décharges électriques locales peuvent se produire au niveau des lignes électriques, notamment en cas de conditions météorologiques défavorables, par exemple en cas de pluie, de givre ou de neige mouillée. En électrotechnique, ce phénomène est appelé «décharge coronaire». Il peut générer des bruits décrits comme des grésillements ou des bourdonnements.
+**Noise**
 
-Une limite d’émission de 55 décibels dans les zones habitées (45 décibels durant la nuit) est applicable en Suisse et doit impérativement être respectée. Le niveau sonore d’une rue à grande circulation dépasse 80 décibels. Partout où cela est nécessaire, Swissgrid s’efforce de réduire ces effets coronaires par tous les moyens techniques possibles. Dans le cas des lignes souterraines, les bruits dus à l’effet de couronne disparaissent.
+Power lines can be subject to local electrical discharges, known as corona discharges, which occur particularly in adverse weather conditions such as rain, frost or wet snow. These coronal discharges can cause perceptible noises such as crackling or buzzing.
 
-**Environnement**
+In Switzerland, there is a noise emission limit of 55 decibels in inhabited areas (reduced to 45 decibels at night), which must be strictly adhered to. It is important to note that the noise level in a busy street generally exceeds 80 decibels. As far as possible, Swissgrid implements all the necessary technical solutions to reduce the effects of corona discharges. In the case of underground power lines, the noise caused by the corona effect is eliminated.
 
-L’étude de l’impact sur l’environnement (EIE) permet, dans le cadre de la procédure d’autorisation, de contrôler si un projet respecte les prescriptions légales sur la protection de l’environnement. Le contrôle se base sur le rapport d’impact sur l’environnement (RIE). En tant que maître d’ouvrage, Swissgrid est responsable de l’élaboration et de la remise des documents du RIE. Toutefois, l’élaboration du RIE est en règle générale confiée à un bureau d’ingénierie indépendant et spécialisé. Différents aspects sont traités dans le rapport, dont le bruit, les rayonnements non ionisants, les eaux, les sols, les décharges désaffectées, les forêts, les biotopes et la végétation, la faune et ses habitats naturels, les paysages, les sites construits ainsi que les monuments historiques et les sites archéologiques.
+**Environment**
 
-Le suivi environnemental de la phase de réalisation (SER) traite et pilote les considérations environnementales lors de la construction et assiste la maîtrise d’ouvrage pour une réalisation du projet de construction conforme à la loi et respectueuse de l’environnement.
+In accordance with the approval procedure (UVP), the environmental impact assessment (UVB) ensures that a project complies with environmental protection legislation. The compliance check is based on an Environmental Impact Report. As the project owner, Swissgrid is responsible for drawing up and submitting the UVB documents. However, its preparation is generally entrusted to an independent and specialised engineering firm. The report examines various aspects such as noise, non-ionising radiation, water resources, soils, abandoned landfill sites, forests, natural habitats, wildlife, landscapes, built-up areas, historical monuments and archaeological sites.
 
-**Procédures d’autorisation**
+The environmental monitoring of the construction phase (UBB) deals with and supervises environmental considerations during the construction phase and provides support to the project owner to ensure that the construction project complies with legislation and respects the environment.
 
-Swissgrid est responsable de la planification et de la réalisation des lignes de transport. La procédure d’autorisation et d’approbation de la Confédération comprend six phases qu’il faut impérativement respecter. Celles-ci prennent en considération les demandes des différentes parties prenantes. De nombreux acteurs participent aux discussions. À la fin, ce sont les autorités qui décident dans quel corridor une ligne sera construite et quelle technologie sera employée.
+**Approval process**
 
-Les 6 étapes en questions :
+Swissgrid is responsible for planning and building electricity transmission infrastructure. The Confederation has established a six-stage procedure for the authorisation and approval of these projects. This procedure takes into account the requests and opinions of numerous entities, all of which are involved in the project. In order to validate the project, it is the authorities who will be responsible for giving the final verdict on the precise location and the tools to be put in place for the construction of the lines.
 
-Préparation
-Lors de la phase préliminaire, Swissgrid élabore différents corridors de lignes câblées souterraines et de lignes aériennes pour la zone dans laquelle la ligne doit passer, et ce pour chaque projet de réseau. Swissgrid et les cantons concernés par le projet concluent un accord de coordination, qui garantit que les préoccupations des cantons sont prises en compte dès le début de la planification. Les variantes élaborées et la demande d’intégration du projet au plan sectoriel de la Confédération constituent la base pour le début de la procédure d’autorisation.
+The 6 steps in question:
 
-Plan sectoriel des lignes de transport d’électricité
-Le PSE est l’instrument de planification et de coordination principal de la Confédération pour l’extension et la construction de nouvelles lignes de transport. La procédure à deux étapes distingue la zone de planification et le corridor d’une nouvelle ligne. Un groupe d’accompagnement mis en place par l’OFEN, composé de représentants de la Confédération, des cantons, des organisations de défense de l'environnement et de Swissgrid, discute des variantes proposées et émet une recommandation. La décision est conditionnée par le Modèle d’évaluation pour lignes de transport de la Confédération. Il tient compte des aspects techniques, de l’aménagement du territoire, de l’environnement et de la rentabilité. Les parties concernées peuvent prendre position dans le cadre d’une consultation publique. Le Conseil fédéral définit la zone de planification, le corridor et la technologie (ligne câblée souterraine ou aérienne) de la future ligne.
+- Preparation : setting up an agreement between the cantons concerned to ensure that overhead and underground lines are correctly positioned
 
-Projet de construction
-Lors de cette phase, Swissgrid élabore un projet de construction concret dans le respect du corridor de planification défini par la Confédération. Le tracé précis de la ligne, les délais et les coûts sont définis, ou des négociations concernant les droits de passage ont lieu. Swissgrid implique une commission consultative pour tenir compte des demandes de la population et d’autres parties prenantes dans la planification du projet. A la fin de cette troisième phase, Swissgrid dépose une demande d’approbation des plans pour le projet de réseau concerné auprès des autorités compétentes.
+- Transmission Lines sectoral plan (SÜL) : the Confederation's main planning and coordination instrument, used to expand the transmission lines.
 
-Procédure d’approbation des plans
-À la fin de l’étude de projet, Swissgrid dépose la demande de permis de construire auprès de l’Inspection fédérale des installations à courant fort (ESTI). Elle comporte le dossier d’approbation des plans et un rapport d’impact sur l’environnement. Le projet est ensuite mis à l’enquête publique. Les participants et les personnes concernées peuvent désormais faire opposition auprès de l’ESTI. Si l’ESTI ne parvient pas à régler les différends, l’Office fédéral de l’énergie poursuit les négociations. A la fin de cette phase, les autorités accordent le permis de construire à Swissgrid ou édictent des exigences supplémentaires qui doivent être prises en compte dans la planification du projet.
+- Construction project : specific preparation of the construction project.
 
-Procédures juridiques
-Lorsque le permis de construire a été accordé pour le projet de réseau, cette décision peut faire l’objet d’un recours par les autorités, les associations ou les parties directement concernées. Le Tribunal administratif fédéral et le Tribunal fédéral décident alors si les décisions de l’administration fédérale sont légales et si le droit a été correctement appliqué dans le cadre de recours des parties concernées. Si les tribunaux donnent le feu vert, les travaux de construction peuvent commencer. Si le recours est accepté, le projet retourne à la phase d’approbation des plans (phase 4), ou il faut recommencer la procédure de plan sectoriel (phase 2). Ces longues procédures juridiques retardent considérablement les projets de réseau.
+- Planning approval procedure : once all the planning has been completed, Swissgrid submits the application for construction  permission, which is then made public and analysed before a final response is given, which may be subject to conditions.
 
-Construction
-Les travaux de construction peuvent commencer lorsque le permis de construire exécutoire a été accordé, les appels d’offres ont été réalisés, les offres comparées et les lots attribués. Les dernières servitudes sont négociées et les contrats correspondants sont conclus. Le projet de réseau prend fin lors de la mise en service de la nouvelle ligne, ou après le démantèlement de lignes existantes devenues inutiles.
+- Legal proceedings : At this stage, anyone affected by the project can lodge an objection, final decision will be given by the Federal Administrative Court and the Federal Supreme Court.
 
-Actuellement, il faut compter 15 ans entre le début du projet et la mise en service de la ligne en question. Cependant, des oppositions et des décisions juridiques prises à un stade tardif entraînent fréquemment un retard important des projets, qui peuvent prendre jusqu’à une trentaine d’année.
+- Construction : once all the conditions have been met and the project has been fully validated, construction can begin.
 
-La modernisation de l’infrastructure de réseau est essentielle à la réussite de la stratégie énergétique de la Confédération. Or, le développement du réseau ne peut pas suivre le rythme de l’évolution des énergies renouvelables. De plus, nous sommes aujourd’hui déjà confrontés à des congestions structurelles dans le réseau de transport. Swissgrid doit demander régulièrement aux exploitants de centrales électriques de restreindre leur production. C’est la raison pour laquelle il est primordial d’accélérer le développement du réseau par des procédures d’autorisation et d’approbation efficaces. Swissgrid a défini tous les projets de réseau indispensables pour un réseau de transport suisse sûr et fiable dans son «Réseau stratégique 2025».
+All these procedures enormously slow down the expansion of the network, which generally takes 15 years from the creation of the project to its completion (opening of the line). Some objections have already caused projects to drag on for more than 30 years.
 
-## Overview of the network
-
-**Main source of production**
-
-L’électricité consommée en Suisse en 2021 provenait à 80% des énergies renouvelables selon [la confédération](https://www.admin.ch/gov/fr/accueil/documentation/communiques.msg-id-90221.html) (production + importation)
-
-Concernant la production uniquement : 
-
-- central hydraulique (61,5%) 682 centrales hydrauliques
-
-- centrales nucléaire (28,9%)
-
-- La part des nouvelles énergies renouvelables (énergie solaire, éolienne, biomasse et petite hydraulique, 7.7%)
-
-- agents énergétiques fossiles (1.9%)
-
-- 29.7% production vs 70.3% importation
-
-L'électricité produite en Suisse est issue à 61,5% de la force hydraulique, à 28,9% de l'énergie nucléaire, à 1,9% des énergies fossiles et à 7,7% environ de nouvelles énergies renouvelables (mix de production suisse 2021. Voir à ce propos: statistique de l'électricité sous le lien ci-après). Mais la Suisse ne consomme pas que de l'électricité d'origine indigène. Il existe un commerce actif avec l'étranger dans le cadre duquel l'électricité est importée et exportée physiquement, indépendamment du négoce des garanties d'origine entre les États. De ce fait, le mix de production suisse ne correspond pas à la composition moyenne de l'électricité livrée (mix des fournisseurs suisses).
-
-Au niveau des mesures prises en charges pour les confédération :
-
-- diminuer de 43% la consommation d'énergie par habitants d'ici 2035 par rapport à 2000
-
-- dévolopper au maximum les énergies renouvelables
-
-- abandon progressive du nucléaire.
-
-**trend and seasonality**
-
-En Suisse, la consommation d’énergie par habitant baisse, pour sa part, depuis des années: bien que la population ait augmenté de 28,7% entre 1990 et 2020, la consommation d’énergie a diminué de 5,9% au cours de la même période.
-
-
-**What thrives the consumption**
-
-Different cons and prod around the country.
-Depend mainly on : density pop, size, activity, landscape.
-
-Seasonality effect for both prod and cons.
-
+As a result of these slowdowns, Swissgrid is unable to keep pace with the development of green energies and frequently has to ask power stations to reduce their output. It is therefore imperative that Swissgrid is able to accelerate the expansion of its grid.
 
 ## My questions
+
 Les risques, se qui régulent le marché, qui sont les principaux consomateurs et producteurs. 
 L’exploitation du réseau de transport est planifiée à long terme. Plus d’un an à l’avance, les opérateurs établissent déjà un premier pronostic sur la situation de réseau attendue dans le centre de conduite du réseau d’Aarau à l’aide d’un modèle de réseau. La planification tient compte des révisions et des réparations des centrales électriques ou des lignes, par exemple. Ainsi, les mises hors service d’éléments du réseau ont des répercussions sur les capacités de transport.
 Faire un modèle de prévision. 
@@ -353,7 +325,7 @@ general_df %>%
   filter_index("2018-01-01" ~ "2022-11-01") %>% 
   autoplot() +
   labs(title = "Total energy consumed in Switzerland",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "")
 ```
 
@@ -368,7 +340,7 @@ general_df %>%
   filter_index("2018-01-01" ~ "2022-11-01") %>% 
   autoplot() +
   labs(title = "Total energy produced in Switzerland",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "")
 ```
 
@@ -391,7 +363,7 @@ general_dfM %>%
   filter_index(. ~ "2022-11-01") %>% 
   autoplot() + 
   labs(title = "Total energy consumed by Switzerland",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "") 
 ```
 
@@ -410,7 +382,7 @@ general_dfM %>%
   filter_index(. ~ "2022-11-01") %>% 
   autoplot() + 
   labs(title = "Total energy produced by Switzerland",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "") 
 ```
 
@@ -437,7 +409,7 @@ general_dfM %>%
   ylab("Total sales") + 
   xlab("Month") +
   labs(title = "Seasonal subseries plot: Energy consumption",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "") 
 ```
 
@@ -454,7 +426,7 @@ general_dfM %>%
   ylab("Total sales") + 
   xlab("Month") +
   labs(title = "Seasonal subseries plot: Energy production",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "") 
 ```
   
@@ -477,7 +449,7 @@ general_df %>%
   filter_index("2019-01-06" ~ "2019-01-30") %>% 
   autoplot() + 
   labs(title = "Total hourly energy consumed in Switzerland",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "")
 ```
 
@@ -487,7 +459,7 @@ We have peaks during the day (in the morning and a second peak in the late after
 
 An interesting comparison is the small difference between weekend days and weeknights: the total amount consumed is almost the same, with some nights even exceeding weekend consumption. This suggests that the majority of consumption comes from companies and large institutes, and not from private individuals. Indeed, these two times of the week are marked by the absence of work.
 
-It's important to note that we only have data for a specific month over a 6-year period : so while this gives us a general idea of consumption behavior throughout days and weeks, and we can expect it to be constant over the whole period, we can not yet be sure that this pattern is generalizable to every period.
+It is important to note that we only have data for a specific month over a 6-year period : so while this gives us a general idea of consumption behavior throughout days and weeks, and we can expect it to be constant over the whole period, we can not yet be sure that this pattern is generalizable to every period.
 
 As usual, let's now displays the same chart but this time for the production :
 
@@ -500,19 +472,19 @@ general_df %>%
   filter_index("2019-01-06" ~ "2019-01-30") %>% 
   autoplot() +
   labs(title = "Total houlry energy produced in Switzerland",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "")
 ```
 
 It gives us some very important indications. First of all, the production range is higher, which means that we produce too much during the day and not enough at night. This lack of electricity at night could be a choice, given that its price is very low and that importing electricity could be cheaper than producing it during a period of low activity.
 
-In contrast to consumption, we have similar production on every night of the week (around 5 millions). Even lower than during the weekdays, the weekend is always higher than nights: the fact that production is low at weekends highlights human dependency. Indeed, if factories were 100% autonomous, we shouldn't see a drop in production at weekends. However, it remains to be seen whether this drop is due to a reduction in manpower or simply a choice on the part of the factories, since demand is much lower at weekends.
+In contrast to consumption, we have similar production on every night of the week (around 5 millions). Even lower than during the weekdays, the weekend is always higher than nights: the fact that production is low at weekends highlights human dependency. Indeed, if factories were 100% autonomous, we should not see a drop in production at weekends. However, it remains to be seen whether this drop is due to a reduction in manpower or simply a choice on the part of the factories, since demand is much lower at weekends.
 
 Generally speaking, we can see that production for this period is in line with consumption.
 
 #### Seasonality of the hour over the day
 
-Our final zoom will focus on hourly/daily seasonality. As usual, we'll display the consumption graph first, before the production graph. Instead of a conventional graph, given the short period between observations (every hour), we have decided to use a heat map this time. This has enabled us to use all the data at our disposal, while giving us a clear model output. This will thus enable us to confirm the models studied over the whole period. 
+Our final zoom will focus on hourly/daily seasonality. As usual, we will display the consumption graph first, before the production graph. Instead of a conventional graph, given the short period between observations (every hour), we have decided to use a heat map this time. This has enabled us to use all the data at our disposal, while giving us a clear model output. This will thus enable us to confirm the models studied over the whole period. 
 
 You can see below the first heat map, containing the data for consumption. 
 
@@ -566,7 +538,7 @@ Here is what the decomposition looks like for the consumption :
 # Consumption
 components(STL_dcmpC) %>% autoplot() + 
   labs(title = "Additive STL decomposition for consumption",
-       subtitle = "consumption = trend + season_year + season_week + remainder (in million of kWh)",
+       subtitle = "consumption = trend + season_year + season_week + remainder (in millions of kWh)",
        y = "", x = "")
 ```
 
@@ -580,7 +552,7 @@ Moving on to the decomposition of production, we get :
 # Production
 components(STL_dcmpP) %>% autoplot() + 
   labs(title = "Additive STL decomposition for production",
-       subtitle = "production = trend + season_year + season_week + remainder (in million of kWh)",
+       subtitle = "production = trend + season_year + season_week + remainder (in millions of kWh)",
        y = "", x = "")
 ```
 
@@ -592,7 +564,7 @@ Finally, as in the first decomposition, the weekly seasonality, although illegib
 
 ### Main insight from the overall Data
 
-*Similarities*
+Similarities
 
 - 3 levels of seasonality : daily, weekly and yearly.
 
@@ -602,7 +574,7 @@ Finally, as in the first decomposition, the weekly seasonality, although illegib
 
 - When possible, production tries to match consumption 
 
-*Results from consumption*
+Results from consumption
 
 - Very regular data between years.
 
@@ -612,7 +584,7 @@ Finally, as in the first decomposition, the weekly seasonality, although illegib
 
 - Depends mainly on the weather: people use little electricity when it is warm and sunny, and much more when they need heating or light.
 
-*Results from production*
+Results from production
 
 - No clear pattern among years when we looked at the total energy produced.
 
@@ -624,54 +596,49 @@ Finally, as in the first decomposition, the weekly seasonality, although illegib
 
 ## Secondary and Tertiary control
 
-Control energy is used to guarantee the grid stability in Switzerland or even in Europe. It is used to remedy network issue when **Actual electricity consumption may deviate from forecasts, or there may be an unforeseen power plant or consumer failure** for example. It can therefore be considered as a risk, since it is only used in the event of a problem. Il s’agit d’énergie que les centrales électriques mettent en réserve pour Swissgrid et qui peut être utilisée si nécessaire. Les centrales électriques peuvent augmenter ou diminuer leur puissance à court terme, compensant ainsi l’énergie électrique manquante ou excédentaire.
+As explained in the introduction, control energy is used to guarantee the stability of the grid in Switzerland, and even in Europe. Indeed, since electricity can not be stored directly in the grid, we constantly need to add as much as we withdraw : consumption and production must always be at the equilibrium to have a stable grid. The value agreed for the entire European interconnected network is 50 Hertz and it is Swissgrid's job to make sure it always has the right power in its grid.
 
+More specifically, control energy is used to remedy unexpected problems on the grid when actual electricity consumption is moving away from the forecasts, or there is an unforeseen failure at a power station or at a consumer's premises for example. To overcome this problem, power stations will store energy for Swissgrid, which can be used when needed. They have the ability to adjust their output rapidly, thus compensating for fluctuations in electrical energy, whether excessive or insufficient.
 
-**While secondary control reserve is automatically activated and used continuously, tertiary control reserve is activated manually in the ¼ h time resolution of schedules to support or even substitute secondary control reserve.**
-
-**A positive control area balance signifies an energy balance deficit in the control area (deficient cover). A negative control area balance represents an energy balance surplus in the control area (excess cover).**
-
-**Positive values represent an activation of positive secondary control power (increasing production or decreasing load).**
-
-Swissgrid demande aux centrales électriques de mettre cette puissance de réglage en réserve afin qu’elle soit disponible à tout moment. Swissgrid achète ces trois produits de réglage de la fréquence sur des marchés de la puissance de réglage mis en place précisément à cette fin. La puissance nécessaire fait l’objet d’appels d’offres sur des plateformes Internet. Les centrales électriques y proposent leur offre à un certain prix. Si l’une d’entre elles reçoit l’adjudication, elle est tenue de pouvoir fournir la puissance proposée sur-le-champ pendant une période donnée. Swissgrid l’indemnise pour ce service. Les centrales électriques reçoivent une autre indemnisation s’il faut effectivement utiliser de l’énergie de réglage secondaire et tertiaire.
-
-**Swissgrid requires power plants to reserve a certain amount of control power capacity so that it is available at all times. Swissgrid purchases this control power capacity on specific markets created for this purpose. The amount of power required is put out to tender on online platforms, where power plants bid at a specified price. If a power plant wins the tender, it is obliged to supply the requested control power immediately and for a specified period. Swissgrid pays the power plant for this service. Power plants also receive additional compensation if secondary and tertiary control power is actually used.**
-
-Indeed, since electricity can not be stored directly in the grid, we constantly need to add as much as we withdraw : consumption and production must always be at the equilibrium to have a stable grid. The value agreed for the entire European interconnected network is 50 Hertz. So it is Swissgrid's job to make sure it always has the right power in its grid. 
-
-Elle le fait via un processus en trois étapes: la première étape consiste à activer l’énergie de réglage primaire. En cas de fluctuations de fréquence, les turbines des centrales électriques dans toute l'Europe réagissent en augmentant ou diminuant leur puissance. Au bout de quelques minutes, le réglage primaire est remplacé par le réglage secondaire. Ce dernier est réalisé par les centrales électriques suisses auxquelles Swissgrid envoie un signal automatique. Au bout d’un quart d’heure, les opérateurs utilisent manuellement l’énergie de réglage tertiaire. Ils donnent à certaines centrales électriques de Suisse ou de l’étranger l’instruction d’injecter plus ou moins d’énergie dans le réseau.
-
-Les gestionnaires de réseau de transport européens procèdent en trois étapes lors de l’utilisation d’énergie de réglage: quelques secondes après un événement, comme la défaillance inattendue d’une centrale électrique, ce sont tout d'abord les réserves de réglage primaires qui sont utilisées. Les réserves de réglage secondaires leur succèdent en l'espace de quelques minutes et rétablissent la fréquence de 50 Hertz. Si le déséquilibre dure plus de quinze minutes, les centres de conduite du réseau peuvent activer manuellement les réserves de réglage tertiaires.
+**Swissgrid purchases this control power capacity on specific markets created for this purpose. The amount of power required is put out to tender on online platforms, where power plants bid at a specified price. If a power plant wins the tender, it is obliged to supply the requested control power immediately and for a specified period. Swissgrid pays the power plant for this service. Power plants also receive additional compensation if secondary and tertiary control power is actually used.**
 
 **This frequency control process takes place in three stages. Firstly, when there are frequency fluctuations, the turbines in power plants throughout Europe react by increasing or decreasing their output, which corresponds to primary control. After a few minutes, primary control is replaced by secondary control, which is performed by Swiss power plants in response to an automatic signal from Swissgrid. After a quarter of an hour, grid operators manually use tertiary control energy, instructing certain power plants in Switzerland or abroad to inject more or less energy into the grid.**
 
-**European transmission system operators also follow a three-step process when using control energy. A few seconds after an event such as an unexpected power plant failure, primary control reserves are used first. Secondary control reserves kick in a few minutes later, restoring the frequency to 50 Hertz. If the imbalance persists for more than fifteen minutes, network operators can manually activate tertiary control reserves.**
+**While secondary control reserve is automatically activated and used continuously, tertiary control reserve is activated manually in the ¼ h time resolution of schedules to support or even substitute secondary control reserve.**
+
+**A positive control area balance signifies an energy balance deficit in the control area (deficient cover/increasing production or decreasing load). A negative control area balance represents an energy balance surplus in the control area (excess cover).**
 
 ### Positive and Negative Secondary control with trend
+
+As explained, we will consider control energy as representing the risk of the network. This the reason why we will not go into the details of seasonality and so on, but rather analyse annual trends to see if there is an increase/decrease in its activity.
+
+Here is the situation for the secondary control from 2015 to December 2022 :
 
 ```{r}
 # Positive secondary
 general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(pos_second)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() +
-  autolayer(components(STL_dcmp_PS), trend, color = 'red') + 
-  labs(title = "Positive Secondary control energy",
-       subtitle = "Ammount in million of kWh)",
+  group_by(year) %>% 
+  summarize(Total_cons = sum(pos_second)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black", fill = "#619CFF") + 
+  guides(fill = FALSE) + 
+  labs(title = "Positive secondary control energy per year",
+       subtitle = "Ammount in thousands of kWh)",
        y = "", x = "")
 
 # Negative secondary
 general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(neg_second)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() + 
-  autolayer(components(STL_dcmp_NS), trend, color = 'red') +
-  labs(title = "Negative Secondary control energy",
-       subtitle = "Ammount in million of kWh)",
+  group_by(year) %>% 
+  summarize(Total_cons = sum(neg_second)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black", fill = "#619CFF") + 
+  guides(fill = FALSE) + 
+  labs(title = "Negative secondary control energy per year",
+       subtitle = "Ammount in thousands of kWh)",
        y = "", x = "")
 ```
+With the exception of the first year, which was very high for both, there has been little change in the following years. 
+The two values appear to be negatively correlated, with the positive secondary control value always slightly higher in absolute terms.
 
 ### Positive and Negative Tertiary control with trend
 
@@ -679,24 +646,24 @@ general_df %>%
 # Tertiary data for consumption & production
 # Positive tertiary
 general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(pos_tertiary)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() + 
-  autolayer(components(STL_dcmp_PT), trend, color = 'red') + 
-  labs(title = "Positive tertiary control energy",
-       subtitle = "Ammount in million of kWh)",
+  group_by(year) %>% 
+  summarize(Total_cons = sum(pos_tertiary)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black", fill = "#619CFF") + 
+  guides(fill = FALSE) + 
+  labs(title = "Positive tertiary control energy per year",
+       subtitle = "Ammount in thousands of kWh)",
        y = "", x = "")
 
 # Negative tertiary
 general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(neg_tertiary)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() + 
-  autolayer(components(STL_dcmp_NT), trend, color = 'red') +
-  labs(title = "Negative tertiary control energy",
-       subtitle = "Ammount in million of kWh)",
+  group_by(year) %>% 
+  summarize(Total_cons = sum(neg_tertiary)/1000) %>%
+  ggplot(aes(x = year, y = Total_cons)) + 
+  geom_col(color = "black", fill = "#619CFF") + 
+  guides(fill = FALSE) + 
+  labs(title = "Negative tertiary control energy per year",
+       subtitle = "Ammount in thousands of kWh)",
        y = "", x = "")
 ```
 
@@ -710,7 +677,7 @@ general_df %>%
 
 Now that we have seen how consumption and production behave for the country as a whole, we can move on to the cantonal level. The idea is to understand exactly where electricity production and consumption stand: are they similar for each canton, or do they depend on a number of factors? If so, are they the same for each category? Does Switzerland depend on just a few cantons for its electricity supply? 
 
-These are just some of the questions we'll try to answer in this section.
+These are just some of the questions we will try to answer in this section.
 
 To do so, we will use the `Canton_df_long` dataset, which contains all the necessary information at the cantonal level.
 
@@ -740,7 +707,7 @@ In all, we have 24 cantons (they do not differentiate between half-cantons) spre
 
 Regarding the time period, as we have done previously, we will only represent data since 2018 to get a better view of on graphs.
 
-Since we have so many cantons, showing them all on one chart would make it incomprehensible. So we'll try to see whether certain cantons are major contributors to consumption or production, and then focus our analysis on them. 
+Since we have so many cantons, showing them all on one chart would make it incomprehensible. So we will try to see whether certain cantons are major contributors to consumption or production, and then focus our analysis on them. 
 
 You can find below the total consumption per area since 2015 :
 
@@ -753,7 +720,7 @@ canton_df_long %>%
   geom_col(color = "black") + 
   guides(fill = FALSE) + 
   labs(title = "Total consumption per canton since 2015",
-       subtitle = "Ammount in million of kWh)",
+       subtitle = "Ammount in millions of kWh)",
        y = "", x = "")
 
 # Best producer
@@ -764,7 +731,7 @@ canton_df_long %>%
   geom_col(color = "black") +
   guides(fill = FALSE) + 
   labs(title = "Total production per canton since 2015",
-       subtitle = "Ammount in million of kWh)",
+       subtitle = "Ammount in millions of kWh)",
        y = "", x = "")
 ```
 
@@ -812,7 +779,7 @@ canton_df_long %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   autoplot() + 
   labs(title = "Monthly consumption per canton since 2018",
-       subtitle = "Ammount in million of kWh)",
+       subtitle = "Ammount in millions of kWh)",
        y = "", x = "")
 ```
 
@@ -837,7 +804,7 @@ canton_df_long %>%
   filter_index("2018-01-01" ~ "2022-11-30") %>% 
   autoplot() +
   labs(title = "Monthly production per canton since 2018",
-       subtitle = "Ammount in million of kWh)",
+       subtitle = "Ammount in millions of kWh)",
        y = "", x = "")
 ```
 
@@ -866,7 +833,7 @@ canton_df_long %>%
   scale_color_manual(labels = c("berne_jura", "geneve_vaud", "schaff_zurich"), 
                      values = c("#F8766D", "#00BA38", "#619CFF")) +
   labs(title = "STL decomposition",
-       subtitle = "consumption = trend + season_year + remaFinder (in million of kWh)",
+       subtitle = "consumption = trend + season_year + remaFinder (in millions of kWh)",
        y = "", x = "")
 ```
 
@@ -892,7 +859,7 @@ canton_df_long %>%
   scale_color_manual(labels = c("argovie", "soleure", "valais"), 
                      values = c("#F8766D", "#00BA38", "#619CFF")) +
   labs(title = "STL decomposition",
-       subtitle = "production = trend + season_year + remainder (in million of kWh)",
+       subtitle = "production = trend + season_year + remainder (in millions of kWh)",
        y = "", x = "")
 
 ```
@@ -931,7 +898,7 @@ canton_df_long %>%
   guides(colour="none") +
   theme(axis.text.x = element_blank()) +
   labs(title = "Monthly consumption per canton since 2018",
-       subtitle = "Ammount in million of kWh with free scale",
+       subtitle = "Ammount in millions of kWh with free scale",
        y = "", x = "")
 ```
 
@@ -947,7 +914,7 @@ canton_df_long %>%
   facet_wrap(~Cantons) +
   guides(colour="none") +
   labs(title = "Monthly consumption per canton since 2018",
-       y = "Ammount in million of kWh", x = "") +
+       y = "Ammount in millions of kWh", x = "") +
   theme(axis.text.x = element_text(angle=80, hjust=1))
 
 #soleure [ici](https://enaw.ch/fr/protection-du-climat-et-performance-energetique-dans-le-canton-de-soleure/)
@@ -994,7 +961,7 @@ canton_df_long %>%
   facet_wrap(~Cantons, scales = "free") +
   guides(colour="none") +
   labs(title = "Monthly production per canton since 2018",
-       subtitle = "Ammount in million of kWh with free scale",
+       subtitle = "Ammount in millions of kWh with free scale",
        y = "", x = "") +
   theme(axis.text.x = element_blank())
 ```
@@ -1011,7 +978,7 @@ canton_df_long %>%
   facet_wrap(~Cantons) +
   guides(colour="none") +
   labs(title = "Monthly production per canton since 2018",
-       subtitle = "Ammount in million of kWh",
+       subtitle = "Ammount in millions of kWh",
        y = "", x = "") +
   theme(axis.text.x = element_text(angle=80, hjust=1))
 
@@ -1054,7 +1021,7 @@ canton_features_P %>%
 
 ```{r, out.width = "100%"}
 ggplot(Swiss_data) +
-  geom_sf(aes(fill = final_cons)) +
+  geom_sf(aes(fill = Consumption)) +
   geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -1079,7 +1046,7 @@ ggplot(Swiss_data) +
 
 
 ggplot(Swiss_data) +
-  geom_sf(aes(fill = final_prod)) +
+  geom_sf(aes(fill = Production)) +
   geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
