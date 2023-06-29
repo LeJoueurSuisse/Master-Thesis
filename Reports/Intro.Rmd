@@ -212,10 +212,10 @@ As a result of these slowdowns, Swissgrid is unable to keep pace with the develo
 ## My questions
 
 Les risques, se qui régulent le marché, qui sont les principaux consomateurs et producteurs. 
-L’exploitation du réseau de transport est planifiée à long terme. Plus d’un an à l’avance, les opérateurs établissent déjà un premier pronostic sur la situation de réseau attendue dans le centre de conduite du réseau d’Aarau à l’aide d’un modèle de réseau. La planification tient compte des révisions et des réparations des centrales électriques ou des lignes, par exemple. Ainsi, les mises hors service d’éléments du réseau ont des répercussions sur les capacités de transport.
+**L’exploitation du réseau de transport est planifiée à long terme. Plus d’un an à l’avance, les opérateurs établissent déjà un premier pronostic sur la situation de réseau attendue dans le centre de conduite du réseau d’Aarau à l’aide d’un modèle de réseau. La planification tient compte des révisions et des réparations des centrales électriques ou des lignes, par exemple. Ainsi, les mises hors service d’éléments du réseau ont des répercussions sur les capacités de transport.**
 Faire un modèle de prévision. 
 
-La planification de l’exploitation du réseau est affinée en continu: la situation de réseau attendue est régulièrement recalculée, à savoir un an, un mois, une semaine, deux jours et un jour avant l’exploitation en temps réel.
+**La planification de l’exploitation du réseau est affinée en continu: la situation de réseau attendue est régulièrement recalculée, à savoir un an, un mois, une semaine, deux jours et un jour avant l’exploitation en temps réel.**
 
 Peut être intéressant de faire pareil. 
 
@@ -598,19 +598,17 @@ Results from production
 
 As explained in the introduction, control energy is used to guarantee the stability of the grid in Switzerland, and even in Europe. Indeed, since electricity can not be stored directly in the grid, we constantly need to add as much as we withdraw : consumption and production must always be at the equilibrium to have a stable grid. The value agreed for the entire European interconnected network is 50 Hertz and it is Swissgrid's job to make sure it always has the right power in its grid.
 
-More specifically, control energy is used to remedy unexpected problems on the grid when actual electricity consumption is moving away from the forecasts, or there is an unforeseen failure at a power station or at a consumer's premises for example. To overcome this problem, power stations will store energy for Swissgrid, which can be used when needed. They have the ability to adjust their output rapidly, thus compensating for fluctuations in electrical energy, whether excessive or insufficient.
+More specifically, control energy is used to remedy unexpected problems on the grid when actual electricity consumption is moving away from the forecasts, or when there is an unforeseen failure at a power station or at a consumer's premises for example. To overcome this problem, power stations will store energy for Swissgrid, which can be used when needed. They have the ability to adjust their output rapidly, thus compensating for fluctuations in electrical energy, whether excessive or insufficient.
 
-**Swissgrid purchases this control power capacity on specific markets created for this purpose. The amount of power required is put out to tender on online platforms, where power plants bid at a specified price. If a power plant wins the tender, it is obliged to supply the requested control power immediately and for a specified period. Swissgrid pays the power plant for this service. Power plants also receive additional compensation if secondary and tertiary control power is actually used.**
+Swissgrid purchases this control power capacity on specific markets created for this purpose. The amount of power required is put out to tender on online platforms, where power plants bid at a specified price. If a power plant wins the tender, it is obliged to supply the requested control power immediately and within a  a specified period. Swissgrid pays the power plant for this service. Power plants also receive additional compensation if secondary and tertiary control power is actually used.
 
-**This frequency control process takes place in three stages. Firstly, when there are frequency fluctuations, the turbines in power plants throughout Europe react by increasing or decreasing their output, which corresponds to primary control. After a few minutes, primary control is replaced by secondary control, which is performed by Swiss power plants in response to an automatic signal from Swissgrid. After a quarter of an hour, grid operators manually use tertiary control energy, instructing certain power plants in Switzerland or abroad to inject more or less energy into the grid.**
-
-**While secondary control reserve is automatically activated and used continuously, tertiary control reserve is activated manually in the ¼ h time resolution of schedules to support or even substitute secondary control reserve.**
-
-**A positive control area balance signifies an energy balance deficit in the control area (deficient cover/increasing production or decreasing load). A negative control area balance represents an energy balance surplus in the control area (excess cover).**
+As explain, this frequency control process takes place in three stages. Initially, Swissgrid will use primary control. This is used in the event of frequency fluctuations, immediately after the problem has been detected. The turbines in European power stations react by increasing or decreasing their output in order to restore balance. After a few minutes, primary control is replaced by secondary control, which is performed by Swiss power plants in response to an automatic signal from Swissgrid. If the problem persists, and generally after 15 minutes, grid operators manually use tertiary control energy, instructing certain power plants in Switzerland or abroad to inject more or less energy into the grid.
 
 ### Positive and Negative Secondary control with trend
 
-As explained, we will consider control energy as representing the risk of the network. This the reason why we will not go into the details of seasonality and so on, but rather analyse annual trends to see if there is an increase/decrease in its activity.
+As explained, we will consider control energy as representing the risk of the network. This is the reason why we will not go into the details of seasonality and so on, but rather analyse annual trends to see if there is an increase/decrease in its activity.
+
+If the control area shows a positive balance, this indicates a deficit in the control area balance (i.e. insufficient coverage/increase in production  or a decrease in load). Conversely, if the control area balance is negative, this translates into a surplus in the control area energy balance (i.e. excess coverage).
 
 Here is the situation for the secondary control from 2015 to December 2022 :
 
@@ -637,10 +635,19 @@ general_df %>%
        subtitle = "Ammount in thousands of kWh)",
        y = "", x = "")
 ```
-With the exception of the first year, which was very high for both, there has been little change in the following years. 
-The two values appear to be negatively correlated, with the positive secondary control value always slightly higher in absolute terms.
+
+With the exception of the first year, which was very high for both positive and negative control, there has been little change in the following years. 
+The two values appear to be negatively correlated, with the positive secondary control value always slightly higher in absolute terms. 
+As a reminder, the secondary control is used for balance problems lasting between 5 and 15 minutes. While the number of failures does not seem to increase over time, this latest graph doesn't allow us to draw any conclusions about the average duration of failures. 
+To do this, we will compare it with tertiary control and see if it evolves differently.
 
 ### Positive and Negative Tertiary control with trend
+
+We have seen that secondary control, with an average of around 150 millions of kWh per year, had neither increased nor decreased over the years. 
+
+If secondary reserves are used for an extended period, this can completely empty primary reserves. The power system then becomes incapable of managing the resulting power imbalances on its own. This is where tertiary reserves come in.
+
+Let's compare it to the tertiary sector: 
 
 ```{r}
 # Tertiary data for consumption & production
@@ -667,9 +674,15 @@ general_df %>%
        y = "", x = "")
 ```
 
-## Border
+The main difference lies in the last two years. Indeed, with a level similar to the secondary control (around 150 millions of kWh per year), values appear to be constant between 2015 and 2020. 
 
-## Foreign
+We can then see a sharp increase in tertiary activity, with values more than doubling for 2021 and almost quadrupling for 2022. 
+
+This increase, combined with the previous graphs, indicates that the duration of incidents had increased enormously after 2020. The risk of failure is therefore no greater than before, but the time required to rebalance the network has increased. It is also worth noting that we do not have data on the exact duration of outages: we can say that they last more often than 15 minutes, but we do not have information on their exact duration. 
+
+Although it would be very interesting to find out the exact causes of this sudden increase and develop more about control energies, we will not do it in this paper, which focuses more on general network trends and behavior. 
+
+## Border
 
 ## Canton
 
@@ -935,17 +948,13 @@ However, 3 cantons seem to behave in a very specific way, and need to be examine
 Upon further investigation, our research revealed that :
 
 - Glaris : Clearly, with consumption doubling since 2018, it cannot be explained by demographic expansion alone. Operational since 2021, Glarus has begun construction of the largest power plant in the Alps.  
-
 Located at an altitude of 2,500 metres on the Muttsee dam, it will be able to generate up to 2.2 megawatts of power.
-
 The construction and use of the power plant, in addition to generating significant consumption, also enables the canton to be more independent and to expand some of its activities. The production graphs should also show a significant increase in output.
 
 - Soleure : The sharp and rapid fall in consumption in the canton seems unnatural and impossible to explain. It may be a direct error in the data, and therefore not representative of reality. 
-
-However, one possible explanation may lie in the company's desire to improve its energy efficiency in the interests of climate protection. Many companies have already achieved this, and according to *L'agence de l'énergie*, *"Leurs résultats sont remarquables."*
+However, one possible explanation may lie in the company's desire to improve its energy efficiency in the interests of climate protection. Many companies have already achieved this, and according to *L'agence de l'énergie* : *"Leurs résultats sont remarquables."*
 
 - The Valais : The Valais owns some of Switzerland's largest and most popular ski resorts. Swiss ski resorts have also seen an increase in visitor numbers following the Covid, which has restricted Switzerland much less than the rest of Europe.  
-
 Rather than an upward trend, we can see higher consumption peaks in the post-2020 winters. Increased ski tourism and a renewed enthusiasm for the "Magic Pass", a pass that gives free access to numerous resorts throughout Switzerland, have boosted activity in the Valais during the winter season. With 34% of total volume, the Valais was the canton with the highest ski activity in 2021.
 
 
@@ -991,33 +1000,21 @@ canton_df_long %>%
 
 ```
 
+- much higher variance among cantons, with few producing (5 cantons) almost all the electricity.
 
-### Features analysis
+- 2 types of seasonality : argovie and soleure with high values and yearls dips, Berne, grisons and Valais with classic seasonality, prdocing more during summer than winter.
 
-Features analysis to check the strength of the seasonality/trend
+- First group : use nuclera power plants
+how it work ->
 
-```{r}
-## Features analysis
-canton_features_C %>%
-  ggplot(aes(x = trend_strength, y = seasonal_strength_year, col = Cantons)) +
-  geom_point(size = 2) +
-  labs(title = "Features analysis for consumption",
-       y = "seasonality", x = "trend")+
-  guides(col = guide_legend(nrow = 9))
-```
+- Second group : alpine cantons, use mainly hydrolique power.
+-> how it work
 
-test
 
-```{r}
-canton_features_P %>%
-  ggplot(aes(x = trend_strength, y = seasonal_strength_year, col = Cantons)) +
-  geom_point(size = 2) +
-  labs(title = "Features analysis for produciton",
-       y = "seasonality", x = "trend") +
-  guides(col = guide_legend(nrow = 9))
-```
 
-## Mapping
+## Maps
+
+
 
 ```{r, out.width = "100%"}
 ggplot(Swiss_data) +
