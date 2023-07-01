@@ -371,6 +371,23 @@ cons.m.tot <- general_dfM %>%
   group_by(month) %>% summarize(Consumption = sum(energy_cons)/1000000) %>%
   as_tsibble()
 
+prod.m.tot <- general_dfM %>%
+  group_by(month) %>% summarize(Production = sum(energy_prod)/1000000) %>%
+  as_tsibble()
+
+cons.d.tot <- general_df %>%
+  group_by(date) %>% summarize(Consumption = sum(energy_cons)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2020-01-01" ~ .) %>%
+  select(date, Consumption)
+
+prod.d.tot <- general_df %>%
+  group_by(date) %>% summarize(Production = sum(energy_prod)/1000000) %>%
+  as_tsibble() %>%
+  filter_index("2020-01-01" ~ .) %>%
+  select(date, Production)
+
+
 data_2023 <- read_excel("~/GitHub/Master-Thesis/Data/Forecast/EnergieUebersichtCH-2023.xls", 
                             sheet = "Zeitreihen0h15") %>%
   mutate(Time = ymd_hms(Timestamp), .before = 1) %>%
@@ -405,6 +422,102 @@ cons.m.test <- data_2023_M %>%
   group_by(month) %>%
   summarize(Consumption = sum(energy_cons)/1000000) %>%
   as_tsibble(index = month, key = Consumption)
+
+# Monhtly Consumption models
+
+## ARIMA
+arima.consm.fit <- cons.m.tot %>%
+  filter_index(. ~ "2021-12") %>%
+  model(auto = ARIMA(Consumption, stepwise = FALSE, approximation = FALSE))
+
+## ETS
+# Adding trend and seasonality
+ets.consm.fit <- cons.m.tot %>% 
+  filter_index(. ~ "2021-12") %>%
+  model(mam = ETS(Consumption ~ error("M") + trend("A") + season("M")))
+
+## TSLM
+# fitting a TSLM          
+tslm.consm.fit <- cons.m.tot %>% 
+  filter_index(. ~ "2021-12") %>%
+  model(tslm = TSLM(Consumption ~ trend() + season()))
+
+# Monhtly Production models
+
+## ARIMA
+arima.prodm.fit <- prod.m.tot %>%
+  filter_index(. ~ "2021-12") %>%
+  model(auto = ARIMA(Production, stepwise = FALSE, approximation = FALSE))
+
+## ETS
+# Adding trend and seasonality
+ets.prodm.fit <- prod.m.tot %>% 
+  filter_index(. ~ "2021-12") %>%
+  model(mam = ETS(Production ~ error("M") + trend("A") + season("M")))
+
+## TSLM
+# fitting a TSLM          
+tslm.prodm.fit <- prod.m.tot %>% 
+  filter_index(. ~ "2021-12") %>%
+  model(tslm = TSLM(Production ~ trend() + season()))
+
+# Daily Consumption models
+
+## ETS 
+ets.d.model <- decomposition_model(
+  STL(Consumption),
+  ETS(season_adjust ~ season("N"))
+)
+
+ets.d.fit <- cons.d.tot %>%
+  model(stl_ets = ets.d.model)
+
+## Arima
+arima.d.model <- decomposition_model(
+  STL(Consumption),
+  ARIMA(season_adjust ~ season(12))
+)
+
+arima.d.fit <- cons.d.tot %>%
+  model(stl_arima = arima.d.model) 
+
+## TSLM
+tslm.d.model <- decomposition_model(
+  STL(Consumption),
+  TSLM(season_adjust ~ season(12))
+)
+
+tslm.d.fit <- cons.d.tot %>%
+  model(stl_tslm = tslm.d.model) 
+
+# Daily Production models
+
+## ETS 
+ets.d.model.p <- decomposition_model(
+  STL(Production),
+  ETS(season_adjust ~ season("N"))
+)
+
+ets.d.fit.p <- prod.d.tot %>%
+  model(stl_ets = ets.d.model.p)
+
+## Arima
+arima.d.model.p <- decomposition_model(
+  STL(Production),
+  ARIMA(season_adjust ~ season(12))
+)
+
+arima.d.fit.p <- prod.d.tot %>%
+  model(stl_arima = arima.d.model.p) 
+
+## TSLM
+tslm.d.model.p <- decomposition_model(
+  STL(Production),
+  TSLM(season_adjust ~ season(12))
+)
+
+tslm.d.fit.p <- prod.d.tot %>%
+  model(stl_tslm = tslm.d.model.p) 
 
 # ==============================================================================
 

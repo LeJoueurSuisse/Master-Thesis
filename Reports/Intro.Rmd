@@ -1141,6 +1141,143 @@ Let's anaylse them separalty :
 
 # Forecasting 
 
+## Monthly
+
+```{r, out.width = "100%"}
+# Monhtly consumption
+
+## ETS
+ets.consm.fit %>% 
+  forecast(h = "17 months") %>%
+  autoplot(cons.m.tot %>%
+             filter_index("2018-01-01" ~ "2021-12"), level = NULL, size = c(1.2)) +
+  labs(title = "Monthly forecast using the ETS method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## Arima
+arima.consm.fit %>%
+  forecast(h = 17) %>%
+  autoplot(cons.m.tot %>%
+             filter_index("2018-01-01" ~ "2021-12")) +
+  labs(title = "Monthly forecast using the Arima method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## TSLM
+
+tslm.consm.fit %>%
+  forecast(h=17) %>%
+  autoplot(cons.m.tot %>%
+             filter_index("2018-01-01" ~ "2021-12")) +
+  labs(title = "Monthly forecast using the TSLM method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+```
+
+Production
+
+```{r, out.width = "100%"}
+# Monhtly consumption
+
+## ETS
+ets.prodm.fit %>% 
+  forecast(h = "17 months") %>%
+  autoplot(prod.m.tot %>%
+             filter_index("2018-01-01" ~ "2021-12"), level = NULL, size = c(1.2)) +
+  labs(title = "Monthly forecast using the ETS method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## Arima
+arima.prodm.fit %>%
+  forecast(h = 17) %>%
+  autoplot(prod.m.tot %>%
+             filter_index("2018-01-01" ~ "2021-12")) +
+  labs(title = "Monthly forecast using the Arima method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## TSLM
+
+tslm.prodm.fit %>%
+  forecast(h=17) %>%
+  autoplot(prod.m.tot %>%
+             filter_index("2018-01-01" ~ "2021-12")) +
+  labs(title = "Monthly forecast using the TSLM method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+```
+
+## Daily
+
+```{r, out.width = "100%"}
+# Daily Consumption
+
+## ETS 
+ets.d.fit %>%
+  forecast(h = 365) %>%
+  autoplot(cons.d.tot %>%
+             filter_index("2020-01-01" ~ .)) +
+  labs(title = "Daily forecast using the ETS method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## Arima
+arima.d.fit %>%
+  forecast(h = 365) %>%
+  autoplot(cons.d.tot %>%
+             filter_index("2020-01-01" ~ .)) +
+  labs(title = "Daily forecast using the ARIMA method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## TSLM
+tslm.d.fit %>%
+  forecast(h = 365) %>%
+  autoplot(cons.d.tot %>%
+             filter_index("2020-01-01" ~ .)) +
+  labs(title = "Daily forecast using the TSLM method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+```
+
+
+Production
+
+```{r, out.width = "100%"}
+# Daily Production
+
+## ETS 
+ets.d.fit.p %>%
+  forecast(h = 365) %>%
+  autoplot(prod.d.tot %>%
+             filter_index("2020-01-01" ~ .)) +
+  labs(title = "Daily forecast using the ETS method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## Arima
+arima.d.fit.p %>%
+  forecast(h = 365) %>%
+  autoplot(prod.d.tot %>%
+             filter_index("2020-01-01" ~ .)) +
+  labs(title = "Daily forecast using the ARIMA method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+
+## TSLM
+tslm.d.fit.p %>%
+  forecast(h = 365) %>%
+  autoplot(prod.d.tot %>%
+             filter_index("2020-01-01" ~ .)) +
+  labs(title = "Daily forecast using the TSLM method",
+       subtitle = "Ammount in millions of kWh",
+       y = "", x = "")
+```
+
+## Results and Limits
+
 # Conclusion and possible extension
 
 # References and Appendix

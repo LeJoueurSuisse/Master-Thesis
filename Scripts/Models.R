@@ -18,13 +18,25 @@ cons.m.tot %>%
   model(arima = ARIMA(Consumption)) %>% 
   gg_tsresiduals()
 
-#Trying Different ARIMA models (Note to always include differencing of 1)
+
+
 # Default R ARIMA
-cons.m.tot %>%
-  model(ARIMA(Consumption)) %>%
-  forecast(h=5) %>%
+cons.m.fit <- cons.m.tot %>%
+  filter_index(. ~ "2021-12") %>%
+  model(auto = ARIMA(Consumption, stepwise = FALSE, approximation = FALSE))
+
+cons.m.fit %>%
+  forecast(h = 17) %>%
   autoplot(cons.m.tot %>%
-             filter_index("2020-01-01" ~ .))
+             filter_index("2018-01-01" ~ "2021-12"))
+
+# =================================================
+
+cons.m.fit %>%
+  accuracy()
+
+cons.d.fit %>%
+  accuracy()
 
 #AR1
 cons.m.tot %>%
@@ -82,6 +94,19 @@ arima.fit %>%
 
 arima.fit %>% accuracy()
 
+arima.d.fit <- cons.d.tot %>% 
+  model(arima211 = ARIMA(Consumption ~ pdq(2,1,1)),
+        arima012 = ARIMA(Consumption ~ pdq(0,1,2)),
+        arima210 = ARIMA(Consumption ~ pdq(2,1,0)),
+        stepwise = ARIMA(Consumption),
+        search = ARIMA(Consumption, stepwise = FALSE))
+
+arima.d.fit %>%
+  glance() %>% arrange(AICc) %>% select(1:7)
+
+arima.d.fit %>% accuracy()
+
+
 ################
 ### ETS
 ###############
@@ -134,7 +159,8 @@ ets2.consm.fit %>% forecast(h = "2 years") %>%
 ets2.consm.fit %>%
   glance() %>% arrange(AICc) %>% select(1:7)
 
-
+ets.consm.fit %>% forecast(h = "17 months") %>%
+  autoplot(cons.m.tot, level = NULL, size = c(1.2)) + xlab("Year")
 ##########
 ##TSLM##
 #########
@@ -147,6 +173,10 @@ cons.m.tot %>%
 # fitting a TSLM          
 tslm.consm.fit <- cons.m.tot %>%
   model(tslm = TSLM(Consumption ~ trend() + season()))
+
+tslm.consm.fit %>%
+  forecast(h=17) %>%
+  autoplot(cons.m.tot)
 
 cons.m.tot %>%
   autoplot(Consumption, col = "gray") +
@@ -193,3 +223,60 @@ tslm.fcst <- cons.m.tot %>%
   forecast(h=5)
 
 tslm.fcst %>% autoplot(cons.m.tot)
+
+
+
+# Daily Consumption
+
+## ETS 
+ets.d.model <- decomposition_model(
+  STL(Consumption),
+  ETS(season_adjust ~ season("N"))
+)
+
+ets.d.fit <- cons.d.tot %>%
+  model(stl_ets = ets.d.model)
+
+ets.d.fit %>%
+  forecast(h = 365) %>%
+  autoplot(cons.d.tot %>%
+             filter_index("2020-01-01" ~ .))
+
+ets.d.model %>%
+  accuracy()
+
+## Arima
+arima.d.model <- decomposition_model(
+  STL(Consumption),
+  ARIMA(season_adjust ~ season(12))
+)
+
+arima.d.fit <- cons.d.tot %>%
+  model(stl_arima = arima.d.model) 
+
+arima.d.fit %>%
+  forecast(h = 365) %>%
+  autoplot(cons.d.tot %>%
+             filter_index("2020-01-01" ~ .))
+
+arima.d.fit %>%
+  accuracy()
+
+## TSLM
+tslm.d.model <- decomposition_model(
+  STL(Consumption),
+  TSLM(season_adjust ~ season(12))
+)
+
+tslm.d.fit <- cons.d.tot %>%
+  model(stl_tslm = tslm.d.model) 
+
+tslm.d.fit %>%
+  forecast(h = 365) %>%
+  autoplot(cons.d.tot %>%
+             filter_index("2020-01-01" ~ .))
+
+tslm.d.model %>%
+  accuracy()
+
+
