@@ -60,7 +60,8 @@ for(i in 13:(length(data_files))){
 # Groups all the Data into a single for general use
 
 data_all <- rbind(Data_2015, Data_2016, Data_2017, Data_2018, Data_2019,
-                  Data_2020, Data_2021, Data_2022) %>% clean_names() %>%
+                  Data_2020, Data_2021, Data_2022) %>% 
+  clean_names() %>%
   mutate(day_time = ifelse(hour > "07:00:00" & hour <= "19:00:00", 
                        "Day", "Night")) %>%
   mutate(month = month(ymd(month), label = TRUE)) %>%
@@ -100,7 +101,8 @@ general_df <- data_all %>% select(all_of(general_var)) %>%
 # A monthly version
 
 general_dfM <- general_df %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
+  mutate(month = yearmonth(date), 
+         year = year(date)) %>%
   as_tibble()
 
 # ==============================================================================
@@ -360,6 +362,49 @@ Swiss_data <- Swiss_data %>%
 
 # we have to ajust data for grouped area 
 # consumption will be based on population and production on the size of the canton
+
+# ==============================================================================
+
+# Forecast
+
+cons.m.tot <- general_dfM %>%
+  group_by(month) %>% summarize(Consumption = sum(energy_cons)/1000000) %>%
+  as_tsibble()
+
+data_2023 <- read_excel("~/GitHub/Master-Thesis/Data/Forecast/EnergieUebersichtCH-2023.xls", 
+                            sheet = "Zeitreihen0h15") %>%
+  mutate(Time = ymd_hms(Timestamp), .before = 1) %>%
+  separate(Timestamp, c('Date', 'Hour'), sep = " ") %>% 
+  mutate(Date = as.Date(Date, format = "%Y-%m-%d")) %>% 
+  mutate(Month = as.Date(cut(Date, breaks = "months")),
+         Year = as.Date(cut(Date, breaks = "years"))) %>%
+  relocate(c(Year, Month), .after = Time) %>%
+  clean_names() %>%
+  mutate(month = month(ymd(month), label = TRUE)) %>%
+  mutate(hour = hour(hms(hour))) %>%
+  mutate(wday = wday(date, label = TRUE, week_start = 1)) %>%
+  mutate(year = year(date)) %>%
+  mutate(hourly = format(as.POSIXlt(time), "%Y-%m-%d %H:00:00")) %>%
+  mutate(hourly = ymd_hms(hourly))%>%
+  relocate(c(hourly, year, month, date, wday, hour), .after = time) %>%
+  select(all_of(general_var[-8])) %>%
+  rename(end_users_cons = total_energy_consumed_by_end_users_in_the_swiss_controlblock_k_wh,
+         energy_prod = total_energy_production_swiss_controlblock_k_wh,
+         energy_cons = total_energy_consumption_swiss_controlblock_k_wh,
+         pos_second = positive_secundary_control_energy_k_wh,
+         neg_second = negative_secundary_control_energy_k_wh,
+         pos_tertiary = positive_tertiary_control_energy_k_wh,
+         neg_tertiary = negative_tertiary_control_energy_k_wh)
+
+data_2023_M <- data_2023 %>% 
+  mutate(month = yearmonth(date), 
+         year = year(date)) %>%
+  as_tibble()
+
+cons.m.test <- data_2023_M %>%
+  group_by(month) %>%
+  summarize(Consumption = sum(energy_cons)/1000000) %>%
+  as_tsibble(index = month, key = Consumption)
 
 # ==============================================================================
 

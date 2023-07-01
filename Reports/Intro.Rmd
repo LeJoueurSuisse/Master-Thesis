@@ -317,7 +317,7 @@ We can now have a first look on the Daily Consumption :
 general_df %>%
   group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
   as_tsibble() %>%
-  filter_index("2018-01-01" ~ "2022-11-01") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() +
   labs(title = "Total energy consumed in Switzerland",
        subtitle = "Ammount in millions of kWh",
@@ -332,7 +332,7 @@ Let's now have a look on the Daily Production to see if we get similar results :
 general_df %>%
   group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
   as_tsibble() %>%
-  filter_index("2018-01-01" ~ "2022-11-01") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() +
   labs(title = "Total energy produced in Switzerland",
        subtitle = "Ammount in millions of kWh",
@@ -355,7 +355,6 @@ Here is the graph monthly consumption :
 general_dfM %>%
   group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
   as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
   autoplot() + 
   labs(title = "Total energy consumed by Switzerland",
        subtitle = "Ammount in millions of kWh",
@@ -374,7 +373,6 @@ This clearly confirms what we have said previously :
 general_dfM %>%
   group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
   as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
   autoplot() + 
   labs(title = "Total energy produced by Switzerland",
        subtitle = "Ammount in millions of kWh",
@@ -399,7 +397,7 @@ general_dfM %>%
   group_by(month) %>%
   summarise(Total = sum(energy_cons)/1000000) %>%
   as_tsibble() %>%
-  filter_index("2016-01-01" ~ "2022-11-01") %>%
+  filter_index("2016-01-01" ~ .) %>%
   gg_subseries(Total) +
   ylab("Total sales") + 
   xlab("Month") +
@@ -416,7 +414,7 @@ general_dfM %>%
   group_by(month) %>%
   summarise(Total = sum(energy_prod)/1000000) %>%
   as_tsibble() %>%
-  filter_index("2016-01-01" ~ "2022-11-01") %>%
+  filter_index("2016-01-01" ~ .) %>%
   gg_subseries(Total) +
   ylab("Total sales") + 
   xlab("Month") +
@@ -782,7 +780,7 @@ canton_df_long %>%
   group_by(month, Cantons) %>%
   summarize(total = sum(consumption)/1000000) %>%
   as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() + 
   labs(title = "Monthly consumption per canton since 2018",
        subtitle = "Ammount in millions of kWh)",
@@ -807,7 +805,7 @@ canton_df_long %>%
   group_by(month, Cantons) %>%
   summarize(total = sum(production)/1000000) %>%
   as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() +
   labs(title = "Monthly production per canton since 2018",
        subtitle = "Ammount in millions of kWh)",
@@ -830,7 +828,7 @@ canton_df_long %>%
   group_by(month, Cantons) %>%
   summarize(total_cons = sum(consumption)/1000000) %>% 
   as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   model(STL(total_cons))%>%
   components() %>% autoplot() + 
   guides(
@@ -856,7 +854,7 @@ canton_df_long %>%
   group_by(month, Cantons) %>%
   summarize(total_prod = sum(production)/1000000) %>% 
   as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   model(STL(total_prod)) %>%
   components() %>% autoplot() + 
   guides(
@@ -898,7 +896,7 @@ canton_df_long %>%
   summarize(total = sum(consumption)/1000000) %>%
   as_tsibble(index = month, key = Cantons) %>%
   mutate(xlabel = "") %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() + 
   facet_wrap(~Cantons, scales = "free") +
   guides(colour="none") +
@@ -915,7 +913,7 @@ canton_df_long %>%
   group_by(month, Cantons) %>%
   summarize(total = sum(consumption)/1000000) %>%
   as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() + 
   facet_wrap(~Cantons) +
   guides(colour="none") +
@@ -958,7 +956,7 @@ canton_df_long %>%
   group_by(month, Cantons) %>%
   summarize(total = sum(production)/1000000) %>%
   as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() + 
   facet_wrap(~Cantons, scales = "free") +
   guides(colour="none") +
@@ -975,7 +973,7 @@ canton_df_long %>%
   group_by(month, Cantons) %>%
   summarize(total = sum(production)/1000000) %>%
   as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
+  filter_index("2018-01-01" ~ .) %>% 
   autoplot() + 
   facet_wrap(~Cantons) +
   guides(colour="none") +
