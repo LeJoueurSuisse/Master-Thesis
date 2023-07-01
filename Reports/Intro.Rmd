@@ -1143,18 +1143,16 @@ Let's anaylse them separalty :
 
 ## Monthly
 
+Best model for monthly consumption :
+
+|.model|     Mean Error      | RMSE    | MAE  |
+|-----|--------------|-----------------|------|
+| arima | 12.735796937830064 | 122     | 88.0 |
+| ets   | 0.5523432780314904 | 128     | 97.2 |
+| tslm  | 0.0000000000000433 | 129     | 96.7 |
+
 ```{r, out.width = "100%"}
 # Monhtly consumption
-
-## ETS
-ets.consm.fit %>% 
-  forecast(h = "17 months") %>%
-  autoplot(cons.m.tot %>%
-             filter_index("2018-01-01" ~ "2021-12"), level = NULL, size = c(1.2)) +
-  labs(title = "Monthly forecast using the ETS method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
-
 ## Arima
 arima.consm.fit %>%
   forecast(h = 17) %>%
@@ -1163,32 +1161,20 @@ arima.consm.fit %>%
   labs(title = "Monthly forecast using the Arima method",
        subtitle = "Ammount in millions of kWh",
        y = "", x = "")
-
-## TSLM
-
-tslm.consm.fit %>%
-  forecast(h=17) %>%
-  autoplot(cons.m.tot %>%
-             filter_index("2018-01-01" ~ "2021-12")) +
-  labs(title = "Monthly forecast using the TSLM method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
 ```
 
 Production
 
+Best model for monthly production :
+
+|.model|     Mean Error      | RMSE    | MAE  |
+|-----|--------------|-----------------|------|
+| arima | 19.125386139859717 | 440     | 306  |
+| ets   | -59.44592615940835 | 473     | 361  |
+| tslm  | 0.0000000000000596 | 514     | 400  |
+
 ```{r, out.width = "100%"}
 # Monhtly consumption
-
-## ETS
-ets.prodm.fit %>% 
-  forecast(h = "17 months") %>%
-  autoplot(prod.m.tot %>%
-             filter_index("2018-01-01" ~ "2021-12"), level = NULL, size = c(1.2)) +
-  labs(title = "Monthly forecast using the ETS method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
-
 ## Arima
 arima.prodm.fit %>%
   forecast(h = 17) %>%
@@ -1197,47 +1183,18 @@ arima.prodm.fit %>%
   labs(title = "Monthly forecast using the Arima method",
        subtitle = "Ammount in millions of kWh",
        y = "", x = "")
-
-## TSLM
-
-tslm.prodm.fit %>%
-  forecast(h=17) %>%
-  autoplot(prod.m.tot %>%
-             filter_index("2018-01-01" ~ "2021-12")) +
-  labs(title = "Monthly forecast using the TSLM method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
 ```
 
 ## Daily
 
 ```{r, out.width = "100%"}
 # Daily Consumption
-
-## ETS 
-ets.d.fit %>%
-  forecast(h = 365) %>%
-  autoplot(cons.d.tot %>%
-             filter_index("2020-01-01" ~ .)) +
-  labs(title = "Daily forecast using the ETS method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
-
 ## Arima
 arima.d.fit %>%
   forecast(h = 365) %>%
   autoplot(cons.d.tot %>%
              filter_index("2020-01-01" ~ .)) +
   labs(title = "Daily forecast using the ARIMA method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
-
-## TSLM
-tslm.d.fit %>%
-  forecast(h = 365) %>%
-  autoplot(cons.d.tot %>%
-             filter_index("2020-01-01" ~ .)) +
-  labs(title = "Daily forecast using the TSLM method",
        subtitle = "Ammount in millions of kWh",
        y = "", x = "")
 ```
@@ -1247,31 +1204,12 @@ Production
 
 ```{r, out.width = "100%"}
 # Daily Production
-
-## ETS 
-ets.d.fit.p %>%
-  forecast(h = 365) %>%
-  autoplot(prod.d.tot %>%
-             filter_index("2020-01-01" ~ .)) +
-  labs(title = "Daily forecast using the ETS method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
-
 ## Arima
 arima.d.fit.p %>%
   forecast(h = 365) %>%
   autoplot(prod.d.tot %>%
              filter_index("2020-01-01" ~ .)) +
   labs(title = "Daily forecast using the ARIMA method",
-       subtitle = "Ammount in millions of kWh",
-       y = "", x = "")
-
-## TSLM
-tslm.d.fit.p %>%
-  forecast(h = 365) %>%
-  autoplot(prod.d.tot %>%
-             filter_index("2020-01-01" ~ .)) +
-  labs(title = "Daily forecast using the TSLM method",
        subtitle = "Ammount in millions of kWh",
        y = "", x = "")
 ```

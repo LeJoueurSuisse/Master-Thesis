@@ -428,13 +428,13 @@ cons.m.test <- data_2023_M %>%
 ## ARIMA
 arima.consm.fit <- cons.m.tot %>%
   filter_index(. ~ "2021-12") %>%
-  model(auto = ARIMA(Consumption, stepwise = FALSE, approximation = FALSE))
+  model(arima = ARIMA(Consumption, stepwise = FALSE, approximation = FALSE))
 
 ## ETS
 # Adding trend and seasonality
 ets.consm.fit <- cons.m.tot %>% 
   filter_index(. ~ "2021-12") %>%
-  model(mam = ETS(Consumption ~ error("M") + trend("A") + season("M")))
+  model(ets = ETS(Consumption ~ error("M") + trend("A") + season("M")))
 
 ## TSLM
 # fitting a TSLM          
@@ -447,13 +447,13 @@ tslm.consm.fit <- cons.m.tot %>%
 ## ARIMA
 arima.prodm.fit <- prod.m.tot %>%
   filter_index(. ~ "2021-12") %>%
-  model(auto = ARIMA(Production, stepwise = FALSE, approximation = FALSE))
+  model(arima = ARIMA(Production, stepwise = FALSE, approximation = FALSE))
 
 ## ETS
 # Adding trend and seasonality
 ets.prodm.fit <- prod.m.tot %>% 
   filter_index(. ~ "2021-12") %>%
-  model(mam = ETS(Production ~ error("M") + trend("A") + season("M")))
+  model(ets = ETS(Production ~ error("M") + trend("A") + season("M")))
 
 ## TSLM
 # fitting a TSLM          
