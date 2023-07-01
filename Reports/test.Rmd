@@ -1,16 +1,16 @@
 ---
-title: "Introduction"
-author: "Allan"
-date: '2023-06-14'
+title: "Master Thesis"
+author: ""
+date: ''
 output:
   bookdown::pdf_document2:
-    toc: yes
+    toc: no
     toc_depth: '3'
   bookdown::word_document2:
-    toc: yes
+    toc: no
     toc_depth: '3'
   bookdown:html_document2:
-    toc: yes
+    toc: no
     toc_depth: 3
     number_sections: yes
     theme: paper
@@ -19,20 +19,75 @@ editor_options:
     wrap: 72
 always_allow_html: yes
 link-citations: yes
-linkcolor: blue
+linkcolor: black
 subparagraph: yes
 citecolor: blue
 urlcolor: blue
 header-includes:
   - \counterwithin{figure}{section}
+  - \pagenumbering{gobble}
+  - \usepackage{titling}
+  - \pretitle{\begin{center}\Huge
+    \includegraphics[width=3in,height=2in]{LogoUnil.png}\LARGE\\}
+  - \posttitle{\end{center}}
+  - \preauthor{\begin{center}\large}
+  - \postauthor{\end{center}}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[LO,LE]{Allan Mivelaz}
+  - \fancyhead[RO,RE]{Electricity in Switzerland, an immersion in the grid}
+  - \fancyfoot[CO,CE]{}
+  - \fancyfoot[LE,RO]{\thepage}
 ---
 
+\huge \centerline{\textbf{Electricity in Switzerland :}}
+\huge \centerline{\textbf{an immersion in the grid}}
 
-```{r, echo = FALSE, message = FALSE, include=FALSE}
-source(here::here("Scripts/SetUp.R"))
+\
+
+\Large \centerline{July 3, 2023}
+
+\
+
+\large \textit{Author:} \hfill \textit{Supervisors :}
+
+Allan Mivelaz \hfill Prof. Valerie Chavez
+
+\normalsize
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+
+Master in management, 
+
+Orientation Business Analytics 
+
+UNIL \hfill \textbf{\textit{HEC Lausanne}}
+
+\normalsize
+
+
+\newpage
+\pagenumbering{arabic}
+\renewcommand\contentsname{Contents}
+```{=latex}
+\setcounter{tocdepth}{3}
+\tableofcontents
 ```
- 
-Here is quick overlook of our dataset :
+\newpage
+
+
+ Here is quick overlook of our dataset :
 
 | Dataset          | No. observations |                                                     | Name of the DS  |
 |--------------|--------------|-------------------------------|--------------|
@@ -59,4 +114,268 @@ Best model for monthly production :
 | ets   | -59.44592615940835 | 473     | 361  |
 | tslm  | 0.0000000000000596 | 514     | 400  |
 
+
+
+# Exectutive Summary
+
+**Approach and Purpose**
+
+Master thesis, internship oriented
+Different subject
+Actual and related to my country
+
+
+**Analysis and Data Insights**
+
+Sissgrid
+comprendre ou est produite et consommée l'energie
+Comment le réseau marche et ses complexité.
+Production and consumption all over the country
+Different level of aggregation
+Seasonity
+
+**Recommendation and Suggestions**
+
+Forecast and risk
+
+# Introduction
+
+## Electricity
+
+Electricity, its price, consumption and production are at the heart of current debates. Whether it's environmental issues linked to the climate crisis and over-consumption, the economic challenges posed by rising prices around the world, or political debates such as the blacklisting of Russia, a major producer of natural gas for Switzerland, following the war in Ukraine, electricity is a major source of concern in Europe today. Over and above these aspects relating to Europe in general, Switzerland could be facing a real electricity shortage problem, given its dependence on imports. This is the point made by *l'economiesuisse* in [this article](https://www.economiesuisse.ch/fr/articles/energieticker-f), which states that : 
+
+*"Une pénurie d'énergie l'hiver prochain: tel est le scénario que nous devons éviter par tous les moyens. Une telle situation serait dévastatrice pour l'économie. Dans le dossier «Sur le front de l'énergie», economiesuisse commente l'actualité et évalue les nouveaux développements sous l'angle économique."* 
+ 
+The situation in Switzerland is complex and unique. Situated at the center of Europe, it can easily take advantage of imports and exports with its neighbours. What is more, Switzerland is a country with a lot of nature, lakes and mountainous regions, so it can use its topology to its advantage. Despite these advantages, and despite the fact that Switzerland still produces more electricity than it consumes, it cannot do without the help of its neighbours for its electricity production, particularly given the seasonal nature of this resource and the difficulty of storing it. Indeed, while Switzerland manages to be self-sufficient during the summer period (May to October), which is characterised by high production and lower consumption, the picture is different in winter: with consumption up by around 25% compared with the summer, coupled with a drop in local production due to lower river flows in winter, Switzerland has plenty to worry about. In fact, RST rightly points this out in its [article](https://www.rts.ch/info/economie/13304056-penurie-delectricite-cet-hiver-les-enjeux-en-cinq-questions.html) on the shortage that could affect Switzerland during winter.
+
+Beyond the purely economic aspect, the ecological component of electricity consumption and production is coming back more and more: fossil fuels to be banned, a desire to get out of nuclear power and the will to invest massively in green, renewable energies have invaded Switzerland. However, the will to do the right thing is not enough: we need to find the right compromise between the ecological transition and the needs of the population. Whether we like it or not, Swiss electricity needs will always take precedence over environmental issues.
+
+It is the latter that we are going to focus on in this paper: **electricity in Switzerland, where is it consumed or produced, and how? What are the main factors governing the grid?** To answer this question, we will be using data provided by Swissgrid, the company that manages all electricity transmission in Switzerland. 
+
+## Swiss Grid
+
+As previously stated, our main task will be to analyze the data provided by Swissgrib in order to better understand what drives the network. Once done, we will try to interpret these results in order to build a prediction model for the same data at different time scales. Before we can use their data, it is important to understand who Swissgrid is and what role it plays. Here are some of the main components that make up the company:
+
+**Generation**
+
+Despite its essential role in the transmission of electricity, it is important to emphasise that Swissgrid does not produce any electricity. Its sole role is to transport electricity between power plants and consumption areas via its network. Its mission, in addition to supplying energy where it is needed, is to ensure the stability of the grid: the quantity injected into the grid must therefore be re-evaluated according to demand at all times.
+
+**Grid operation**
+
+For the grid to function properly, it is essential that production and consumption are always in balance: Swissgrid must therefore ensure at all times that the energy consumed and produced are equal so that it can be transported safely. This is where their forecasting model comes into play and will be used to prevent any congestion or overloads. This information is generally transmitted directly to the power stations, which will increase or decrease power according to the desired volume.
+
+**Market development**
+
+Swissgrid is not only involved in the development and modernisation of its transmission system: it also ensures the development of the market.In fact it is responsible for minimising the costs associated with procurement, by varying suppliers abroad, for example. It is also Swissgrid that will make it possible, by means of ever more innovative infrastructures, to offer Swiss power stations new possibilities for transmitting the electricity they produce more easily.
+
+**Maintenance and repairs**
+
+Among its many tasks, one of the most essential remains the maintenance and upkeep of its infrastructure: Swissgrid must ensure that its pylons, lines, substations and so on are in good working order so that electricity flows safely. Divided into seven sites, they will be responsible for any repairs required.
+
+**Infrastructure**
+
+Swissgrid is responsible for planning, replacing and expanding the entire transmission system infrastructure. This is a complex task, as the grid is already experiencing congestion, new power plants are being connected on a regular basis, and the dynamics of the electricity markets continue to grow. As a result, it is necessary to expand the transmission network, which can be done through the targeted modernization and dismantling of parts of the network, rather than through the construction of new lines.
+
+**Networking**
+
+As Switzerland is at the heart of Europe, it is an integral part of its interconnected network. This collaboration between countries enables Switzerland and Europe to avoid any congestion or network failures. Ideally located, Switzerland acts as a transit country, storing a large quantity of electricity that will pass through the interconnected network.
+
+**Consumption**
+
+Although consumers play a central role in network stability, they are not directly connected to the network. In the event of imbalance, Swissgrid will, for example, ask cold stores or incineration plants to modify their consumption in order to restore the desired voltage level. The only exception is the Swiss Federal Railways (SBB), which are directly connected to the transmission grid.
+
+**Switching substations**
+
+Coupling stations located in substations serve as connection points between grid lines. In some installations, energy is transformed and transmitted to different levels of the grid. In addition, Swissgrid's grid control centers carry out line disconnection and connection operations in the substations, using coupling maneuvers to direct the flow of electricity.
+
+**Network levels**
+
+To enable end consumers to use the energy generated by power plants, voltage is stepped down to 400 and 230 volts across seven network levels. These levels include extra-high voltage, high voltage, medium voltage and low voltage, as well as three transformer levels linking them together.
+
+**Transmission grid**
+
+The grid is made up of power lines operating at 380 kilovolts or 220 kilovolts. These two voltages have their specific uses: the former is mainly used for importing and exporting electricity, while the latter is mainly used by the large Swiss power plants to supply their energy. It is necessary to use kilovolt voltages on the transmission network to enable efficient transport of energy over long distances, while minimizing losses.
+
+## The Network
+
+Power is an invisible but omnipresent element in our lives. We use it instinctively and often without thinking, whether it is turning on the light in the morning, starting the coffee machine or listening to the radio.
+
+In Switzerland, electricity is available 24 hours a day, 365 days a year. But that does not go without saying, especially in winter, when electricity producers face particular challenges. The need for energy increases with snowfall, icy conditions and extreme cold. Unfortunately, electricity production in Switzerland cannot fully cover these additional needs, making the country dependent on electricity imports in winter.
+
+As electricity cannot be stored on the transmission network, it is crucial that current injection and extraction are always equal. But ensuring the efficient transformation of electricity and maintaining a constant balance between energy production and consumption are real challenges. That is where Swissgrid comes in. They ensure that the same amount of electricity is supplied at all times as is used at any given moment, as well as the constant frequency of 50 Hertz. Swissgrid works 24 hours a day, 7 days a week to achieve this. To keep the grid in balance at all times, careful planning with power plants and electricity traders is essential. 
+
+However, the Swiss transmission network can experience fluctuations and unforeseen loads. In such cases, operators must intervene to restore the balance by injecting more energy where needed, in order to bring the grid frequency back to its target value of 50 Hertz. It should be noted that this frequency is also maintained throughout the European interconnected grid, in collaboration with the other transmission system operators. When unforeseen fluctuations occur, the operators of the grid control centers use control energy. This is a reserve of energy that power plants make available to Swissgrid, and which can be used when needed. Power plants can increase or reduce their output at short notice, thus compensating for power imbalances. 
+
+On the European interconnected grid, balancing energy production and consumption is a process in 3 steps. First comes the primary control energy. It is activated in the event of frequency fluctuations. Turbines in power plants throughout Europe react by adjusting their output. After a few minutes, this phase is replaced by secondary control, which is managed by Swiss power plants in response to an automatic signal from Swissgrid. Finally, after a quarter of an hour, operators use tertiary control energy manually. They give instructions to certain power plants in Switzerland or abroad to inject more or less energy into the grid. For more details on energy control, see the section devoted to it later in this paper.
+
+The network in figures :
+
+- Voltage of 380 and 220 kilovolts
+
+- 250'000 kilometres long (6x around the world, the entire electrical network)
+
+- 6'700 kilometres long (length of transmission network lines only)
+
+- 12'000 pylons
+
+- 147 substations
+
+- 41 cross-border lines
+
+- 2.5 billion Swiss francs of planned investment
+
+Now that we have a better understanding of how the grid works, here are some figures on the production and origin of electricity in Switzerland : 
+
+In 2021, 80% of the final electricity consumed in Switzerland was coming from renewable sources, accordind to [the confederation](https://www.admin.ch/gov/fr/accueil/documentation/communiques.msg-id-90221.html) (production + importation)
+
+Regarding the swiss production only : 
+
+- central hydraulics contributes to 61,5% of the production, coming from 682 different centrals
+
+- nuclear power plants (28,9%)
+
+- new renewable energies (solar, wind, biomass and small hydro power, 7.7%)
+
+- fossil fuels (1.9%)
+
+- 29.7% in production against 70.3% in importation
+
+The difference lies mainly in imports/exports, as Switzerland is not autonomous in its energy spending.
+
+As far as the confederation's objectives are concerned, it wishes to : 
+
+- reduce energy consumption per inhabitant by 43% by 2035 compared with 2000
+
+- develop renewable energies as far as possible
+
+- phase out nuclear power.
+
+## Law, limits and regulations
+
+**Electromagnetic field**
+
+Whether we are talking about high-voltage lines or electrical equipment, potential risks of electromagnetic radiation is often raised. Electromagnetic radiation takes the form of electric and magnetic fields. To protect our health, limit values have been set. Swiss standards on electromagnetic radiation are among the most stringent in the world.
+
+The immission limit value of 100 microteslas for magnetic fields is aimed specifically at preventing scientifically recognised harmful effects on health. It applies wherever people are likely to be. Under the Swiss Environmental Protection Act, it is also necessary to protect the population against health risks that are not yet proven but could be envisaged. This is precisely the role of the installation limit value of 1 microtesla. It applies to all places where people stay for a long time, such as living rooms, bedrooms, schools and playgrounds. Again, this limitation of 1 microtesla is one of the strictest in Europe. Both limit values are based on the maximum load of a power line.
+
+**Noise**
+
+Power lines can be subject to local electrical discharges, known as corona discharges, which occur particularly in adverse weather conditions such as rain, frost or wet snow. These coronal discharges can cause perceptible noises such as crackling or buzzing.
+
+In Switzerland, there is a noise emission limit of 55 decibels in inhabited areas (reduced to 45 decibels at night), which must be strictly adhered to. It is important to note that the noise level in a busy street generally exceeds 80 decibels. As far as possible, Swissgrid implements all the necessary technical solutions to reduce the effects of corona discharges. In the case of underground power lines, the noise caused by the corona effect is eliminated.
+
+**Environment**
+
+In accordance with the approval procedure (UVP), the environmental impact assessment (UVB) ensures that a project complies with environmental protection legislation. The compliance check is based on an Environmental Impact Report. As the project owner, Swissgrid is responsible for drawing up and submitting the UVB documents. However, its preparation is generally entrusted to an independent and specialised engineering firm. The report examines various aspects such as noise, non-ionising radiation, water resources, soils, abandoned landfill sites, forests, natural habitats, wildlife, landscapes, built-up areas, historical monuments and archaeological sites.
+
+The environmental monitoring of the construction phase (UBB) deals with and supervises environmental considerations during the construction phase and provides support to the project owner to ensure that the construction project complies with legislation and respects the environment.
+
+**Approval process**
+
+Swissgrid is responsible for planning and building electricity transmission infrastructure. The Confederation has established a six-stage procedure for the authorisation and approval of these projects. This procedure takes into account the requests and opinions of numerous entities, all of which are involved in the project. In order to validate the project, it is the authorities who will be responsible for giving the final verdict on the precise location and the tools to be put in place for the construction of the lines.
+
+The 6 steps in question:
+
+- Preparation : setting up an agreement between the cantons concerned to ensure that overhead and underground lines are correctly positioned
+
+- Transmission Lines sectoral plan (SÜL) : the Confederation's main planning and coordination instrument, used to expand the transmission lines.
+
+- Construction project : specific preparation of the construction project.
+
+- Planning approval procedure : once all the planning has been completed, Swissgrid submits the application for construction  permission, which is then made public and analysed before a final response is given, which may be subject to conditions.
+
+- Legal proceedings : At this stage, anyone affected by the project can lodge an objection, final decision will be given by the Federal Administrative Court and the Federal Supreme Court.
+
+- Construction : once all the conditions have been met and the project has been fully validated, construction can begin.
+
+All these procedures enormously slow down the expansion of the network, which generally takes 15 years from the creation of the project to its completion (opening of the line). Some objections have already caused projects to drag on for more than 30 years.
+
+As a result of these slowdowns, Swissgrid is unable to keep pace with the development of green energies and frequently has to ask power stations to reduce their output. It is therefore imperative that Swissgrid is able to accelerate the expansion of its grid.
+
+## Our goals
+
+The main aim of this work is to understand what regulates the Swiss electricity market and how it behaves. Topics covered will include: electricity consumption and production, its distribution within the country and its trade with neighboring countries. We will also take a brief look at the risk to grid stability regulated by control energy.
+
+In addition, Swissgrid needs to make its forecasts well in advance, so as to be well prepared for any eventuality. The first forecasts are made at one year, then at one month and one week before being recalculated one last time at 2 and 1 day before operation. You will also find a section where we will try to make predictions about consumption and production using several models, and then assess their accuracy.
+
+# Preliminary Data Anylsis
+## Overview of the data
+
+First, we have data from Swissgrid regarding the energy network :
+
+- Date : A file per year since 2009
+
+- Time : Timestamp of 15min or 1hour (only overall for 1h)
+
+- Total cons for end user only : are not included : grid losses, energy consumed for power plant’s own requirements or to drive the pumps in pumped storage hydro power plant.
+
+- Total prod/cons for Switzerland : everything consumed/fed in the network
+
+- Secundary control : positive and negative energy within 15min
+
+- Tertiary control : positive and negative energy after the first 15min
+
+- Vertical load Swiss transmission grid : will not be used
+
+- Net outflow of the Swiss transmission grid : will not be used
+
+- Grid feed-in Swiss transmission grid : will not be used
+
+- Control energy prices : average price in CHF for the last 15min of control energy (rounded to 2 decimals) for second and tertiary control
+
+- Cross border exchange : energy exchanged with bordered country (Austria, Germany, France, Italy)
+
+- Import/export/transit : Transit is not included in the cross border exchange
+
+- Cantons : Details of prod/cons per cantons (starts after 2015) grouped in 19 cantons
+
+- Foreign territories : prod and cons for regions within the control zone of Switzerland but do not belong to its territory
+
+We have a total of 65 variables with a total of 487872 observations.
+
+Second, we got data from [gadm](https://gadm.org/) providing maps and spatial data for many countries on 4 different levels. In our project, we will use the data for Switzerland on a Canton level. 
+
+## Data limitations
+
+As said, we only have data available for each cantons since 2015. Also, due to the density of each cantons, certain areas have been grouped together, meaning we do not have the detail for every cantons. (26 cantons grouped into 19 zones) 
+
+## Data cleaning and pre-processing
+Due to the importance of the number of variables, we have decided to create sub-dataset for every type of Data :
+
+- Overall
+
+- Cantons
+
+- Borders
+
+- Foreign
+
+- Price
+
+Every DataSet had been transformed into a tsibble, a new data structure that help and support with temporal data. One should look at [this paper](https://arxiv.org/pdf/1901.10257.pdf) for further references. We used the timestamp of 15min to get a better understanding of the data and help us building stronger models and forecast. 
+
+All the different cantons where set as variable (horizontal), in order to perform the anaylsis we needed to transform our Data-set in a vertical shape. 
+
+Here is quick overlook of our dataset :
+
+| Dataset          | No. observations |                                                     | Name of the DS  |
+|--------------|--------------|-------------------------------|--------------|
+| Initial dataset  | 277'536          | Combined all SwissGris's files from 2015            | General_df      |
+| Monthly data     | 277'536          | Monthly version of General_DF                       | General_dfM     |
+| Cantons'Data     | 4'995'648        | Combined Data for Cantons from 2015                 | Canton_df_long  |
+| Swiss map's data | 123,156          | Contain data to map Switzerland                     | gadmCHE1        |
+
+
+A new tidy data structure to
+support exploration and modeling
+of temporal data
+
+# EDA
+
+## Overall consumption and production for the country
+
+### Quick visualisation
+
+Now that we have better view of the network and where the data come from, let's dive int and see exactly what kind of data we will use.
+You can see below the first 10 rows of the general_df data containing all the general information at the country level :
 

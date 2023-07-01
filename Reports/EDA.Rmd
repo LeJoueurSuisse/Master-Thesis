@@ -1,598 +1,337 @@
 ---
-title: "EDA"
-author: "Allan"
+title: "Master Thesis"
+author: "Allan Mivelaz"
 date: '2023-06-14'
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
-  word_document:
-    toc: yes
-    toc_depth: '3'
-  html_document:
-    toc: yes
-    toc_depth: 3
-    number_sections: yes
-    theme: paper
-editor_options:
-  markdown:
-    wrap: 72
-always_allow_html: yes
+  pdf_document: 
+    latex_engine: xelatex
+    toc: no
+
+header-includes:
+  - \counterwithin{figure}{section}
+  - \pagenumbering{gobble}
+  - \usepackage{titling}  
+  - \pretitle{\begin{center}\Huge
+    \includegraphics[width=3in,height=2in]{LogoUnil.png}\LARGE\\}
+  - \posttitle{\end{center}\Huge}
+  - \preauthor{\begin{flushleft}\Large}
+  - \postauthor{\end{flushleft}}  
+  - \predate{\begin{flushleft}\Huge}
+  - \postdate{\end{flushleft}}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[LO,LE]{Allan Mivelaz}
+  - \fancyhead[RO,RE]{Electricity in Switzerland, an immersion in the grid}
+  - \fancyfoot[CO,CE]{}
+  - \fancyfoot[LE,RO]{\thepage}
 ---
 
-```{r, echo = FALSE, message = FALSE, include=FALSE}
-source(here::here("Scripts/SetUp.R"))
+
+\huge \centerline{ \textbf{Electricity in Switzerland :}}
+\huge \centerline{ \textbf{an immersion in the grid}}
+
+\normalsize
+
+
+\newpage
+\pagenumbering{arabic}
+\renewcommand\contentsname{Contents}
+```{=latex}
+\setcounter{tocdepth}{3}
+\tableofcontents
 ```
-
-```{r, include=FALSE}
-source(file = here::here("Scripts/Cleaning_and_Wrangling.R"))
-```
-
-The Data we have :
-
-```{r}
-general_df %>%
-  select(c(1, 9:15)) %>%
-  kable_head()
-```
-
-Quick overlook : 
-
-Daily Consumption in Million
-
-```{r}
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2018-01-01" ~ "2022-11-01") %>% 
-  autoplot() +
-  labs(title = "Total energy consumed in Switzerland",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "")
-```
-
--> Strong seasonlity, no obvious trend
--> seems to have diffent level of seasonility but hard to get due to the scope
+\newpage
 
 
-Dayly Production
-```{r}
-general_df %>%
-  group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2018-01-01" ~ "2022-11-01") %>% 
-  autoplot() +
-  labs(title = "Total energy produced in Switzerland",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "")
-```
+ Here is quick overlook of our dataset :
 
--> also Strong seasonlity, no obvious trend but more messy
--> seems to have diffent level of seasonility but hard to get due to the scope
+| Dataset          | No. observations |                                                     | Name of the DS  |
+|--------------|--------------|-------------------------------|--------------|
+| Initial dataset  | 277'536          | Combined all SwissGris's files from 2015            | General_df      |
+| Monthly data     | 277'536          | Monthly version of General_DF                       | General_dfM     |
+| Cantons'Data     | 4'995'648        | Combined Data for Cantons from 2015                 | Canton_df_long  |
+| Swiss map's data | 123,156          | Contain data to map Switzerland                     | gadmCHE1        |
+
+
+Best model for monthly consumption :
+
+|.model|     Mean Error      | RMSE    | MAE  |
+|-----|--------------|-----------------|------|
+| arima | 12.735796937830064 | 122     | 88.0 |
+| ets   | 0.5523432780314904 | 128     | 97.2 |
+| tslm  | 0.0000000000000433 | 129     | 96.7 |
+
+
+Best model for monthly production :
+
+|.model|     Mean Error      | RMSE    | MAE  |
+|-----|--------------|-----------------|------|
+| arima | 19.125386139859717 | 440     | 306  |
+| ets   | -59.44592615940835 | 473     | 361  |
+| tslm  | 0.0000000000000596 | 514     | 400  |
 
 
 
-Zoom in to see the monthly seasonality
+# Exectutive Summary
 
- Monthly
-```{r}
-# Consumption
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
-  autoplot() + 
-  labs(title = "Total energy consumed by Switzerland",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "") 
-```
-Strong seasonality, no trend, peaks in Winter, lowest in sommer
+**Approach and Purpose**
 
-```{r}
-# Production
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
-  autoplot() + 
-  labs(title = "Total energy produced by Switzerland",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "") 
-```
-opposite of consumption, Strong seasonality, no trend, peaks in Summer, lowest in winter
-
-```{r}
-# Consumption
-general_dfM %>%
-  group_by(month) %>%
-  summarise(Total = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2016-01-01" ~ "2022-11-01") %>%
-  gg_subseries(Total) +
-  ylab("Total sales") + 
-  xlab("Month") +
-  labs(title = "Seasonal subseries plot: Energy consumption",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "") 
-```
-Better view that confirmed what we previous said for consumption
-
-```{r}
-# Production
-general_dfM %>%
-  group_by(month) %>%
-  summarise(Total = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2016-01-01" ~ "2022-11-01") %>%
-  gg_subseries(Total) +
-  ylab("Total sales") + 
-  xlab("Month") +
-  labs(title = "Seasonal subseries plot: Energy production",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "") 
-```
-  
-Better view that confirmed what we previous said for prodcution
-
-Zoom in to see the weekly seasonality
-
-```{r}
-# Consumption
-general_df %>%
-  group_by(hourly) %>% 
-  summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>% 
-  filter_index("2019-01-06" ~ "2019-01-30") %>% 
-  autoplot() + 
-  labs(title = "Total hourly energy consumed in Switzerland",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "")
-```
-
-We can see here both weelky and daily seasonlaty : 
-With peaks during days (morning and end of afternoon) and during week with higher volume on weekday (no significant difference among days themselves)
-
-```{r}
-# Global effect of the weekday on consumption
-general_df %>% 
-  group_by(hour, wday) %>% 
-  summarise(Total_cons = sum(energy_cons)/10000000) %>%
-  ggplot(aes(wday, hour, fill = Total_cons)) +
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  theme_hc() +
-  labs(title = "Global effect of the weekday on consumption",
-       subtitle = "Energy consumed (in 10m of kwh)",
-       y = "", x = "", fill = "")
-```
-
-Trend is generalized through the whole period, peaks around noon
+Master thesis, internship oriented
+Different subject
+Actual and related to my country
 
 
-```{r}
-# Production
-general_df %>%
-  group_by(hourly) %>% 
-  summarize(Total_cons = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>% 
-  filter_index("2019-01-06" ~ "2019-01-30") %>% 
-  autoplot() +
-  labs(title = "Total houlry energy produced in Switzerland",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "")
-```
+**Analysis and Data Insights**
 
-same conclusion as consumption
+Sissgrid
+comprendre ou est produite et consommée l'energie
+Comment le réseau marche et ses complexité.
+Production and consumption all over the country
+Different level of aggregation
+Seasonity
 
-```{r}
-# Global effect of the weekday on production
-general_df %>% 
-  group_by(hour, wday) %>% 
-  summarise(Total_cons = sum(energy_prod)/10000000) %>%
-  ggplot(aes(wday, hour, fill = Total_cons)) +
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  theme_hc() +
-  labs(title = "Global effect of the weekday on production",
-       subtitle = "Energy consumed (in 10m of kwh)",
-       y = "", x = "", fill = "")
-```
+**Recommendation and Suggestions**
 
-Trend is generalized through the whole period, peaks around 9am and 7pm, almost 0 prod btw 0 and 5 am -> noise and poeple aint working
+Forecast and risk
 
+# Introduction
 
-We can now build the stl decomp with additive paramater due to no change over time in the seasonlity :
+## Electricity
 
-We reduce the scope to a year the have a better a view of the data, we have shown that seasonality was constant over the year. also show us the weekly seasonality
+Electricity, its price, consumption and production are at the heart of current debates. Whether it's environmental issues linked to the climate crisis and over-consumption, the economic challenges posed by rising prices around the world, or political debates such as the blacklisting of Russia, a major producer of natural gas for Switzerland, following the war in Ukraine, electricity is a major source of concern in Europe today. Over and above these aspects relating to Europe in general, Switzerland could be facing a real electricity shortage problem, given its dependence on imports. This is the point made by *l'economiesuisse* in [this article](https://www.economiesuisse.ch/fr/articles/energieticker-f), which states that : 
 
-```{r}
-# 2019 only with additive specification
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2019-12-31") %>%
-  model(classical_decomposition(Total_cons, type =
-                                  "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "consumption = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
-```
+*"Une pénurie d'énergie l'hiver prochain: tel est le scénario que nous devons éviter par tous les moyens. Une telle situation serait dévastatrice pour l'économie. Dans le dossier «Sur le front de l'énergie», economiesuisse commente l'actualité et évalue les nouveaux développements sous l'angle économique."* 
+ 
+The situation in Switzerland is complex and unique. Situated at the center of Europe, it can easily take advantage of imports and exports with its neighbours. What is more, Switzerland is a country with a lot of nature, lakes and mountainous regions, so it can use its topology to its advantage. Despite these advantages, and despite the fact that Switzerland still produces more electricity than it consumes, it cannot do without the help of its neighbours for its electricity production, particularly given the seasonal nature of this resource and the difficulty of storing it. Indeed, while Switzerland manages to be self-sufficient during the summer period (May to October), which is characterised by high production and lower consumption, the picture is different in winter: with consumption up by around 25% compared with the summer, coupled with a drop in local production due to lower river flows in winter, Switzerland has plenty to worry about. In fact, RST rightly points this out in its [article](https://www.rts.ch/info/economie/13304056-penurie-delectricite-cet-hiver-les-enjeux-en-cinq-questions.html) on the shortage that could affect Switzerland during winter.
 
+Beyond the purely economic aspect, the ecological component of electricity consumption and production is coming back more and more: fossil fuels to be banned, a desire to get out of nuclear power and the will to invest massively in green, renewable energies have invaded Switzerland. However, the will to do the right thing is not enough: we need to find the right compromise between the ecological transition and the needs of the population. Whether we like it or not, Swiss electricity needs will always take precedence over environmental issues.
 
+It is the latter that we are going to focus on in this paper: **electricity in Switzerland, where is it consumed or produced, and how? What are the main factors governing the grid?** To answer this question, we will be using data provided by Swissgrid, the company that manages all electricity transmission in Switzerland. 
 
-```{r}
-#2019 only with additive specification
-general_df %>%
-  group_by(date) %>% summarize(Total_prod = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2019-12-31") %>%
-  model(classical_decomposition(Total_prod, type =
-                                  "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "production = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
-```
+## Swiss Grid
 
-Same for production
+As previously stated, our main task will be to analyze the data provided by Swissgrib in order to better understand what drives the network. Once done, we will try to interpret these results in order to build a prediction model for the same data at different time scales. Before we can use their data, it is important to understand who Swissgrid is and what role it plays. Here are some of the main components that make up the company:
 
+**Generation**
 
-```{r}
-# Consumption
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_cons)/1000000) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>%
-  model(classical_decomposition(Total_cons, 
-                                type = "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "production = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
-```
+Despite its essential role in the transmission of electricity, it is important to emphasise that Swissgrid does not produce any electricity. Its sole role is to transport electricity between power plants and consumption areas via its network. Its mission, in addition to supplying energy where it is needed, is to ensure the stability of the grid: the quantity injected into the grid must therefore be re-evaluated according to demand at all times.
 
-Monthly seasonality for cons
+**Grid operation**
 
-```{r}
-# Production
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_prod)/1000000) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>%
-  model(classical_decomposition(Total_cons, type =
-                                  "additive")) %>%
-  components() %>%
-  autoplot() + 
-  labs(title = "Additive STL decomposition",
-       subtitle = "consumption = trend + season_year + random (in million of kWh)",
-       y = "", x = "")
-```
+For the grid to function properly, it is essential that production and consumption are always in balance: Swissgrid must therefore ensure at all times that the energy consumed and produced are equal so that it can be transported safely. This is where their forecasting model comes into play and will be used to prevent any congestion or overloads. This information is generally transmitted directly to the power stations, which will increase or decrease power according to the desired volume.
 
-Monthly seasonality for prod
+**Market development**
 
+Swissgrid is not only involved in the development and modernisation of its transmission system: it also ensures the development of the market.In fact it is responsible for minimising the costs associated with procurement, by varying suppliers abroad, for example. It is also Swissgrid that will make it possible, by means of ever more innovative infrastructures, to offer Swiss power stations new possibilities for transmitting the electricity they produce more easily.
 
-Let's have a look at the residuals :
+**Maintenance and repairs**
 
-```{r}
-# Monthly consumption
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_cons)) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
-  ACF(Total_cons) %>% 
-  autoplot() +
-  labs(title = "Consumption's residuals")
-```
-for cons
+Among its many tasks, one of the most essential remains the maintenance and upkeep of its infrastructure: Swissgrid must ensure that its pylons, lines, substations and so on are in good working order so that electricity flows safely. Divided into seven sites, they will be responsible for any repairs required.
 
-```{r}
-# Monthly production
-general_dfM %>%
-  group_by(month) %>% summarize(Total_cons = sum(energy_prod)) %>%
-  as_tsibble() %>%
-  filter_index(. ~ "2022-11-01") %>% 
-  ACF(Total_cons) %>% 
-  autoplot() +
-  labs(title = "Production's residuals")
-```
+**Infrastructure**
 
-for prod
+Swissgrid is responsible for planning, replacing and expanding the entire transmission system infrastructure. This is a complex task, as the grid is already experiencing congestion, new power plants are being connected on a regular basis, and the dynamics of the electricity markets continue to grow. As a result, it is necessary to expand the transmission network, which can be done through the targeted modernization and dismantling of parts of the network, rather than through the construction of new lines.
 
-Positive and Negative Secondary control with trend
+**Networking**
 
-```{r}
-# Positive secondary
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(pos_second)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() +
-  autolayer(components(STL_dcmp_PS), trend, color = 'red') + 
-  labs(title = "Positive Secondary control energy",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
+As Switzerland is at the heart of Europe, it is an integral part of its interconnected network. This collaboration between countries enables Switzerland and Europe to avoid any congestion or network failures. Ideally located, Switzerland acts as a transit country, storing a large quantity of electricity that will pass through the interconnected network.
 
-# Negative secondary
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(neg_second)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() + 
-  autolayer(components(STL_dcmp_NS), trend, color = 'red') +
-  labs(title = "Negative Secondary control energy",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
-```
+**Consumption**
 
+Although consumers play a central role in network stability, they are not directly connected to the network. In the event of imbalance, Swissgrid will, for example, ask cold stores or incineration plants to modify their consumption in order to restore the desired voltage level. The only exception is the Swiss Federal Railways (SBB), which are directly connected to the transmission grid.
 
-Positive and Negative Tertiary control with trend
+**Switching substations**
 
-```{r}
-# Tertiary data for consumption & production
-# Positive tertiary
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(pos_tertiary)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() + 
-  autolayer(components(STL_dcmp_PT), trend, color = 'red') + 
-  labs(title = "Positive tertiary control energy",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
+Coupling stations located in substations serve as connection points between grid lines. In some installations, energy is transformed and transmitted to different levels of the grid. In addition, Swissgrid's grid control centers carry out line disconnection and connection operations in the substations, using coupling maneuvers to direct the flow of electricity.
 
-# Negative tertiary
-general_df %>%
-  group_by(date) %>% summarize(Total_cons = sum(neg_tertiary)/1000) %>%
-  as_tsibble() %>%
-  filter_index("2019-01-01" ~ "2022-11-01") %>% 
-  autoplot() + 
-  autolayer(components(STL_dcmp_NT), trend, color = 'red') +
-  labs(title = "Negative tertiary control energy",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
-```
+**Network levels**
 
+To enable end consumers to use the energy generated by power plants, voltage is stepped down to 400 and 230 volts across seven network levels. These levels include extra-high voltage, high voltage, medium voltage and low voltage, as well as three transformer levels linking them together.
 
-Let's do the same for Cantons :
--> Where is the electricity consumed and where does it come from ?
--> what drives it ? density, mapping, policy, mapp of barrage/hydrolyique central, plant and so on
+**Transmission grid**
 
-What data do we have :
+The grid is made up of power lines operating at 380 kilovolts or 220 kilovolts. These two voltages have their specific uses: the former is mainly used for importing and exporting electricity, while the latter is mainly used by the large Swiss power plants to supply their energy. It is necessary to use kilovolt voltages on the transmission network to enable efficient transport of energy over long distances, while minimizing losses.
+
+## The Network
+
+Power is an invisible but omnipresent element in our lives. We use it instinctively and often without thinking, whether it is turning on the light in the morning, starting the coffee machine or listening to the radio.
+
+In Switzerland, electricity is available 24 hours a day, 365 days a year. But that does not go without saying, especially in winter, when electricity producers face particular challenges. The need for energy increases with snowfall, icy conditions and extreme cold. Unfortunately, electricity production in Switzerland cannot fully cover these additional needs, making the country dependent on electricity imports in winter.
+
+As electricity cannot be stored on the transmission network, it is crucial that current injection and extraction are always equal. But ensuring the efficient transformation of electricity and maintaining a constant balance between energy production and consumption are real challenges. That is where Swissgrid comes in. They ensure that the same amount of electricity is supplied at all times as is used at any given moment, as well as the constant frequency of 50 Hertz. Swissgrid works 24 hours a day, 7 days a week to achieve this. To keep the grid in balance at all times, careful planning with power plants and electricity traders is essential. 
+
+However, the Swiss transmission network can experience fluctuations and unforeseen loads. In such cases, operators must intervene to restore the balance by injecting more energy where needed, in order to bring the grid frequency back to its target value of 50 Hertz. It should be noted that this frequency is also maintained throughout the European interconnected grid, in collaboration with the other transmission system operators. When unforeseen fluctuations occur, the operators of the grid control centers use control energy. This is a reserve of energy that power plants make available to Swissgrid, and which can be used when needed. Power plants can increase or reduce their output at short notice, thus compensating for power imbalances. 
+
+On the European interconnected grid, balancing energy production and consumption is a process in 3 steps. First comes the primary control energy. It is activated in the event of frequency fluctuations. Turbines in power plants throughout Europe react by adjusting their output. After a few minutes, this phase is replaced by secondary control, which is managed by Swiss power plants in response to an automatic signal from Swissgrid. Finally, after a quarter of an hour, operators use tertiary control energy manually. They give instructions to certain power plants in Switzerland or abroad to inject more or less energy into the grid. For more details on energy control, see the section devoted to it later in this paper.
+
+The network in figures :
+
+- Voltage of 380 and 220 kilovolts
+
+- 250'000 kilometres long (6x around the world, the entire electrical network)
+
+- 6'700 kilometres long (length of transmission network lines only)
+
+- 12'000 pylons
+
+- 147 substations
+
+- 41 cross-border lines
+
+- 2.5 billion Swiss francs of planned investment
+
+Now that we have a better understanding of how the grid works, here are some figures on the production and origin of electricity in Switzerland : 
+
+In 2021, 80% of the final electricity consumed in Switzerland was coming from renewable sources, accordind to [the confederation](https://www.admin.ch/gov/fr/accueil/documentation/communiques.msg-id-90221.html) (production + importation)
+
+Regarding the swiss production only : 
+
+- central hydraulics contributes to 61,5% of the production, coming from 682 different centrals
+
+- nuclear power plants (28,9%)
+
+- new renewable energies (solar, wind, biomass and small hydro power, 7.7%)
+
+- fossil fuels (1.9%)
+
+- 29.7% in production against 70.3% in importation
+
+The difference lies mainly in imports/exports, as Switzerland is not autonomous in its energy spending.
+
+As far as the confederation's objectives are concerned, it wishes to : 
+
+- reduce energy consumption per inhabitant by 43% by 2035 compared with 2000
+
+- develop renewable energies as far as possible
+
+- phase out nuclear power.
+
+## Law, limits and regulations
+
+**Electromagnetic field**
+
+Whether we are talking about high-voltage lines or electrical equipment, potential risks of electromagnetic radiation is often raised. Electromagnetic radiation takes the form of electric and magnetic fields. To protect our health, limit values have been set. Swiss standards on electromagnetic radiation are among the most stringent in the world.
+
+The immission limit value of 100 microteslas for magnetic fields is aimed specifically at preventing scientifically recognised harmful effects on health. It applies wherever people are likely to be. Under the Swiss Environmental Protection Act, it is also necessary to protect the population against health risks that are not yet proven but could be envisaged. This is precisely the role of the installation limit value of 1 microtesla. It applies to all places where people stay for a long time, such as living rooms, bedrooms, schools and playgrounds. Again, this limitation of 1 microtesla is one of the strictest in Europe. Both limit values are based on the maximum load of a power line.
+
+**Noise**
+
+Power lines can be subject to local electrical discharges, known as corona discharges, which occur particularly in adverse weather conditions such as rain, frost or wet snow. These coronal discharges can cause perceptible noises such as crackling or buzzing.
+
+In Switzerland, there is a noise emission limit of 55 decibels in inhabited areas (reduced to 45 decibels at night), which must be strictly adhered to. It is important to note that the noise level in a busy street generally exceeds 80 decibels. As far as possible, Swissgrid implements all the necessary technical solutions to reduce the effects of corona discharges. In the case of underground power lines, the noise caused by the corona effect is eliminated.
+
+**Environment**
+
+In accordance with the approval procedure (UVP), the environmental impact assessment (UVB) ensures that a project complies with environmental protection legislation. The compliance check is based on an Environmental Impact Report. As the project owner, Swissgrid is responsible for drawing up and submitting the UVB documents. However, its preparation is generally entrusted to an independent and specialised engineering firm. The report examines various aspects such as noise, non-ionising radiation, water resources, soils, abandoned landfill sites, forests, natural habitats, wildlife, landscapes, built-up areas, historical monuments and archaeological sites.
+
+The environmental monitoring of the construction phase (UBB) deals with and supervises environmental considerations during the construction phase and provides support to the project owner to ensure that the construction project complies with legislation and respects the environment.
+
+**Approval process**
+
+Swissgrid is responsible for planning and building electricity transmission infrastructure. The Confederation has established a six-stage procedure for the authorisation and approval of these projects. This procedure takes into account the requests and opinions of numerous entities, all of which are involved in the project. In order to validate the project, it is the authorities who will be responsible for giving the final verdict on the precise location and the tools to be put in place for the construction of the lines.
+
+The 6 steps in question:
+
+- Preparation : setting up an agreement between the cantons concerned to ensure that overhead and underground lines are correctly positioned
+
+- Transmission Lines sectoral plan (SÜL) : the Confederation's main planning and coordination instrument, used to expand the transmission lines.
+
+- Construction project : specific preparation of the construction project.
+
+- Planning approval procedure : once all the planning has been completed, Swissgrid submits the application for construction  permission, which is then made public and analysed before a final response is given, which may be subject to conditions.
+
+- Legal proceedings : At this stage, anyone affected by the project can lodge an objection, final decision will be given by the Federal Administrative Court and the Federal Supreme Court.
+
+- Construction : once all the conditions have been met and the project has been fully validated, construction can begin.
+
+All these procedures enormously slow down the expansion of the network, which generally takes 15 years from the creation of the project to its completion (opening of the line). Some objections have already caused projects to drag on for more than 30 years.
+
+As a result of these slowdowns, Swissgrid is unable to keep pace with the development of green energies and frequently has to ask power stations to reduce their output. It is therefore imperative that Swissgrid is able to accelerate the expansion of its grid.
+
+## Our goals
+
+The main aim of this work is to understand what regulates the Swiss electricity market and how it behaves. Topics covered will include: electricity consumption and production, its distribution within the country and its trade with neighboring countries. We will also take a brief look at the risk to grid stability regulated by control energy.
+
+In addition, Swissgrid needs to make its forecasts well in advance, so as to be well prepared for any eventuality. The first forecasts are made at one year, then at one month and one week before being recalculated one last time at 2 and 1 day before operation. You will also find a section where we will try to make predictions about consumption and production using several models, and then assess their accuracy.
+
+# Preliminary Data Anylsis
+## Overview of the data
+
+First, we have data from Swissgrid regarding the energy network :
+
+- Date : A file per year since 2009
+
+- Time : Timestamp of 15min or 1hour (only overall for 1h)
+
+- Total cons for end user only : are not included : grid losses, energy consumed for power plant’s own requirements or to drive the pumps in pumped storage hydro power plant.
+
+- Total prod/cons for Switzerland : everything consumed/fed in the network
+
+- Secundary control : positive and negative energy within 15min
+
+- Tertiary control : positive and negative energy after the first 15min
+
+- Vertical load Swiss transmission grid : will not be used
+
+- Net outflow of the Swiss transmission grid : will not be used
+
+- Grid feed-in Swiss transmission grid : will not be used
+
+- Control energy prices : average price in CHF for the last 15min of control energy (rounded to 2 decimals) for second and tertiary control
+
+- Cross border exchange : energy exchanged with bordered country (Austria, Germany, France, Italy)
+
+- Import/export/transit : Transit is not included in the cross border exchange
+
+- Cantons : Details of prod/cons per cantons (starts after 2015) grouped in 19 cantons
+
+- Foreign territories : prod and cons for regions within the control zone of Switzerland but do not belong to its territory
+
+We have a total of 65 variables with a total of 487872 observations.
+
+Second, we got data from [gadm](https://gadm.org/) providing maps and spatial data for many countries on 4 different levels. In our project, we will use the data for Switzerland on a Canton level. 
+
+## Data limitations
+
+As said, we only have data available for each cantons since 2015. Also, due to the density of each cantons, certain areas have been grouped together, meaning we do not have the detail for every cantons. (26 cantons grouped into 19 zones) 
+
+## Data cleaning and pre-processing
+Due to the importance of the number of variables, we have decided to create sub-dataset for every type of Data :
+
+- Overall
+
+- Cantons
+
+- Borders
+
+- Foreign
+
+- Price
+
+Every DataSet had been transformed into a tsibble, a new data structure that help and support with temporal data. One should look at [this paper](https://arxiv.org/pdf/1901.10257.pdf) for further references. We used the timestamp of 15min to get a better understanding of the data and help us building stronger models and forecast. 
 
 All the different cantons where set as variable (horizontal), in order to perform the anaylsis we needed to transform our Data-set in a vertical shape. 
 
-Here is what the final version look like (we only show 1 variable for the Time)
+Here is quick overlook of our dataset :
 
-```{r, out.width = "80%"}
-canton_df_long %>%
-  select(c(1, 9:11)) %>%
-  kable_head()
-```
-
-
--> We have, for each 15-minute period, the consumption and production of each Cantons.
-As said in introduction, some Cantons have been grouped together. You can see the breakdown here:
-
-```{r}
-unique(canton_df_long$Cantons)
-```
-
-24 Cantons (do not differentiate half-canton) spread over 18 values. 
--> For further analysis, we will split the value to get the 24 cantons. Method and results will be presented in an other section. 
-
-```{r, out.width = "100%"}
-# Best consumer
-canton_df_long %>% 
-  filter(year > 2017) %>%
-  group_by(Cantons) %>% 
-  summarize(Total_cons = sum(consumption)/1000000) %>%
-  ggplot(aes(x = Total_cons, y = Cantons, fill = Cantons)) + 
-  geom_col(color = "black") + 
-  guides(fill = FALSE) + 
-  labs(title = "Total consumption per canton since 2018",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
-
-# Best producer
-canton_df_long %>% 
-  filter(year > 2017) %>%
-  group_by(Cantons) %>% 
-  summarize(Total_prod = sum(production)/1000000) %>%
-  ggplot(aes(x = Total_prod, y = Cantons, fill = Cantons)) + 
-  geom_col(color = "black") +
-  guides(fill = FALSE) + 
-  labs(title = "Total production per canton since 2018",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
-```
-Many difference here :
-Higher standard deviation for production
-Consumption and Production seems independent -> not driven by the same variable
-
-Let's see the monthly seasonality and trends over time for the top 3 of each category :
-
-```{r, out.width = "100%"}
-# Monthly consumption top 3
-canton_df_long %>% 
-  filter(Cantons %in% top3_consumer) %>%
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(consumption)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  labs(title = "Monthly consumption per canton since 2018",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
-
-# Monthly production top 3
-canton_df_long %>% 
-  filter(Cantons %in% top3_producer) %>%
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(production)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() +
-  labs(title = "Monthly production per canton since 2018",
-       subtitle = "Ammount in million of kWh)",
-       y = "", x = "")
-```
-
-STL decomp for top 3 prod and top 3 cons
-
-```{r, out.width = "100%"}
-# Monthly consumption
-canton_df_long %>% 
-  filter(Cantons %in% top3_consumer) %>%
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total_cons = sum(consumption)/1000000) %>% 
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  model(STL(total_cons))%>%
-  components() %>% autoplot() + 
-  guides(
-    colour = guide_legend(title = "Cantons")
-  ) +
-  scale_color_manual(labels = c("berne_jura", "geneve_vaud", "schaff_zurich"), 
-                     values = c("#F8766D", "#00BA38", "#619CFF")) +
-  labs(title = "STL decomposition",
-       subtitle = "consumption = trend + season_year + reminder (in million of kWh)",
-       y = "", x = "")
+| Dataset          | No. observations |                                                     | Name of the DS  |
+|--------------|--------------|-------------------------------|--------------|
+| Initial dataset  | 277'536          | Combined all SwissGris's files from 2015            | General_df      |
+| Monthly data     | 277'536          | Monthly version of General_DF                       | General_dfM     |
+| Cantons'Data     | 4'995'648        | Combined Data for Cantons from 2015                 | Canton_df_long  |
+| Swiss map's data | 123,156          | Contain data to map Switzerland                     | gadmCHE1        |
 
 
-# Monthly production
-canton_df_long %>% 
-  filter(Cantons %in% top3_producer) %>%
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total_prod = sum(production)/1000000) %>% 
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  model(STL(total_prod))%>%
-  components() %>% autoplot() + 
-  guides(
-    colour = guide_legend(title = "Cantons")
-  ) +
-  scale_color_manual(labels = c("argovie", "soleure", "valais"), 
-                     values = c("#F8766D", "#00BA38", "#619CFF")) +
-  labs(title = "STL decomposition",
-       subtitle = "production = trend + season_year + reminder (in million of kWh)",
-       y = "", x = "")
+A new tidy data structure to
+support exploration and modeling
+of temporal data
 
-```
+# EDA
 
+## Overall consumption and production for the country
 
+### Quick visualisation
 
-Facet wrap per Cantons with and without free scale :
+Now that we have better view of the network and where the data come from, let's dive int and see exactly what kind of data we will use.
+You can see below the first 10 rows of the general_df data containing all the general information at the country level :
 
-```{r, out.width = "100%"}
-# Monthly consumption with free scale
-canton_df_long %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(consumption)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  mutate(xlabel = "") %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  facet_wrap(~Cantons, scales = "free") +
-  guides(colour="none") +
-  theme(axis.text.x = element_blank()) +
-  labs(title = "Monthly consumption per canton since 2018",
-       subtitle = "Ammount in million of kWh with free scale",
-       y = "", x = "")
-```
-
-```{r, out.width = "100%"}
-# Consumption
-canton_df_long %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(consumption)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  facet_wrap(~Cantons) +
-  guides(colour="none") +
-  ggtitle("Monthly consumption per canton since 2018") + 
-  ylab("Ammount in million of kWh") + xlab("Date") +
-  labs(title = "Monthly consumption per canton since 2018",
-       y = "Ammount in million of kWh", x = "") +
-  theme(axis.text.x = element_text(angle=80, hjust=1))
-```
-
-```{r, out.width = "100%"}
-# Monthly prodcution with free scale
-canton_df_long %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(production)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  facet_wrap(~Cantons, scales = "free") +
-  guides(colour="none") +
-  labs(title = "Monthly production per canton since 2018",
-       subtitle = "Ammount in million of kWh with free scale",
-       y = "", x = "") +
-  theme(axis.text.x = element_blank())
-```
-
-```{r, out.width = "100%"}
-# Production
-canton_df_long %>% 
-  mutate(month = yearmonth(date), year = year(date)) %>%
-  group_by(month, Cantons) %>%
-  summarize(total = sum(production)/1000000) %>%
-  as_tsibble(index = month, key = Cantons) %>%
-  filter_index("2018-01-01" ~ "2022-11-30") %>% 
-  autoplot() + 
-  facet_wrap(~Cantons) +
-  guides(colour="none") +
-  labs(title = "Monthly production per canton since 2018",
-       subtitle = "Ammount in million of kWh",
-       y = "", x = "") +
-  theme(axis.text.x = element_text(angle=80, hjust=1))
-```
-
-
-Features analysis to check the strength of the seasonality/trend
-
-```{r}
-## Features analysis
-canton_features_C %>%
-  ggplot(aes(x = trend_strength, y = seasonal_strength_year, col = Cantons)) +
-  geom_point(size = 2) +
-  labs(title = "Features analysis for consumption",
-       y = "seasonality", x = "trend")
-```
-
-test
-
-```{r}
-canton_features_P %>%
-  ggplot(aes(x = trend_strength, y = seasonal_strength_year, col = Cantons)) +
-  geom_point(size = 2) +
-  labs(title = "Features analysis for produciton",
-       y = "seasonality", x = "trend")
-```
-
-```{r, out.width = "100%"}
-ggplot(gadmCHE1) +
-  geom_sf(aes(fill = test)) +
-  geom_sf_text(aes(label = Canton), size = 3.3, color = "black") +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.line = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.background = element_rect(fill = "white"),
-        plot.background = element_rect(fill = "white"),
-        axis.title = element_blank())
-```

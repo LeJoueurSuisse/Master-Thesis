@@ -1,16 +1,16 @@
 ---
-title: "Introduction"
-author: "Allan"
-date: '2023-06-14'
+title: "Master Thesis"
+author: ""
+date: ''
 output:
   bookdown::pdf_document2:
-    toc: yes
+    toc: no
     toc_depth: '3'
   bookdown::word_document2:
-    toc: yes
+    toc: no
     toc_depth: '3'
   bookdown:html_document2:
-    toc: yes
+    toc: no
     toc_depth: 3
     number_sections: yes
     theme: paper
@@ -19,13 +19,72 @@ editor_options:
     wrap: 72
 always_allow_html: yes
 link-citations: yes
-linkcolor: blue
+linkcolor: black
 subparagraph: yes
 citecolor: blue
 urlcolor: blue
 header-includes:
   - \counterwithin{figure}{section}
+  - \pagenumbering{gobble}
+  - \usepackage{titling}
+  - \pretitle{\begin{center}\Huge
+    \includegraphics[width=3in,height=2in]{LogoUnil.png}\LARGE\\}
+  - \posttitle{\end{center}}
+  - \preauthor{\begin{center}\large}
+  - \postauthor{\end{center}}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[LO,LE]{Allan Mivelaz}
+  - \fancyhead[RO,RE]{Electricity in Switzerland, an immersion in the grid}
+  - \fancyfoot[CO,CE]{}
+  - \fancyfoot[LE,RO]{\thepage}
 ---
+
+\huge \centerline{\textbf{Electricity in Switzerland :}}
+\huge \centerline{\textbf{an immersion in the grid}}
+
+\
+
+\Large \centerline{July 3, 2023}
+
+\
+
+\large \textit{Author:} \hfill \textit{Supervisors :}
+
+Allan Mivelaz \hfill Prof. Valerie Chavez
+
+\normalsize
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
+
+Master in management, 
+
+Orientation Business Analytics 
+
+UNIL \hfill \textbf{\textit{HEC Lausanne}}
+
+\normalsize
+
+
+\newpage
+\pagenumbering{arabic}
+\renewcommand\contentsname{Contents}
+```{=latex}
+\setcounter{tocdepth}{3}
+\tableofcontents
+```
+\newpage
 
 
 ```{r, echo = FALSE, message = FALSE, include=FALSE}
