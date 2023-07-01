@@ -48,13 +48,13 @@ header-includes:
 \Large \centerline{July 3, 2023}
 
 \
+\
 
 \large \textit{Author:} \hfill \textit{Supervisors :}
 
 Allan Mivelaz \hfill Prof. Valerie Chavez
 
 \normalsize
-\
 \
 \
 \
@@ -94,25 +94,27 @@ source(file = here::here("Scripts/Cleaning_and_Wrangling.R"))
 
 # Exectutive Summary
 
-**Approach and Purpose**
+The aim of this work is to understand how the Swiss electricity grid works: we use it every day, but we do not know how it works, nor all the infrastructure put in place to keep it running smoothly. In Switzerland, the company Swissgrid is responsible for transmission throughout the country. As their data is public, we will be able to take an in-depth look at where, when and how electricity is produced and consumed in Switzerland. The flow analysis will be carried out in 4 stages:
 
-Master thesis, internship oriented
-Different subject
-Actual and related to my country
+- First, we will analyze the total data for the entire country.
 
+- Then we will take a closer look at what is happening in each canton, and try to find similarities or differences between them.
 
-**Analysis and Data Insights**
+- The final visualization research will focus on trade with neighboring countries, to determine who we depend on.
 
-Sissgrid
-comprendre ou est produite et consommée l'energie
-Comment le réseau marche et ses complexité.
-Production and consumption all over the country
-Different level of aggregation
-Seasonity
+- We will finish with a quick modelling of the data, to try to forecast the data on two different timescales: a year ahead for monthly data, and a day ahead for daily data.
 
-**Recommendation and Suggestions**
+The data has revealed a strong seasonality of flows at three different levels: monthly, weekly and daily. Seasonality  is mainly governed by three factors: population, weather conditions and topography. However, we have found that these 3 variables did not have the same influence on consumption and production. In fact, topography has no direct impact on consumption, whereas it is essential for electricity production in Switzerland, which mainly comes from hydroelectric dams. The weather will have a strong impact on both consumption and production, but in the opposite way: when it is sunny and hot, the population will consume less electricity, whereas it is at this same period, with plenty of sunshine and water levels at their highest, that production is at its maximum. Finally, population will have a direct effect on consumption: even if we try to reduce per capita consumption, if the population increases, it will inevitably have a greater need for electricity. Its influence on production is indirect: since consumption and generation must always be in balance to guarantee grid stability, one will always have to adjust to the other.
 
-Forecast and risk
+We were able to demonstrate the influence of these three variables at cantonal level: only 5 cantons out of 26 produce the vast majority of electricity, which systematically comes from mountainous regions (with the exception of nuclear power plants, which account for 29% of Swiss production).
+
+For consumption, we compared 2 maps of the Swiss cantons, filled in once for their population and a second time for their consumption, and noticed that the maps were almost identical. 
+
+The data also showed us that Switzerland was not self-sufficient in its production and was obliged to buy from its neighbors in order to meet its needs during periods of high consumption. Of the four countries studied, we found that most of this electricity came from Germany, and very little from Italy.
+
+Finally, the data available showed strong predictive power, both over 1 year and the previous day. In terms of models, Arima proved to be the best performer every time, giving us excellent results. It should be noted, however, that these models are purely statistical and do not take into account macroeconomic data such as new regulations or laws, climate change or possible shortages. 
+
+\newpage
 
 # Introduction
 
@@ -126,7 +128,7 @@ The situation in Switzerland is complex and unique. Situated at the center of Eu
 
 Beyond the purely economic aspect, the ecological component of electricity consumption and production is coming back more and more: fossil fuels to be banned, a desire to get out of nuclear power and the will to invest massively in green, renewable energies have invaded Switzerland. However, the will to do the right thing is not enough: we need to find the right compromise between the ecological transition and the needs of the population. Whether we like it or not, Swiss electricity needs will always take precedence over environmental issues.
 
-It is the latter that we are going to focus on in this paper: **electricity in Switzerland, where is it consumed or produced, and how? What are the main factors governing the grid?** To answer this question, we will be using data provided by Swissgrid, the company that manages all electricity transmission in Switzerland. 
+It is the latter that we are going to focus on in this paper: electricity in Switzerland, where is it consumed or produced, and how? What are the main factors governing the grid? To answer this question, we will be using data provided by Swissgrid, the company that manages all electricity transmission in Switzerland. 
 
 ## Swiss Grid
 
@@ -272,7 +274,7 @@ As a result of these slowdowns, Swissgrid is unable to keep pace with the develo
 
 The main aim of this work is to understand what regulates the Swiss electricity market and how it behaves. Topics covered will include: electricity consumption and production, its distribution within the country and its trade with neighboring countries. We will also take a brief look at the risk to grid stability regulated by control energy.
 
-In addition, Swissgrid needs to make its forecasts well in advance, so as to be well prepared for any eventuality. The first forecasts are made at one year, then at one month and one week before being recalculated one last time at 2 and 1 day before operation. You will also find a section where we will try to make predictions about consumption and production using several models, and then assess their accuracy.
+In addition, Swissgrid needs to make its forecasts well in advance, so as to be well prepared for any eventuality. The first forecasts are made at one year, then at one month and one week before being recalculated one last time at 2 and 1 day before operation. You will find a section where we will try to make predictions about consumption and production using several models, and then assess their accuracy.
 
 # Preliminary Data Anylsis
 ## Overview of the data
@@ -324,10 +326,6 @@ Due to the importance of the number of variables, we have decided to create sub-
 
 - Borders
 
-- Foreign
-
-- Price
-
 Every DataSet had been transformed into a tsibble, a new data structure that help and support with temporal data. One should look at [this paper](https://arxiv.org/pdf/1901.10257.pdf) for further references. We used the timestamp of 15min to get a better understanding of the data and help us building stronger models and forecast. 
 
 All the different cantons where set as variable (horizontal), in order to perform the anaylsis we needed to transform our Data-set in a vertical shape. 
@@ -338,13 +336,10 @@ Here is quick overlook of our dataset :
 |--------------|--------------|-------------------------------|--------------|
 | Initial dataset  | 277'536          | Combined all SwissGris's files from 2015            | General_df      |
 | Monthly data     | 277'536          | Monthly version of General_DF                       | General_dfM     |
-| Cantons'Data     | 4'995'648        | Combined Data for Cantons from 2015                 | Canton_df_long  |
+| Cantons' Data    | 5'049'198        | Combined Data for Cantons from 2015                 | Canton_df_long  |
+| Borders data     | 2'244'088        | Data for import/export with borders country         | border_long     |
 | Swiss map's data | 123,156          | Contain data to map Switzerland                     | gadmCHE1        |
 
-
-A new tidy data structure to
-support exploration and modeling
-of temporal data
 
 # EDA
 
