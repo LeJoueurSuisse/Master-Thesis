@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.7.1)  2 JUL 2023 13:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.7.1)  2 JUL 2023 15:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -908,22 +908,22 @@ File: Intro_files/figure-latex/unnamed-chunk-36-2.pdf Graphic file (type pdf)
 <use Intro_files/figure-latex/unnamed-chunk-36-2.pdf>
 Package pdftex.def Info: Intro_files/figure-latex/unnamed-chunk-36-2.pdf  used on input line 1154.
 (pdftex.def)             Requested size: 433.65863pt x 267.02126pt.
-[36 <./Intro_files/figure-latex/unnamed-chunk-35-1.pdf>] [37 <./Intro_files/figure-latex/unnamed-chunk-36-1.pdf> <./Intro_files/figure-latex/unnamed-chunk-36-2.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1188--1190
+[36 <./Intro_files/figure-latex/unnamed-chunk-35-1.pdf>] [37 <./Intro_files/figure-latex/unnamed-chunk-36-1.pdf> <./Intro_files/figure-latex/unnamed-chunk-36-2.pdf>] [38]
+Underfull \hbox (badness 10000) in paragraph at lines 1215--1217
 [][][]$\T1/lmr/m/n/10 https : / / www . eda . admin . ch / aboutswitzerland / fr / home / wirtschaft / energie / energie -[]-[]-[] fakten -[] und -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1190--1192
+Underfull \hbox (badness 10000) in paragraph at lines 1217--1219
 [][][]$\T1/lmr/m/n/10 https : / / www . rts . ch / info / economie / 13304056 -[] penurie -[] delectricite -[] cet -[] hiver -[] les -[] enjeux -[] en -[] cinq -[]
  []
 
 
-Overfull \hbox (1.63266pt too wide) in paragraph at lines 1198--1200
+Overfull \hbox (1.63266pt too wide) in paragraph at lines 1225--1227
 [][][]$\T1/lmr/m/n/10 https : / / www . bfe . admin . ch / bfe / fr / home / approvisionnement / energies -[] renouvelables / force -[] hydraulique .
  []
 
-[38] (./Intro.aux)
+[39] (./Intro.aux)
  ***********
 LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2023-06-30>
@@ -932,18 +932,18 @@ Package rerunfilecheck Info: File `Intro.out' has not changed.
 (rerunfilecheck)             Checksum: A567F9B4AFB45AC1FC5EA443E3799BDD;5215.
  ) 
 Here is how much of TeX's memory you used:
- 14330 strings out of 477196
- 236347 string characters out of 5812260
+ 14331 strings out of 477196
+ 236354 string characters out of 5812260
  1936238 words of memory out of 5000000
  34941 multiletter control sequences out of 15000+600000
  615332 words of font info for 71 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  75i,12n,79p,1214b,520s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/Allan/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on Intro.pdf (39 pages, 1373359 bytes).
+Output written on Intro.pdf (40 pages, 1375886 bytes).
 PDF statistics:
- 704 PDF objects out of 1000 (max. 8388607)
- 557 compressed objects within 6 object streams
- 114 named destinations out of 1000 (max. 500000)
+ 709 PDF objects out of 1000 (max. 8388607)
+ 561 compressed objects within 6 object streams
+ 115 named destinations out of 1000 (max. 500000)
  437 words of extra memory for PDF output out of 10000 (max. 10000000)
 
