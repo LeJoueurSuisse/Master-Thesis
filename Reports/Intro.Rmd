@@ -1215,11 +1215,11 @@ As stated in the introduction, we are going to complete this work by making fore
 
 For each of our forecasts, we will use 3 models: TSLM, ARIMA and ETS. We will then compare their accuracy and show only the model with the best performance. 
 
+To begin the forecast, we have carried out a brief analysis of the residuals. These revealed a seasonal pattern but without significance of the lag in ACF. The resisduals themselvess were white noise with a normal distribution, so we concluded that there was no need to transform the data. (we tried taking the log for TSLM, which showed no increase in perforormance)
+
 ## Monthly
 
-
-
-Best model for monthly consumption :
+For each model, we let R find the optimal parameters before running several tests to compare them. The parameters found "automatically" proved to be more efficient each time. Below is the performance table for the three models in question:
 
 |.model|     Mean Error      | RMSE    | MAE  |
 |-----|--------------|-----------------|------|
@@ -1227,11 +1227,15 @@ Best model for monthly consumption :
 | ets   | 0.5523432780314904 | 128     | 97.2 |
 | tslm  | 0.0000000000000433 | 129     | 96.7 |
 
+Minimizing the Root Mean Squared Error, we can see that the ARIMA model gives us the best results. 
+
+Here is what the data looks like for an 18-months horizon :
+
 ```{r, out.width = "100%"}
 # Monhtly consumption
 ## Arima
 arima.consm.fit %>%
-  forecast(h = 17) %>%
+  forecast(h = 18) %>%
   autoplot(cons.m.tot %>%
              filter_index("2018-01-01" ~ "2021-12")) +
   labs(title = "Monthly forecast using the Arima method",
@@ -1239,9 +1243,12 @@ arima.consm.fit %>%
        y = "", x = "")
 ```
 
-Production
+As a reminder, the aim was to estimate consumption one year in advance. Although we used an 18-months period for the forecasts, it is the last 6 months (January to June 2023) that we are interested in. 
 
-Best model for monthly production :
+As the consumption data is very regular and follows the same pattern over the years, we can see that the model has given us very good forecasts with a fairly low confidence interval. 
+
+We have followed exactly the same procedure for production forecasts and here is what our three models reveal: 
+
 
 |.model|     Mean Error      | RMSE    | MAE  |
 |-----|--------------|-----------------|------|
@@ -1249,11 +1256,14 @@ Best model for monthly production :
 | ets   | -59.44592615940835 | 473     | 361  |
 | tslm  | 0.0000000000000596 | 514     | 400  |
 
+Again, using the RMSE as a scoring criterion, we will use the ARIMA model. 
+
+
 ```{r, out.width = "100%"}
 # Monhtly consumption
 ## Arima
 arima.prodm.fit %>%
-  forecast(h = 17) %>%
+  forecast(h = 18) %>%
   autoplot(prod.m.tot %>%
              filter_index("2018-01-01" ~ "2021-12")) +
   labs(title = "Monthly forecast using the Arima method",
@@ -1261,7 +1271,15 @@ arima.prodm.fit %>%
        y = "", x = "")
 ```
 
+Here too, forecasts seem perfectly in line with data. Despite less regular production in previous years, our models seem to have understood the right trends and seasonality. 
+
+While the latter and the general level of data are satisfactory, we note a wider confidence interval than for consumption, due to greater data volatility since 2018.
+
 ## Daily
+
+Our analysis of monthly data showed a preference for the arima model. These results were similar for daily data, where once again the arima model outperformed its competitors. 
+
+The corresponding graphs for production and consumption are shown below:
 
 ```{r, out.width = "100%"}
 # Daily Consumption
@@ -1273,12 +1291,7 @@ arima.d.fit %>%
   labs(title = "Daily forecast using the ARIMA method",
        subtitle = "Ammount in millions of kWh",
        y = "", x = "")
-```
 
-
-Production
-
-```{r, out.width = "100%"}
 # Daily Production
 ## Arima
 arima.d.fit.p %>%
@@ -1290,7 +1303,19 @@ arima.d.fit.p %>%
        y = "", x = "")
 ```
 
+The results are more than satisfactory for our two forecasts. Weekly seasonality has been well taken into account, and we note the same volatility as before. Regarding confidence intervals, the level seems lower than for monthly data, showing better precision when the time scale is reduced. 
+
 ## Results and Limits
+
+Regardless of the time scale used, the arima model performed better every time, with a very strong predictive power, both over 1 year and the previous day. 
+
+For the other models, the difference is very small, especially in terms of fuel consumption. We did, however, notice a big increase in the confidence interval of the ETS, which we do not recommend. 
+However, there are several limitations to our predictions: 
+
+However, there are several limitations to our predictions: 
+- economic and macroeconomic data have not been taken into account. Indeed, electricity may be subject to limits in order to preserve the planet, and its production could be strongly impacted by climate change. 
+
+It might also have been interesting to compare our results with those directly obtained by Swissgrid. As the latter were not available to the public, we were unable to do so in this analysis. 
 
 # Conclusion and possible extension
 
