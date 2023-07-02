@@ -3,10 +3,10 @@ title: "Master Thesis"
 author: ""
 date: ''
 output:
-  bookdown::pdf_document2:
+  bookdown::word_document2:
     toc: no
     toc_depth: '3'
-  bookdown::word_document2:
+  bookdown::pdf_document2:
     toc: no
     toc_depth: '3'
   bookdown:html_document2:
@@ -371,6 +371,8 @@ sum(is.na(general_df))
 ```
 We now know that no data is missing and that we have an observation for every 15 minutes from January 1, 2015 to the end of 2022. In the subsequent analysis, we will also transform our data into hourly (`hourly`), daily (`date`) and monthly (`month`) observations to obtain different insight. 
 
+\newpage
+
 We can now have a first look on the Daily Consumption :
 
 ```{r}
@@ -407,6 +409,8 @@ One of the conclusions we were able to draw based on the previous graphs was the
 
 #### Seasonality of the month over the year
 
+\
+
 Our analysis starts with data grouped by month.
 Here is the graph monthly consumption :
 
@@ -428,6 +432,10 @@ This clearly confirms what we have said previously :
 - Significant difference between summer and winter, with a peak for consumption in December/January and the lowest in July/August. 
 - The covid had almost no impact on consumption (2020 is slightly lower than other years, but we can not see any significant difference).
 
+\newpage
+
+Same graph, but this time for the production :
+
 ```{r}
 # Production
 general_dfM %>%
@@ -448,6 +456,8 @@ What we can extract from the chart :
 - For the covid period (year 2020 in Switzerland) : we see a redudction in the seasonilty, with significantly smaller peaks and falls throughout this year, with the old pattern appearing to return right after 2020.
 
 - Finally, as mentioned in the previous section, there might be a general decrease in production after the highest point in 2019.
+
+\newpage
 
 Here is an other view of the same data, grouped by month over the years :
 
@@ -487,11 +497,9 @@ The first thing we notice is the very high variance within months among each yea
 
 This high variance can also lead to misinterpretation of the graph: one might think that the average value of production (blue lines) does not vary significantly from one month to the next, compared with consumption. This is mainly due to the higher scale of the y-axis, caused by high volatility. The range of production (4,500 to 6,500) is even higher than that of consumption (4,600 to 6,400), also showing the strong importance of seasons. 
 
-\newpage
-
 #### Seasonality of the day over the week
 
-\n
+\
 
 Now that we have a better understanding of the monthly seasonality, let's zoom in on weekly seasonality. To do so, we will take the hourly data in a shorter time period.
 
@@ -544,6 +552,8 @@ Generally speaking, we can see that production for this period is in line with c
 #### Seasonality of the hour over the day
 
 Our final zoom will focus on hourly/daily seasonality. As usual, we will display the consumption graph first, before the production graph. Instead of a conventional graph, given the short period between observations (every hour), we have decided to use a heat map this time. This has enabled us to use all the data at our disposal, while giving us a clear model output. This will thus enable us to confirm the models studied over the whole period. 
+
+\newpage
 
 You can see below the first heat map, containing the data for consumption. 
 
@@ -604,6 +614,8 @@ components(STL_dcmpC) %>% autoplot() +
 Although the second is not very visible on the chart, STL has highlighted the annual and weekly seasonality as expected.
 
 For the rest, the trend appears to be a cycle, with the shape of an oscillation. Looking at the monthly data, there were peaks in December and January. While this is true for the month as a whole, we see a sharp drop around Christmas and New Year, as well as in August. This is due to the fact that many people leave the country on vacation, causing daily consumption to drop significantly. 
+
+\newpage
 
 Moving on to the decomposition of production, we get :
 
@@ -668,6 +680,8 @@ As explain, this frequency control process takes place in three stages. Initiall
 As explained, we will consider control energy as representing the risk of the network. This is the reason why we will not go into the details of seasonality and so on, but rather analyse annual trends to see if there is an increase/decrease in its activity.
 
 If the control area shows a positive balance, this indicates a deficit in the control area balance (i.e. insufficient coverage/increase in production  or a decrease in load). Conversely, if the control area balance is negative, this translates into a surplus in the control area energy balance (i.e. excess coverage).
+
+\newpage
 
 Here is the situation for the secondary control from 2015 to December 2022 :
 
@@ -883,6 +897,8 @@ As we suggested earlier, production is not determined by total population. This 
 The production pattern really does differ from canton to canton, and we will look at it in more detail later in this section. 
 
 To confirm these similarities/differences, we ran the STL decomposition for the 3 main electricity producers and consumers. Once again, we opted for an additive model.
+
+\newpage
 
 Top 3 consumers STL decomposition :
 
@@ -1109,6 +1125,8 @@ To sum up, Switzerland depends on both imports and exports of electricity to mee
 
 We will now look at the distribution of these exchanges with the various Swiss countries. Please note that transit will not be taken into account.
 
+\newpage
+
 Here are the data available since 2015:  
 
 ```{r, out.width = "100%"}
@@ -1208,6 +1226,8 @@ Let's anaylse them separalty :
 - With the exception of Berne, the plateau produces very little electricity. This difference is due to the way in which the data has been separated: geographically distributed, too much production has been attributed to Berne compared with the Jura, where the production centers are actually located. The same conclusion can be drawn for Vaud, where part of the data has been attributed to Geneva, which produces almost no electricity. 
 
 - Finally, we can see that 2 regions produce a great ammount of electricity in an area with few mountains: Soleure and Argovie. This time, it is not due to a distribution error, but to the fact that these two cantons have a high level of nuclear activity, which is independent of their topography. 
+
+\newpage
 
 # Forecasting 
 
