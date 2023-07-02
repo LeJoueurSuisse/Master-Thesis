@@ -1045,15 +1045,19 @@ canton_df_long %>%
 
 ```
 
-- much higher variance among cantons, with few (5 cantons) producing almost all the electricity.
+With a range starting close to 0 (Appenzell), up to 1'500 (Argovie), the volatility among the cantons is much higher than for consumption. We can see from the second that 5 regions (Argovie, Berne/Jura, Grisons, Soleure and Valais) produce almost all the electricity in Switzerland.
 
-- 2 types of seasonality : argovie and soleure with high values and yearls dips, Berne, grisons and Valais with classic seasonality, prdocing more during summer than winter.
+The first graph shows trends and seasonal patterns. With the exception of Solothurn and Aargau, these are all identical, with a generally low level and production peaks in summer (as shown by the STL decomposition for the Valais). In terms of trends, the most noteworthy are those in Grisons, Berne/Jura and Tessin, which are down, and Glarus, which is up sharply after 2021 (as expected from the consumption analysis).
 
-- First group : use nuclera power plants
-how it works ->
+We are therefore going to take a closer look at the major producers, dividing them into two groups according to their behavior: 
 
-- Second group : alpine cantons, use mainly hydrolique power.
--> how it works
+Argovie and Soleure, with no trend and big drops during the summer.
+
+Berne/Jura, Grison, Tessin and Valais, with a general downward trend and production peaks in summer. 
+
+- First group : their energy is mainly produced in nuclear power plants. These are not affected by environmental conditions, so their seasonality is due to the human factor. Their production levels will simply balance out with consumption, hence the absence of a trend. In fact, nuclear power plants represent the second-largest source of electricity generation in Switzerland, second only to hydroelectric power. Since nuclear power can be used equally well all year round, the plants will boost their activity during peak consumption periods, i.e. in winter, when hydroelectric power stations produce the least.  Conversely, in summer, when less electricity is required, the plants will reduce their activity or even shut down for a short period (2 to 4 weeks) to carry out maintenance work and change the fuel. 
+
+- Second group : This second group, mainly made up of Alpine cantons, draws its resources from hydroelectric activity. This activity depends directly on the water level in their dams or rivers, which is higher in summer when the snow melts and is marked by heavy rainfall. This activity depends directly on the water levels in their dams or rivers, which are higher in summer with the melting of snow and marked by heavy rainfall, thus explaining the summer peaks and winter troughs. Recent years have been marked by a drop in rainfall and a high level of drought, making it easy to explain a downward trend in production in these cantons.
 
 ## Border
 
@@ -1195,7 +1199,13 @@ Let's anaylse them separalty :
 
 # Forecasting 
 
+As stated in the introduction, we are going to complete this work by making forecasts over two different time intervals: 1 year and 1 day. The idea is to use all the information we have shown in this paper to see if we can satisfactorily predict values for early 2023. For the one-year forecasts, we will use monthly data that we will draw up at the end of 2021, whereas we will use daily data for the one-day forecasts, which we will stop at December 31, 2022.
+
+For each of our forecasts, we will use 3 models: TSLM, ARIMA and ETS. We will then compare their accuracy and show only the model with the best performance. 
+
 ## Monthly
+
+
 
 Best model for monthly consumption :
 
@@ -1245,7 +1255,7 @@ arima.prodm.fit %>%
 # Daily Consumption
 ## Arima
 arima.d.fit %>%
-  forecast(h = 365) %>%
+  forecast(h = 180) %>%
   autoplot(cons.d.tot %>%
              filter_index("2020-01-01" ~ .)) +
   labs(title = "Daily forecast using the ARIMA method",
@@ -1260,7 +1270,7 @@ Production
 # Daily Production
 ## Arima
 arima.d.fit.p %>%
-  forecast(h = 365) %>%
+  forecast(h = 180) %>%
   autoplot(prod.d.tot %>%
              filter_index("2020-01-01" ~ .)) +
   labs(title = "Daily forecast using the ARIMA method",
@@ -1284,6 +1294,7 @@ arima.d.fit.p %>%
 - https://www.kernenergie.ch/fr/les-centrales-nucleaires-suisses-_content---1--1068.html
 - https://fr.wikipedia.org/wiki/Hydro%C3%A9lectricit%C3%A9_en_Suisse
 - https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#:~:text=Environ%2063%20%25%20de%20la%20production,quantit%C3%A9s%20consid%C3%A9rables%20d'%C3%A9nergie%20hydro%C3%A9lectrique.
+- https://www.kkg.ch/fr/savoir/lectricite-issue-nergie-nucleaire/mix-electrique-suisse-69.html
 
 
 
