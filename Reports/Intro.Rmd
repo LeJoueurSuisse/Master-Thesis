@@ -1341,6 +1341,29 @@ It might also have been interesting to compare our results with those directly o
 
 # Conclusion and possible extension
 
+The aim of this project was to gain a better understanding of the Swiss electricity transmission network, managed by Swissgrid. More specifically, we wanted to see what regulated its consumption and production, the variables that influenced them, and the main agents in the sector (at cantonal level). The data was broken down to gobal level, cantonal, control energy and finally import/export. We were able to show the differences between consumption and production, as well as the different types of Swiss production and their specific features. 
+
+We have also seen that network management and development are complex tasks that require a great deal of control and procedure. As electricity transport is a natural monopoly, Swissgrid is responsible for the entire network and everything that goes with it. In view of the ever-growing population and its ever-more demanding needs, and in a region that's becoming increasingly inaccessible, it's essential that we do everything we can to facilitate their expansion. As a reminder, an expansion project takes an average of 15 years to become operational. 
+ 
+Regarding the data themselves, the key points to emerge were :
+
+- the triple seasonality of the data, between day and night, weekday and weekend, summer and winter.
+
+- inverse seasonality between consumption and production (summer/winter)
+
+- Switzerland's two main production sources are hydroelectric and nuclear. As nuclear power is independent of the seasons, it is used to make up for shortfalls in production when consumption rises and hydroelectric dams are no longer sufficient.
+
+- Even though Switzerland has a large number of production centers in the country, these are not sufficient, and the country is therefore dependent on its neighbors for its electricity consumption.
+
+Our analysis has enabled us to draw up satisfactory forecasts for horizons of one year and one day. We have expressed various reservations and limitations concerning these forecasts, but without major changes in the environment or regulation, our forecasts are likely to be in line with reality.
+
+We were able to show that the main variables influencing the network were population, topography and seasons. However, these causalities have only been shown and not proven with models. It would have been interesting to couple Swissgrid data with real macroeconomic data in order to model these relationships.
+
+Another component, not mentioned in this paper, which has a major influence on elelectricity and its consumption is its price. With a war in Europe and several natural resources running out, we can expect the price to rise. Higher import and production prices could have a direct impact on consumption. An analysis of the evolution of electricity prices in Europe, or even worldwide, would merit further research. 
+
+
+\newpage
+
 # References and Appendix
 
 - https://arxiv.org/pdf/1901.10257.pdf
