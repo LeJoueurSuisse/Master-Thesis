@@ -138,6 +138,8 @@ As previously stated, our main task will be to analyze the data provided by Swis
 
 Despite its essential role in the transmission of electricity, it is important to emphasise that Swissgrid does not produce any electricity. Its sole role is to transport electricity between power plants and consumption areas via its network. Its mission, in addition to supplying energy where it is needed, is to ensure the stability of the grid: the quantity injected into the grid must therefore be re-evaluated according to demand at all times.
 
+\newpage
+
 **Grid operation**
 
 For the grid to function properly, it is essential that production and consumption are always in balance: Swissgrid must therefore ensure at all times that the energy consumed and produced are equal so that it can be transported safely. This is where their forecasting model comes into play and will be used to prevent any congestion or overloads. This information is generally transmitted directly to the power stations, which will increase or decrease power according to the desired volume.
@@ -275,6 +277,8 @@ As a result of these slowdowns, Swissgrid is unable to keep pace with the develo
 The main aim of this work is to understand what regulates the Swiss electricity market and how it behaves. Topics covered will include: electricity consumption and production, its distribution within the country and its trade with neighboring countries. We will also take a brief look at the risk to grid stability regulated by control energy.
 
 In addition, Swissgrid needs to make its forecasts well in advance, so as to be well prepared for any eventuality. The first forecasts are made at one year, then at one month and one week before being recalculated one last time at 2 and 1 day before operation. You will find a section where we will try to make predictions about consumption and production using several models, and then assess their accuracy.
+
+\newpage
 
 # Preliminary Data Anylsis
 ## Overview of the data
