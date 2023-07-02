@@ -208,6 +208,8 @@ Now that we have a better understanding of how the grid works, here are some fig
 
 In 2021, 80% of the final electricity consumed in Switzerland was coming from renewable sources, accordind to [the confederation](https://www.admin.ch/gov/fr/accueil/documentation/communiques.msg-id-90221.html) (production + importation)
 
+\newpage
+
 Regarding the swiss production only : 
 
 - central hydraulics contributes to 61,5% of the production, coming from 682 different centrals
@@ -485,7 +487,11 @@ The first thing we notice is the very high variance within months among each yea
 
 This high variance can also lead to misinterpretation of the graph: one might think that the average value of production (blue lines) does not vary significantly from one month to the next, compared with consumption. This is mainly due to the higher scale of the y-axis, caused by high volatility. The range of production (4,500 to 6,500) is even higher than that of consumption (4,600 to 6,400), also showing the strong importance of seasons. 
 
+\newpage
+
 #### Seasonality of the day over the week
+
+\n
 
 Now that we have a better understanding of the monthly seasonality, let's zoom in on weekly seasonality. To do so, we will take the hourly data in a shorter time period.
 
@@ -511,6 +517,8 @@ We have peaks during the day (in the morning and a second peak in the late after
 An interesting comparison is the small difference between weekend days and weeknights: the total amount consumed is almost the same, with some nights even exceeding weekend consumption. This suggests that the majority of consumption comes from companies and large institutes, and not from private individuals. Indeed, these two times of the week are marked by the absence of work.
 
 It is important to note that we only have data for a specific month over a 6-year period : so while this gives us a general idea of consumption behavior throughout days and weeks, and we can expect it to be constant over the whole period, we can not yet be sure that this pattern is generalizable to every period.
+
+\newpage
 
 As usual, let's now displays the same chart but this time for the production :
 
@@ -1297,7 +1305,7 @@ arima.d.fit.p %>%
 - https://www.economiesuisse.ch/fr/articles/energieticker-f
 - https://www.kernenergie.ch/fr/les-centrales-nucleaires-suisses-_content---1--1068.html
 - https://fr.wikipedia.org/wiki/Hydro%C3%A9lectricit%C3%A9_en_Suisse
-- https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#:~:text=Environ%2063%20%25%20de%20la%20production,quantit%C3%A9s%20consid%C3%A9rables%20d'%C3%A9nergie%20hydro%C3%A9lectrique.
+- https://www.bfe.admin.ch/bfe/fr/home/approvisionnement/energies-renouvelables/force-hydraulique.html#
 - https://www.kkg.ch/fr/savoir/lectricite-issue-nergie-nucleaire/mix-electrique-suisse-69.html
 
 
