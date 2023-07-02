@@ -3,10 +3,10 @@ title: "Master Thesis"
 author: ""
 date: ''
 output:
-  bookdown::word_document2:
+  bookdown::pdf_document2:
     toc: no
     toc_depth: '3'
-  bookdown::pdf_document2:
+  bookdown::word_document2:
     toc: no
     toc_depth: '3'
   bookdown:html_document2:
@@ -1324,6 +1324,8 @@ arima.d.fit.p %>%
 ```
 
 The results are more than satisfactory for our two forecasts. Weekly seasonality has been well taken into account, and we note the same volatility as before. Regarding confidence intervals, the level seems lower than for monthly data, showing better precision when the time scale is reduced. 
+
+\newpage
 
 ## Results and Limits
 
